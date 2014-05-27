@@ -5,15 +5,18 @@ class ShaderProgram;
 #include <vector>
 #include <GL/glew.h>
 using namespace std;
+//Todo: Implement copy constructor and copy assignment operator, due to rule of three
 class ShaderProgram {
   private:
-    GLuint vertex_shader, fragment_shader, shader_program;
     const string shader_name;
-    string load_file(string path);
+    const GLuint vertex_shader, fragment_shader, shader_program;
     GLuint compile(GLuint type, string source);
-    void printErrorlog(GLuint shader);
   public:
-    ShaderProgram(string _shader_name);
+    explicit ShaderProgram(string shader_name_);
+    ShaderProgram(const ShaderProgram& other);
     ~ShaderProgram();
+    void use();
+    void stop();
+    GLuint getUniform(string name);
 };
 #endif

@@ -3,13 +3,14 @@ project (glHondo)
 
 find_package(OpenGL REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall")
+set(CMAKE_CXX_FLAGS "-std=c++1y -stdlib=libc++ -Wall -Wextra -pedantic")
 
 add_subdirectory(lib)
 
 include_directories(
   lib/glfw-3.0.4/include/GLFW
   lib/glew-1.10.0/include/
+  lib/glm
 )
 
 set(ALL_LIBS

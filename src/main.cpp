@@ -6,7 +6,7 @@
 
 #include "gfx/Renderer.h"
 #include "gfx/VertexArray.h"
-#include "gfx/shader/ShaderProgram.h"
+#include "gfx/shader/SimpleShader.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -24,7 +24,7 @@ int main(void) {
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   GLFWwindow* window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
   if (!window) {
     glfwTerminate();
@@ -38,36 +38,35 @@ int main(void) {
     std::cout << glewGetErrorString(err) << std::endl;
   }
 
-  ShaderProgram shader = ShaderProgram("simple");
-  const GLubyte* renderer = glGetString(GL_RENDERER);
-  const GLubyte* version = glGetString(GL_VERSION);
-  printf("Renderer: %s\n", renderer);
-  printf("Version: %s\n", version);
-  glfwSetKeyCallback(window, key_callback);
-  while (!glfwWindowShouldClose(window))
   {
-    float ratio;
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    ratio = width / (float) height;
-    glViewport(0, 0, width, height);
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* version = glGetString(GL_VERSION);
+    printf("Renderer: %s\n", renderer);
+    printf("Version: %s\n", version);
+    glfwSetKeyCallback(window, key_callback);
+  }
+
+  VertexArray vertexArray{{
+    {0, 0.5f, 0},
+    {0.5f, 0, 0},
+    {0.5f, 0.5f, 0}
+  }};
+  vertexArray.flip();
+  auto vArrayPtr = make_shared<VertexArray>(vertexArray);
+  auto rObj1 = make_shared<RenderObject>(vArrayPtr);
+  auto rObj2 = make_shared<RenderObject>(vArrayPtr);
+  Renderer renderer;
+  renderer.addObject(rObj1);
+  renderer.addObject(rObj2);
+  rObj2->translate({0.25f, 0.5f, 0});
+  std::cout << "Use count : " << vArrayPtr.use_count() << std::endl;
+
+  SimpleShader shader;
+  shader();
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-    glBegin(GL_QUADS);
-    glColor3f(1.f, 0.f, 0.f);
-    glVertex3f(-0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 1.f, 0.f);
-    glVertex3f(0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 0.f, 1.f);
-    glVertex3f(0.f, 0.6f, 0.f);
-    glColor3f(1.f, 1.f, 1.f);
-    glVertex3f(-0.6f, 0.6f, 0.f);
-    glEnd();
+    renderer.render();
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
