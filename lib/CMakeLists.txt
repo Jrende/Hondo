@@ -4,6 +4,8 @@ add_definitions(
   -DGLEW_STATIC
 )
 
+SET(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
+SET(GLFW_BUILD_TESTS OFF CACHE STRING "" FORCE)
 add_subdirectory(glfw-3.0.4)
 
 include_directories (
