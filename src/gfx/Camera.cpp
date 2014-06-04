@@ -1,12 +1,12 @@
-#ifndef __HONDO_CAMERA_H__
-#define __HONDO_CAMERA_H__
-class Camera;
-#include <string>
-#include "RenderObject.h"
-#include <stdlib.h>
-class Camera {
-  private:
-    glm::vec3 up,left,forward;
-  public:
-};
-#endif
+#include "Camera.h"
+#include <glm/gtc/matrix_transform.hpp>
+Camera::Camera():
+  up({0, 1.0f, 0}),
+  pos({0, 0, 0}),
+  forward({0, 0, 1.0f}),
+  viewMat(glm::lookAt(pos, forward, up))
+  { }
+
+void Camera::translate(glm::vec3 pos) {
+  viewMat = glm::translate(viewMat, pos);
+}

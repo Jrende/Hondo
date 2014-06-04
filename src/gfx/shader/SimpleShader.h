@@ -7,11 +7,11 @@ class SimpleShader {
   private:
     ShaderProgram shader_program;
     const GLuint colorID;
-    const GLuint modelMatrixID;
+    const GLuint mvpMatID;
   public:
     SimpleShader(); 
     void operator()();
     void stop();
-    void setModelMatrix(glm::mat4);
+    void setMVP(glm::mat4 mvpMat);
 };
 #endif

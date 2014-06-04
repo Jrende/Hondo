@@ -4,9 +4,9 @@
 SimpleShader::SimpleShader(): 
   shader_program("simple"),
   colorID(shader_program.getUniform("color")),
-  modelMatrixID(shader_program.getUniform("modelMatrix"))
+  mvpMatID(shader_program.getUniform("mvpMat"))
 {
-
+  
 }
 
 void SimpleShader::operator()() {
@@ -17,6 +17,6 @@ void SimpleShader::stop() {
   shader_program.stop();
 }
 
-void SimpleShader::setModelMatrix(glm::mat4 modelMatrix) {
-  glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+void SimpleShader::setMVP(glm::mat4 mvpMat) {
+  glUniformMatrix4fv(mvpMatID, 1, GL_FALSE, glm::value_ptr(mvpMat));
 }
