@@ -14,11 +14,10 @@ class VertexArray {
     VertexArray(const VertexArray& other);
     VertexArray(std::vector<std::vector<float>> vertices);
     ~VertexArray();
-    int size();
-    void add_vertex(float, float, float);
-    void add_vertices(std::vector<std::vector<float>> vertices);
-    void print();
-    void flip();
-    void render();
+    int size(void);
+    void add_vertex(float x, float y, float z);
+    void add_vertices(const std::vector<std::vector<float>> &vertices);
+    void flip(void);
+    void render(void);
 };
 #endif

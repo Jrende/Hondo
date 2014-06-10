@@ -31,7 +31,7 @@ VertexArray::~VertexArray() {
   glDeleteBuffers(1, &index_buf_id);
 }
 
-int VertexArray::size() {
+int VertexArray::size(void) {
   return this->vertex_data.size();
 }
 
@@ -42,7 +42,7 @@ void VertexArray::add_vertex(float x, float y, float z) {
   vertex_len++;
 }
 
-void VertexArray::add_vertices(std::vector<std::vector<float>> vertices) {
+void VertexArray::add_vertices(const std::vector<std::vector<float> > &vertices) {
   for(int i = 0; i < vertices.size(); i += 1) {
     vertex_data.push_back(vertices[i][0]);
     vertex_data.push_back(vertices[i][1]);
@@ -51,7 +51,7 @@ void VertexArray::add_vertices(std::vector<std::vector<float>> vertices) {
   vertex_len += vertices.size();
 }
 
-void VertexArray::flip() {
+void VertexArray::flip(void) {
   int size = pos_len * vertex_data.size() * sizeof(float);
 
   glBindVertexArray(vao_id);
@@ -76,7 +76,7 @@ void VertexArray::flip() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void VertexArray::render() {
+void VertexArray::render(void) {
   glBindVertexArray(vao_id);
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);

@@ -8,13 +8,16 @@
 #include "gfx/Renderer.h"
 #include "gfx/VertexArray.h"
 #include "gfx/shader/SimpleShader.h"
+#include "input/InputHandler.h"
+#include "input/Action.h"
 
 static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
 }
-auto camera = make_shared<Camera>();
+auto camera = std::make_shared<Camera>();
 float step = 0.1f;
+InputHandler input;
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -37,6 +40,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
   if (key == GLFW_KEY_E) {
     camera->translate({0, 0, -step});
   }
+  input.key_callback(window, key, scancode, action, mods);
 }
 const int width = 640;
 const int height = 480;
@@ -68,27 +72,28 @@ int main(void) {
     printf("Version: %s\n", version);
     glfwSetKeyCallback(window, key_callback);
   }
-
   VertexArray vertexArray{{
     {0, 0.5f, 0},
     {0.5f, 0, 0},
     {0.5f, 0.5f, 0}
   }};
   vertexArray.flip();
-  auto vArrayPtr = make_shared<VertexArray>(vertexArray);
-  auto rObj1 = make_shared<RenderObject>(vArrayPtr);
-  auto rObj2 = make_shared<RenderObject>(vArrayPtr);
+  auto vArrayPtr = std::make_shared<VertexArray>(vertexArray);
+  auto rObj1 = std::make_shared<RenderObject>(vArrayPtr);
+  auto rObj2 = std::make_shared<RenderObject>(vArrayPtr);
   Renderer renderer(width, height);
   renderer.addObject(rObj1);
   renderer.addObject(rObj2);
   renderer.setCamera(camera);
-  rObj2->translate({0.25f, 0.5f, -1});
+  rObj1->translate({0.0f, 0.0f, 1});
+  rObj2->translate({0.25f, 0.5f, 5});
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while (!glfwWindowShouldClose(window)) {
+    glfwPollEvents();
+    input.handleInput();
     glClear(GL_COLOR_BUFFER_BIT);
     renderer.render();
     glfwSwapBuffers(window);
-    glfwPollEvents();
   }
   glfwDestroyWindow(window);
   glfwTerminate();

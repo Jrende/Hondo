@@ -1,8 +1,7 @@
 #include "ShaderProgram.h"
 #include "ShaderUtils.cpp"
 
-using namespace std;
-ShaderProgram::ShaderProgram(string shader_name_):
+ShaderProgram::ShaderProgram(std::string shader_name_):
   shader_name(shader_name_),
   vertex_shader(
       compile(
@@ -48,14 +47,14 @@ void ShaderProgram::stop() {
   glUseProgram(0);
 }
 
-GLuint ShaderProgram::getUniform(string name) {
+GLuint ShaderProgram::getUniform(std::string name) {
   return glGetUniformLocation(shader_program, name.c_str());
 }
 
-GLuint ShaderProgram::compile(GLuint type, string source) {
+GLuint ShaderProgram::compile(GLuint type, std::string source) {
   int shader = glCreateShader(type);
   if(!shader) {
-    cout << "Error creating " << shader_name << ".frag" << endl;
+    std::cout << "Error creating " << shader_name << ".frag" << std::endl;
     exit(EXIT_FAILURE);
   }
   const char *src = source.c_str();
@@ -64,7 +63,7 @@ GLuint ShaderProgram::compile(GLuint type, string source) {
   GLint status;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
   if(status == GL_FALSE) {
-    cout << "Error in " << shader_name << "." << ShaderUtils::getShaderTypeString(type) << "  Log:" << endl;
+    std::cout << "Error in " << shader_name << "." << ShaderUtils::getShaderTypeString(type) << "  Log:" << std::endl;
     ShaderUtils::printErrorlog(shader);
     exit(EXIT_FAILURE);
   }

@@ -6,7 +6,6 @@ SimpleShader::SimpleShader():
   colorID(shader_program.getUniform("color")),
   mvpMatID(shader_program.getUniform("mvpMat"))
 {
-  
 }
 
 void SimpleShader::operator()() {
