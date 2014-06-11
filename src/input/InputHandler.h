@@ -17,7 +17,7 @@ class InputHandler {
     void handleKey(Key key);
   public:
     InputHandler();
-    void registerHandler(Action action, ActionHandler fun);
+    void registerHandler(Action action, const ActionHandler& fun);
     void handleInput();
     void key_callback(GLFWwindow* window, Key key, int scancode, int action, int mods);
 };

@@ -8,6 +8,8 @@ InputHandler::InputHandler() {
   mappings[GLFW_KEY_S] = Action::Backward;
   mappings[GLFW_KEY_A] = Action::Left;
   mappings[GLFW_KEY_D] = Action::Right;
+  mappings[GLFW_KEY_Q] = Action::Up;
+  mappings[GLFW_KEY_E] = Action::Down;
   mappings[GLFW_KEY_SPACE] = Action::Fire;
 }
 
@@ -15,7 +17,7 @@ void InputHandler::key_callback(GLFWwindow* window, Key key, int scancode, int a
   if(action == GLFW_PRESS) {
     handleKey(key);
     //TODO:Only insert if repeat
-    if(isRepeatable(mappings[key])) {
+    if(mappings.count(key) > 0 && isRepeatable(mappings[key])) {
       currentKeys.insert(key);
     }
   } else if(action == GLFW_RELEASE) {
@@ -38,13 +40,6 @@ void InputHandler::handleInput() {
   }
 }
 
-//Maybe use shared_ptr here?
-void InputHandler::registerHandler(Action action, ActionHandler fun) {
+void InputHandler::registerHandler(Action action, const ActionHandler& fun) {
   handlers[action].push_back(fun);
 }
-
-/*
-void InputHandler::registerHandler(Action action, bool repeat, ActionHandler fun) {
-  handlers[action].push_back(fun);
-}
-*/

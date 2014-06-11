@@ -6,6 +6,8 @@ enum class Action {
   Backward,
   Left,
   Right,
+  Up,
+  Down,
   Fire,
   Jump
 };
