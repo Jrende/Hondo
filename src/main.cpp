@@ -8,7 +8,7 @@
 #include "gfx/Renderer.h"
 #include "gfx/VertexArray.h"
 #include "gfx/shader/SimpleShader.h"
-#include "input/InputHandler.h"
+#include "input/Input.h"
 #include "input/Action.h"
 
 static void error_callback(int error, const char* description)
@@ -16,35 +16,11 @@ static void error_callback(int error, const char* description)
   fputs(description, stderr);
 }
 auto camera = std::make_shared<Camera>();
-float step = 0.1f;
-InputHandler input;
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GL_TRUE);
-  if (key == GLFW_KEY_W) {
-    camera->translate({step, 0, 0});
-  }
-  if (key == GLFW_KEY_S) {
-    camera->translate({-step, 0, 0});
-  }
-  if (key == GLFW_KEY_A) {
-    camera->translate({0, step, 0});
-  }
-  if (key == GLFW_KEY_D) {
-    camera->translate({0, -step, 0});
-  }
-  if (key == GLFW_KEY_Q) {
-    camera->translate({0, 0, step});
-  }
-  if (key == GLFW_KEY_E) {
-    camera->translate({0, 0, -step});
-  }
-  input.key_callback(window, key, scancode, action, mods);
-}
+float step = 0.01f;
+
 const int width = 640;
 const int height = 480;
-int main(void) {
+int main(int argc, char ** argv) {
   glfwSetErrorCallback(error_callback);
   if (!glfwInit())
     exit(EXIT_FAILURE);
@@ -70,13 +46,33 @@ int main(void) {
     const GLubyte* version = glGetString(GL_VERSION);
     printf("Renderer: %s\n", renderer);
     printf("Version: %s\n", version);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, Input::key_callback);
   }
-  VertexArray vertexArray{{
+  VertexArray&& vertexArray{{
     {0, 0.5f, 0},
     {0.5f, 0, 0},
     {0.5f, 0.5f, 0}
   }};
+
+  Input::on(Action::Forward, []() {
+    camera->translate({0, 0, -step});
+  });
+  Input::on(Action::Backward, []() {
+    camera->translate({0, 0, step});
+  });
+  Input::on(Action::Left, []() {
+    camera->translate({-step, 0, 0});
+  });
+  Input::on(Action::Right, []() {
+    camera->translate({step, 0, 0});
+  });
+  Input::on(Action::Up, []() {
+    camera->translate({0, -step, 0});
+  });
+  Input::on(Action::Down, []() {
+    camera->translate({0, step, 0});
+  });
+
   vertexArray.flip();
   auto vArrayPtr = std::make_shared<VertexArray>(vertexArray);
   auto rObj1 = std::make_shared<RenderObject>(vArrayPtr);
@@ -85,12 +81,13 @@ int main(void) {
   renderer.addObject(rObj1);
   renderer.addObject(rObj2);
   renderer.setCamera(camera);
-  rObj1->translate({0.0f, 0.0f, 1});
+  auto vec = glm::vec3({1,2,3});
+  rObj1->translate(vec);
   rObj2->translate({0.25f, 0.5f, 5});
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
-    input.handleInput();
+    Input::handleInput();
     glClear(GL_COLOR_BUFFER_BIT);
     renderer.render();
     glfwSwapBuffers(window);
