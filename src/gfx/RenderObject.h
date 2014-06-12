@@ -13,6 +13,6 @@ class RenderObject {
     glm::mat4 modelMatrix;
     RenderObject(std::shared_ptr<VertexArray> vArray);
     void render();
-    void translate(const glm::vec3&& pos);
+    void translate(const glm::vec3& pos);
 };
 #endif

@@ -12,6 +12,6 @@ void RenderObject::render() {
   vArray->render();
 }
 
-void RenderObject::translate(const glm::vec3&& pos) {
+void RenderObject::translate(const glm::vec3& pos) {
   modelMatrix = glm::translate(modelMatrix, pos);
 }
