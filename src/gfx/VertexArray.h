@@ -6,7 +6,7 @@ class VertexArray;
 class VertexArray {
   private:
     std::vector<float> vertex_data;
-    const int pos_len = 3;
+    static const int POS_LEN = 3;
     int vertex_len = 0;
     GLuint vao_id, vbo_id, index_buf_id;
   public:

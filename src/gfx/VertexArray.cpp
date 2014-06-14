@@ -13,11 +13,11 @@ VertexArray::VertexArray(): vertex_data() {
 }
 
 VertexArray::VertexArray(const VertexArray& other):
+  vertex_data(other.vertex_data),
+  vertex_len(other.vertex_len),
   vao_id(other.vao_id),
   vbo_id(other.vbo_id),
-  index_buf_id(other.index_buf_id),
-  //vertex_data(other.vertex_data),
-  vertex_len(other.vertex_len) {
+  index_buf_id(other.index_buf_id) {
   std::cout << "Invoked copy constructor of VertexArray" << std::endl;
 }
 
@@ -43,7 +43,7 @@ void VertexArray::add_vertex(float x, float y, float z) {
 }
 
 void VertexArray::add_vertices(const std::vector<std::vector<float> > &vertices) {
-  for(int i = 0; i < vertices.size(); i += 1) {
+  for(uint i = 0; i < vertices.size(); i += 1) {
     vertex_data.push_back(vertices[i][0]);
     vertex_data.push_back(vertices[i][1]);
     vertex_data.push_back(vertices[i][2]);
@@ -52,7 +52,8 @@ void VertexArray::add_vertices(const std::vector<std::vector<float> > &vertices)
 }
 
 void VertexArray::flip(void) {
-  int size = pos_len * vertex_data.size() * sizeof(float);
+  int size = POS_LEN * vertex_data.size() * sizeof(float);
+  std::cout << "flip" << std::endl;
 
   glBindVertexArray(vao_id);
 
@@ -60,19 +61,19 @@ void VertexArray::flip(void) {
   glBufferData(GL_ARRAY_BUFFER, size, vertex_data.data(), GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, pos_len, GL_FLOAT, GL_TRUE, 0, NULL);
+  glVertexAttribPointer(0, POS_LEN, GL_FLOAT, GL_TRUE, 0, NULL);
   glDisableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
-  int index_buf_data[vertex_data.size()];
-  for(int i = 0; i < vertex_data.size(); i++) {
-    index_buf_data[i] = i;
+  auto index_buf_data = std::vector<uint>();
+  for(uint i = 0; i < vertex_data.size()/3; i++) {
+    index_buf_data.push_back(i);
   }
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertex_data.size() * sizeof(int), &index_buf_data, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buf_data.size() * sizeof(uint), index_buf_data.data(), GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
