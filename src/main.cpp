@@ -50,13 +50,12 @@ int main(int argc, char ** argv) {
     glfwSetKeyCallback(window, Input::key_callback);
   }
 
-  auto vArray = VertexArray{{
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray{{
       {0, 0.5f, 0},
       {0.5f, 0, 0},
       {0.5f, 0.5f, 0}
-      }};
-  vArray.flip();
-  auto vArrayPtr = std::make_shared<VertexArray>(vArray);
+      }});
+  vArrayPtr->flip();
 
   Input::on(Action::Forward, []() {
     camera->translate({0, 0, -step});
