@@ -46,13 +46,17 @@ int main(int argc, char ** argv) {
     const GLubyte* version = glGetString(GL_VERSION);
     printf("Renderer: %s\n", renderer);
     printf("Version: %s\n", version);
+    glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
     glfwSetKeyCallback(window, Input::key_callback);
   }
-  VertexArray&& vertexArray{{
-    {0, 0.5f, 0},
-    {0.5f, 0, 0},
-    {0.5f, 0.5f, 0}
-  }};
+
+  auto vArray = VertexArray{{
+      {0, 0.5f, 0},
+      {0.5f, 0, 0},
+      {0.5f, 0.5f, 0}
+      }};
+  vArray.flip();
+  auto vArrayPtr = std::make_shared<VertexArray>(vArray);
 
   Input::on(Action::Forward, []() {
     camera->translate({0, 0, -step});
@@ -73,24 +77,22 @@ int main(int argc, char ** argv) {
     camera->translate({0, step, 0});
   });
 
-  vertexArray.flip();
-  auto vArrayPtr = std::make_shared<VertexArray>(vertexArray);
   auto rObj1 = std::make_shared<RenderObject>(vArrayPtr);
   auto rObj2 = std::make_shared<RenderObject>(vArrayPtr);
   Renderer renderer(width, height);
   renderer.addObject(rObj1);
   renderer.addObject(rObj2);
   renderer.setCamera(camera);
-  auto vec = glm::vec3({1,2,3});
-  rObj1->translate(vec);
+  rObj1->translate({0,0,3});
   rObj2->translate({0.25f, 0.5f, 5});
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while (!glfwWindowShouldClose(window)) {
-    glfwPollEvents();
     Input::handleInput();
+    glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT);
     renderer.render();
     glfwSwapBuffers(window);
+    Input::resetDelta();
   }
   glfwDestroyWindow(window);
   glfwTerminate();

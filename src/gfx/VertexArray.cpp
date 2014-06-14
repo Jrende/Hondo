@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include <vector>
+#include <stdlib.h>
 #include <stdio.h>
 #include "VertexArray.h"
 #include <GL/glew.h>
@@ -13,10 +13,11 @@ VertexArray::VertexArray(): vertex_data() {
 }
 
 VertexArray::VertexArray(const VertexArray& other):
-  vertex_data(other.vertex_data),
   vao_id(other.vao_id),
   vbo_id(other.vbo_id),
-  index_buf_id(other.index_buf_id) {
+  index_buf_id(other.index_buf_id),
+  //vertex_data(other.vertex_data),
+  vertex_len(other.vertex_len) {
   std::cout << "Invoked copy constructor of VertexArray" << std::endl;
 }
 
@@ -42,7 +43,7 @@ void VertexArray::add_vertex(float x, float y, float z) {
 }
 
 void VertexArray::add_vertices(const std::vector<std::vector<float> > &vertices) {
-  for(uint i = 0; i < vertices.size(); i += 1) {
+  for(int i = 0; i < vertices.size(); i += 1) {
     vertex_data.push_back(vertices[i][0]);
     vertex_data.push_back(vertices[i][1]);
     vertex_data.push_back(vertices[i][2]);
@@ -65,13 +66,13 @@ void VertexArray::flip(void) {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
-  std::vector<int> index_buf_data{static_cast<int>(vertex_data.size())};
-  for(uint i = 0; i < vertex_data.size(); i++) {
-    index_buf_data.push_back(i);
+  int index_buf_data[vertex_data.size()];
+  for(int i = 0; i < vertex_data.size(); i++) {
+    index_buf_data[i] = i;
   }
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertex_data.size() * sizeof(int), index_buf_data.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertex_data.size() * sizeof(int), &index_buf_data, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 

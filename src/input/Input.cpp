@@ -39,4 +39,29 @@ namespace Input {
   void on(Action action, const std::function<void()> handler) {
     handlers[action].push_back(handler); 
   }
+  
+  void cursor_pos_callback(GLFWwindow* window, double x, double y) {
+    Input::deltaX = mouseX - x;
+    Input::deltaY = mouseY - y;
+    Input::mouseX = x;
+    Input::mouseY = y;
+  }
+
+  double getMouseX() {
+    return Input::mouseX;
+  }
+  double getMouseY() {
+    return Input::mouseY;
+  }
+  double getMouseDX() {
+    return Input::deltaX;
+  }
+  double getMouseDY() {
+    return Input::deltaY;
+  }
+
+  void resetDelta() {
+    Input::deltaX = 0;
+    Input::deltaY = 0;
+  }
 }

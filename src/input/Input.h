@@ -21,10 +21,19 @@ namespace Input {
       {GLFW_KEY_SPACE, Action::Fire}
     };
     std::unordered_set<Key> currentKeys;
+    double mouseX;
+    double mouseY;
+    double deltaX;
+    double deltaY;
   }
-
   void key_callback(GLFWwindow* window, Key key, int scancode, int action, int mods);
+  void cursor_pos_callback(GLFWwindow* window, double x, double y);
+  void resetDelta();
   void handleInput();
   void on(Action action, const std::function<void()> handler);
+  double getMouseX();
+  double getMouseY();
+  double getMouseDX();
+  double getMouseDY();
 }
 #endif
