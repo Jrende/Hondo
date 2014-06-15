@@ -1,16 +1,19 @@
 #ifndef __HONDO_CAMERA_H__
 #define __HONDO_CAMERA_H__
 class Camera;
-#include <string>
 #include "RenderObject.h"
-#include <stdlib.h>
+#include <glm/gtc/quaternion.hpp>
 class Camera {
   private:
-    glm::vec3 up,pos,forward;
   public:
+    glm::vec3 up,pos,target;
+    glm::quat rot;
     glm::mat4 view_mat;
     void translate(glm::vec3 pos);
-    void rotate(glm::vec4 axis_angle);
+    glm::mat4 get_view_mat();
+    void rotate(float angle, glm::vec3 axis);
+    void move_forward(float dist);
+    void move_right(float dist);
     Camera();
 };
 #endif
