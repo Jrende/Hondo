@@ -7,8 +7,7 @@ class Renderer;
 #include <glm/glm.hpp>
 class Renderer {
   private:
-    glm::mat4 mvpMat;
-    glm::mat4 perspectiveMat;
+    glm::mat4 perspective_mat;
 
     SimpleShader shader;
     std::vector<std::shared_ptr<RenderObject> > renderList;
