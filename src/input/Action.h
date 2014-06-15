@@ -9,7 +9,8 @@ enum class Action {
   Up,
   Down,
   Fire,
-  Jump
+  Jump,
+  LockMouse,
 };
 bool isRepeatable(Action action);
 #endif

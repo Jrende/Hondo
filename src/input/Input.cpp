@@ -64,4 +64,21 @@ namespace Input {
     Input::deltaX = 0;
     Input::deltaY = 0;
   }
+
+  bool isKeyDown(Key key) {
+      return currentKeys.count(key) != 0;
+  }
+
+  void lockMouse() {
+    if(mouseLocked) {
+      glfwSetInputMode(Input::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    } else {
+      glfwSetInputMode(Input::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+    mouseLocked = !mouseLocked;
+  }
+
+  void setActiveWindow(GLFWwindow* window) {
+    Input::window = window;
+  }
 }

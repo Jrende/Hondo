@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 
+#include <glm/glm.hpp>
 #include "gfx/Renderer.h"
 #include "gfx/VertexArray.h"
 #include "gfx/shader/SimpleShader.h"
@@ -15,8 +16,15 @@ static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
 }
+
 auto camera = std::make_shared<Camera>();
 float step = 0.01f;
+
+void rotateCamera() {
+  //std::cout << "rotate (" << Input::getMouseDX() << ", " << Input::getMouseDY() << ")" << std::endl;
+  camera->rotate(Input::getMouseDX() / 100.0f, {0, 1, 0});
+  camera->rotate(Input::getMouseDY() / 100.0f, {1, 0, 0});
+}
 
 const int width = 640;
 const int height = 480;
@@ -48,6 +56,7 @@ int main(int argc, char ** argv) {
     printf("Version: %s\n", version);
     glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
     glfwSetKeyCallback(window, Input::key_callback);
+    Input::setActiveWindow(window);
   }
 
   auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray{{
@@ -58,22 +67,31 @@ int main(int argc, char ** argv) {
   vArrayPtr->flip();
 
   Input::on(Action::Forward, []() {
-    camera->translate({0, 0, -step});
+    camera->move_forward(step);
   });
+
   Input::on(Action::Backward, []() {
-    camera->translate({0, 0, step});
+    camera->move_forward(-step);
   });
+
   Input::on(Action::Left, []() {
-    camera->translate({-step, 0, 0});
+    camera->move_right(step);
   });
+
   Input::on(Action::Right, []() {
-    camera->translate({step, 0, 0});
+    camera->move_right(-step);
   });
+
   Input::on(Action::Up, []() {
     camera->translate({0, -step, 0});
   });
+
   Input::on(Action::Down, []() {
     camera->translate({0, step, 0});
+  });
+
+  Input::on(Action::LockMouse, []() {
+      Input::lockMouse();
   });
 
   auto rObj1 = std::make_shared<RenderObject>(vArrayPtr);
@@ -88,9 +106,12 @@ int main(int argc, char ** argv) {
   while (!glfwWindowShouldClose(window)) {
     Input::handleInput();
     glfwPollEvents();
+    rotateCamera();
+
     glClear(GL_COLOR_BUFFER_BIT);
     renderer.render();
     glfwSwapBuffers(window);
+
     Input::resetDelta();
   }
   glfwDestroyWindow(window);

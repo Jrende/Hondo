@@ -10,7 +10,7 @@ const std::unordered_set<Action> repeatables({
   Action::Up, 
   Action::Down, 
   Action::Fire, 
-  Action::Jump
+  Action::Jump,
 });
 
 bool isRepeatable(Action action) {
