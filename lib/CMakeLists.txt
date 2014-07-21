@@ -9,13 +9,12 @@ SET(GLFW_BUILD_TESTS OFF CACHE STRING "" FORCE)
 add_subdirectory(glfw-3.0.4)
 
 include_directories (
-  glfw-3.0.4/include/GLFW
+  glfw-3.0.4/include/GLFW/
   glew-1.10.0/include/
 )
 
 set(OPENGL_LIBRARY
   ${OPENGL_LIBRARY}
-  -lGL -lGLU -lXrandr -lXext -lX11 -lrt
   ${CMAKE_DL_LIBS}
   ${GLFW_LIBRARIES}
 )

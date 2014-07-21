@@ -1,6 +1,7 @@
 #define GLM_FORCE_RADIANS
+
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
@@ -11,6 +12,7 @@
 #include "gfx/shader/SimpleShader.h"
 #include "input/Input.h"
 #include "input/Action.h"
+#include <glm/gtx/string_cast.hpp>
 
 static void error_callback(int error, const char* description)
 {
@@ -20,10 +22,10 @@ static void error_callback(int error, const char* description)
 auto camera = std::make_shared<Camera>();
 float step = 0.01f;
 
-void rotateCamera() {
+void rotate_camera() {
   //std::cout << "rotate (" << Input::getMouseDX() << ", " << Input::getMouseDY() << ")" << std::endl;
-  camera->rotate(Input::getMouseDX() / 100.0f, {0, 1, 0});
-  camera->rotate(Input::getMouseDY() / 100.0f, {1, 0, 0});
+  camera->rotate(Input::get_mouse_dx() / 100.0f, camera->up);
+  camera->rotate(Input::get_mouse_dy() / 100.0f, glm::cross(camera->up, camera->dir));
 }
 
 const int width = 640;
@@ -56,15 +58,8 @@ int main(int argc, char ** argv) {
     printf("Version: %s\n", version);
     glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
     glfwSetKeyCallback(window, Input::key_callback);
-    Input::setActiveWindow(window);
+    Input::set_active_window(window);
   }
-
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray{{
-      {0, 0.5f, 0},
-      {0.5f, 0, 0},
-      {0.5f, 0.5f, 0}
-      }});
-  vArrayPtr->flip();
 
   Input::on(Action::Forward, []() {
     camera->move_forward(step);
@@ -75,11 +70,11 @@ int main(int argc, char ** argv) {
   });
 
   Input::on(Action::Left, []() {
-    camera->move_right(step);
+    camera->move_right(-step);
   });
 
   Input::on(Action::Right, []() {
-    camera->move_right(-step);
+    camera->move_right(step);
   });
 
   Input::on(Action::Up, []() {
@@ -90,29 +85,48 @@ int main(int argc, char ** argv) {
     camera->translate({0, step, 0});
   });
 
-  Input::on(Action::LockMouse, []() {
-      Input::lockMouse();
+  Input::on(Action::Down, []() {
+    camera->translate({0, step, 0});
   });
 
-  auto rObj1 = std::make_shared<RenderObject>(vArrayPtr);
-  auto rObj2 = std::make_shared<RenderObject>(vArrayPtr);
+  Input::on(Action::LockMouse, []() {
+      Input::lock_mouse();
+  });
+
+  Input::on(Action::Test, []() {
+      camera->rotate(1.0f, glm::vec3(0, 1, 0));
+  });
+
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray{{
+      {0, 1, 0},
+      {1, 0, 0},
+      {1, 1, 0},
+      {0, 0, 0},
+      {1, 0, 0},
+      {0, 1, 0}
+      }});
+  vArrayPtr->flip();
+
+  auto&& rObj1 = RenderObject(vArrayPtr);
+  auto&& rObj2 = RenderObject(vArrayPtr);
   Renderer renderer(width, height);
-  renderer.addObject(rObj1);
-  renderer.addObject(rObj2);
-  renderer.setCamera(camera);
-  rObj1->translate({0,0,3});
-  rObj2->translate({0.25f, 0.5f, 5});
+  renderer.set_camera(camera);
+  rObj1.translate({-0.5f, -0.5f, -1});
+  rObj1.color = glm::vec3(1,0,0);
+  rObj2.translate({-0.5f, -0.5f, -2});
+  rObj2.color = glm::vec3(0,0,1);
+  renderer.add_object(rObj1);
+  renderer.add_object(rObj2);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while (!glfwWindowShouldClose(window)) {
-    Input::handleInput();
+    Input::handle_input();
     glfwPollEvents();
-    rotateCamera();
+    rotate_camera();
 
-    glClear(GL_COLOR_BUFFER_BIT);
     renderer.render();
     glfwSwapBuffers(window);
 
-    Input::resetDelta();
+    Input::reset_delta();
   }
   glfwDestroyWindow(window);
   glfwTerminate();

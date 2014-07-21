@@ -6,7 +6,7 @@ class Camera;
 class Camera {
   private:
   public:
-    glm::vec3 up,pos,target;
+    glm::vec3 up,pos,dir;
     glm::quat rot;
     glm::mat4 view_mat;
     void translate(glm::vec3 pos);

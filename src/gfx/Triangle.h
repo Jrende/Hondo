@@ -4,7 +4,7 @@ class Triangle;
 #include "VertexArray.h"
 class Triangle {
   private:
-    VertexArray vArray;
+    VertexArray vertex_array;
   public:
     Triangle();
     ~Triangle();

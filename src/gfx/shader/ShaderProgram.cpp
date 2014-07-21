@@ -47,7 +47,7 @@ void ShaderProgram::stop() {
   glUseProgram(0);
 }
 
-GLuint ShaderProgram::getUniform(std::string name) {
+GLuint ShaderProgram::get_uniform(std::string name) {
   return glGetUniformLocation(shader_program, name.c_str());
 }
 
@@ -63,8 +63,8 @@ GLuint ShaderProgram::compile(GLuint type, std::string source) {
   GLint status;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
   if(status == GL_FALSE) {
-    std::cout << "Error in " << shader_name << "." << ShaderUtils::getShaderTypeString(type) << "  Log:" << std::endl;
-    ShaderUtils::printErrorlog(shader);
+    std::cout << "Error in " << shader_name << "." << ShaderUtils::get_shader_type_string(type) << "  Log:" << std::endl;
+    ShaderUtils::print_errorlog(shader);
     exit(EXIT_FAILURE);
   }
   return shader;

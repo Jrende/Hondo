@@ -12,6 +12,7 @@ class SimpleShader {
     SimpleShader(); 
     void operator()();
     void stop();
-    void setMVP(glm::mat4 mvpMat);
+    void set_MVP(glm::mat4 mvpMat);
+    void set_color(glm::vec3 color);
 };
 #endif

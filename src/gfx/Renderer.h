@@ -10,12 +10,13 @@ class Renderer {
     glm::mat4 perspective_mat;
 
     SimpleShader shader;
-    std::vector<std::shared_ptr<RenderObject> > renderList;
+    std::vector<RenderObject> renderList;
     std::shared_ptr<Camera> camera;
+	Renderer(const Renderer& other);
   public:
     Renderer(int width, int height);
-    void addObject(std::shared_ptr<RenderObject> rObj);
-    void setCamera(std::shared_ptr<Camera> camera);
+    void add_object(const RenderObject& rObj);
+    void set_camera(std::shared_ptr<Camera> camera);
     void render();
 };
 #endif

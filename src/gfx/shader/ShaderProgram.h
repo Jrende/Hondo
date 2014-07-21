@@ -16,6 +16,6 @@ class ShaderProgram {
     ~ShaderProgram();
     void use();
     void stop();
-    GLuint getUniform(std::string name);
+    GLuint get_uniform(std::string name);
 };
 #endif

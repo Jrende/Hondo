@@ -2,6 +2,7 @@
 layout(location = 0) in vec3 position;
 out vec3 pos;
 uniform mat4 mvpMat;
+uniform vec3 color;
 
 void main() {
       gl_Position = mvpMat * vec4(position, 1.0);

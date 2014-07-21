@@ -3,7 +3,7 @@
 
 namespace Input {
   namespace {
-    void handleKey(Key key) {
+    void handle_key(Key key) {
       if(mappings.count(key) > 0) {
 	//Get action related to key
 	Action action = mappings[key];
@@ -20,9 +20,9 @@ namespace Input {
       if (key == GLFW_KEY_ESCAPE) {
 	glfwSetWindowShouldClose(window, GL_TRUE);
       }
-      handleKey(key);
+      handle_key(key);
       //TODO:Only insert if repeat
-      if(mappings.count(key) > 0 && isRepeatable(mappings[key])) {
+      if(mappings.count(key) > 0 && is_repeatable(mappings[key])) {
 	currentKeys.insert(key);
       }
     } else if(action == GLFW_RELEASE) {
@@ -30,9 +30,9 @@ namespace Input {
     }
   }
 
-  void handleInput() {
+  void handle_input() {
     for(Key key: currentKeys) {
-      handleKey(key);
+      handle_key(key);
     }
   }
 
@@ -47,29 +47,29 @@ namespace Input {
     Input::mouseY = y;
   }
 
-  double getMouseX() {
+  double get_mouse_x() {
     return Input::mouseX;
   }
-  double getMouseY() {
+  double get_mouse_y() {
     return Input::mouseY;
   }
-  double getMouseDX() {
+  double get_mouse_dx() {
     return Input::deltaX;
   }
-  double getMouseDY() {
+  double get_mouse_dy() {
     return Input::deltaY;
   }
 
-  void resetDelta() {
+  void reset_delta() {
     Input::deltaX = 0;
     Input::deltaY = 0;
   }
 
-  bool isKeyDown(Key key) {
+  bool is_key_down(Key key) {
       return currentKeys.count(key) != 0;
   }
 
-  void lockMouse() {
+  void lock_mouse() {
     if(mouseLocked) {
       glfwSetInputMode(Input::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     } else {
@@ -78,7 +78,7 @@ namespace Input {
     mouseLocked = !mouseLocked;
   }
 
-  void setActiveWindow(GLFWwindow* window) {
+  void set_active_window(GLFWwindow* window) {
     Input::window = window;
   }
 }

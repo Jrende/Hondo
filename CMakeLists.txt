@@ -3,7 +3,7 @@ project (glHondo)
 
 find_package(OpenGL REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-std=c++1y -stdlib=libc++ -Wall -Wextra -pedantic -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "-std=c++1y -static-libgcc -static-libstdc++ -Wall -pedantic")
 
 add_subdirectory(lib)
 

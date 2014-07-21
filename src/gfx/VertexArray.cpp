@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "VertexArray.h"
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 VertexArray::VertexArray(): vertex_data() {
   glGenVertexArrays(1, &vao_id);

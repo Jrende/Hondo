@@ -11,6 +11,8 @@ enum class Action {
   Fire,
   Jump,
   LockMouse,
+  Test,
 };
-bool isRepeatable(Action action);
+
+bool is_repeatable(Action action);
 #endif

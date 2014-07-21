@@ -4,7 +4,7 @@
 #include <sstream>
 
 namespace ShaderUtils {
-  inline std::string getShaderTypeString(GLuint type) {
+  inline std::string get_shader_type_string(GLuint type) {
     if(type == GL_FRAGMENT_SHADER) {
       return "frag";
     } else if(type == GL_VERTEX_SHADER) {
@@ -14,7 +14,7 @@ namespace ShaderUtils {
     }
   }
 
-  inline void printErrorlog(GLuint shader) {
+  inline void print_errorlog(GLuint shader) {
     GLint length;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
     GLchar *info = new GLchar[length + 1];

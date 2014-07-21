@@ -4,6 +4,7 @@ class VertexArray;
 #include<vector>
 #include <GL/glew.h>
 class VertexArray {
+	typedef unsigned int uint;
   private:
     std::vector<float> vertex_data;
     static const int POS_LEN = 3;

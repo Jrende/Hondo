@@ -1,18 +1,19 @@
-#include <unordered_set>
+#include <set>
 #include <iostream>
 #include "Action.h"
 
-const std::unordered_set<Action> repeatables({
-  Action::Forward, 
-  Action::Backward, 
-  Action::Left, 
-  Action::Right, 
-  Action::Up, 
-  Action::Down, 
-  Action::Fire, 
+std::set<Action> repeatables({
+  Action::Forward,
+  Action::Backward,
+  Action::Left,
+  Action::Right,
+  Action::Up,
+  Action::Down,
+  Action::Fire,
   Action::Jump,
+  Action::Test
 });
 
-bool isRepeatable(Action action) {
+bool is_repeatable(Action action) {
   return repeatables.count(action) > 0;
 }
