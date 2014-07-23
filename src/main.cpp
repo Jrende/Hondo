@@ -12,6 +12,7 @@
 #include "gfx/shader/SimpleShader.h"
 #include "input/Input.h"
 #include "input/Action.h"
+#include "gfx/ObjLoader.h"
 #include <glm/gtx/string_cast.hpp>
 
 static void error_callback(int error, const char* description)
@@ -24,8 +25,8 @@ float step = 0.01f;
 
 void rotate_camera() {
   //std::cout << "rotate (" << Input::getMouseDX() << ", " << Input::getMouseDY() << ")" << std::endl;
-  camera->rotate(Input::get_mouse_dx() / 100.0f, camera->up);
-  camera->rotate(Input::get_mouse_dy() / 100.0f, glm::cross(camera->up, camera->dir));
+  camera->rotate(-Input::get_mouse_dx() / 100.0f, camera->up);
+  camera->rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera->up, camera->dir));
 }
 
 const int width = 640;
@@ -94,30 +95,20 @@ int main(int argc, char ** argv) {
   });
 
   Input::on(Action::Test, []() {
-      camera->rotate(1.0f, glm::vec3(0, 1, 0));
   });
 
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray{{
-      {0, 1, 0},
-      {1, 0, 0},
-      {1, 1, 0},
-      {0, 0, 0},
-      {1, 0, 0},
-      {0, 1, 0}
-      }});
-  vArrayPtr->flip();
+  ObjLoader loader("assets/Cube.obj");
+  std::cout << loader.vertexCount << std::endl;
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.getVertices(), loader.vertexCount, {3, 2, 3}));
 
   auto&& rObj1 = RenderObject(vArrayPtr);
-  auto&& rObj2 = RenderObject(vArrayPtr);
   Renderer renderer(width, height);
   renderer.set_camera(camera);
   rObj1.translate({-0.5f, -0.5f, -1});
   rObj1.color = glm::vec3(1,0,0);
-  rObj2.translate({-0.5f, -0.5f, -2});
-  rObj2.color = glm::vec3(0,0,1);
   renderer.add_object(rObj1);
-  renderer.add_object(rObj2);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
   while (!glfwWindowShouldClose(window)) {
     Input::handle_input();
     glfwPollEvents();

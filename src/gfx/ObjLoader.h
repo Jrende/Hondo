@@ -13,7 +13,8 @@ class ObjLoader {
     void createFace(const std::vector<std::string>& face);
   public:
     ObjLoader(std::string path);
-    std::vector<float> getVertices();
+    unsigned int vertexCount;
+    const std::vector<float>& getVertices();
     void handleTokens(std::vector<std::string> tokens);
 };
 #endif

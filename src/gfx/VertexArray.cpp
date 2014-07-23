@@ -6,23 +6,33 @@
 #include <GL/glew.h>
 #include <glfw3.h>
 
-VertexArray::VertexArray(): vertex_data() {
-  glGenVertexArrays(1, &vao_id);
-  glGenBuffers(1, &vbo_id);
-  glGenBuffers(1, &index_buf_id);
+VertexArray::VertexArray(const std::vector<float>& vertex_data, uint vertex_count, std::vector<uint> attribute_sizes):
+  vertex_count(vertex_count),
+  attribute_sizes(attribute_sizes),
+  vertex_data(vertex_data)
+{
+  init();
+  flip();
+}
+
+
+VertexArray::VertexArray(uint vertex_count, std::vector<uint> attribute_sizes):
+  vertex_count(vertex_count),
+  attribute_sizes(attribute_sizes)
+{
+  init();
 }
 
 VertexArray::VertexArray(const VertexArray& other):
+  vertex_count(other.vertex_count),
+  attribute_sizes(other.attribute_sizes),
   vertex_data(other.vertex_data),
-  vertex_len(other.vertex_len),
+  attr_size_sum(other.attr_size_sum),
   vao_id(other.vao_id),
   vbo_id(other.vbo_id),
-  index_buf_id(other.index_buf_id) {
+  index_buf_id(other.index_buf_id)
+{
   std::cout << "Invoked copy constructor of VertexArray" << std::endl;
-}
-
-VertexArray::VertexArray(std::vector<std::vector<float>> vertices): VertexArray() {
-  this->add_vertices(vertices); 
 }
 
 VertexArray::~VertexArray() {
@@ -31,44 +41,40 @@ VertexArray::~VertexArray() {
   glDeleteBuffers(1, &index_buf_id);
 }
 
-int VertexArray::size(void) {
-  return this->vertex_data.size();
-}
+void VertexArray::init() {
+  attr_size_sum = 0;
+  for(uint& i: attribute_sizes)
+    attr_size_sum += i;
 
-void VertexArray::add_vertex(float x, float y, float z) {
-  vertex_data.push_back(x);
-  vertex_data.push_back(y);
-  vertex_data.push_back(z);
-  vertex_len++;
-}
+  vertex_data.reserve(vertex_count * attr_size_sum);
 
-void VertexArray::add_vertices(const std::vector<std::vector<float> > &vertices) {
-  for(uint i = 0; i < vertices.size(); i += 1) {
-    vertex_data.push_back(vertices[i][0]);
-    vertex_data.push_back(vertices[i][1]);
-    vertex_data.push_back(vertices[i][2]);
-  }
-  vertex_len += vertices.size();
+  glGenVertexArrays(1, &vao_id);
+  glGenBuffers(1, &vbo_id);
+  glGenBuffers(1, &index_buf_id);
 }
 
 void VertexArray::flip(void) {
-  int size = POS_LEN * vertex_data.size() * sizeof(float);
+  int data_size = attr_size_sum * vertex_count * sizeof(float);
   std::cout << "flip" << std::endl;
 
   glBindVertexArray(vao_id);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-  glBufferData(GL_ARRAY_BUFFER, size, vertex_data.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, data_size, vertex_data.data(), GL_STATIC_DRAW);
 
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, POS_LEN, GL_FLOAT, GL_TRUE, 0, NULL);
-  glDisableVertexAttribArray(0);
+  int pointer = 0;
+  for(uint i = 0; i < attribute_sizes.size(); i++) {
+    glEnableVertexAttribArray(i);
+    glVertexAttribPointer(i, attribute_sizes[i], GL_FLOAT, GL_TRUE, attr_size_sum * sizeof(float), (void*)(pointer * sizeof(float)));
+    pointer += attribute_sizes[i];
+    glDisableVertexAttribArray(i);
+  }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
   auto index_buf_data = std::vector<uint>();
-  for(uint i = 0; i < vertex_data.size()/3; i++) {
+  for(int i = 0; i < vertex_count; i++) {
     index_buf_data.push_back(i);
   }
 
@@ -81,7 +87,7 @@ void VertexArray::render(void) {
   glBindVertexArray(vao_id);
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
-  glDrawElements(GL_TRIANGLES, vertex_len, GL_UNSIGNED_INT, NULL);
+  glDrawArrays(GL_TRIANGLES, 0, vertex_count);
   glDisableVertexAttribArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);

@@ -4,21 +4,23 @@ class VertexArray;
 #include<vector>
 #include <GL/glew.h>
 class VertexArray {
-	typedef unsigned int uint;
+  typedef unsigned int uint;
   private:
+    uint vertex_count;
+    std::vector<uint> attribute_sizes;
+    //Should maybe be unique_ptr
     std::vector<float> vertex_data;
-    static const int POS_LEN = 3;
-    int vertex_len = 0;
+
+    uint attr_size_sum;
     GLuint vao_id, vbo_id, index_buf_id;
+    void flip(void);
+    void init();
   public:
     VertexArray();
+    VertexArray(const std::vector<float>& vertex_data, uint size, std::vector<uint> attribute_sizes);
     VertexArray(const VertexArray& other);
-    VertexArray(std::vector<std::vector<float>> vertices);
+    VertexArray(uint size, std::vector<uint> attribute_sizes);
     ~VertexArray();
-    int size(void);
-    void add_vertex(float x, float y, float z);
-    void add_vertices(const std::vector<std::vector<float>> &vertices);
-    void flip(void);
     void render(void);
 };
 #endif

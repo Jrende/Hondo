@@ -9,7 +9,7 @@
 
 using namespace boost;
 using namespace ObjLoaderUtils;
-ObjLoader::ObjLoader(std::string path) {
+ObjLoader::ObjLoader(std::string path): vertexCount(0) {
     std::ifstream file;
     file.open(path, std::ios::in);
     if(!file.is_open()) {
@@ -28,7 +28,6 @@ ObjLoader::ObjLoader(std::string path) {
 	tokens.push_back(token);
       }
       handleTokens(tokens);
-      std::cout << std::endl;
     }
     file.close();
 }
@@ -47,9 +46,9 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
       for(auto& normal: normalList[vert[2]]) 
 	vertexBuffer.push_back(normal);
     }
+    vertexCount += 3;
 }
 
-//std::cout << vert[0] << ", " << vert[1] << ", " << vert[2] << std::endl;
 void ObjLoader::handleTokens(std::vector<std::string> tokens) {
   const char* type = popFirstToken(tokens).c_str();
   if(!strcmp(type, "v")) {
@@ -66,6 +65,6 @@ void ObjLoader::handleTokens(std::vector<std::string> tokens) {
   }
 }
 
-std::vector<float> ObjLoader::getVertices() {
-  return {};
+const std::vector<float>& ObjLoader::getVertices() {
+  return vertexBuffer;
 }
