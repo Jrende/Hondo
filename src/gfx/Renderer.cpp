@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 Renderer::Renderer(int width, int height):
-  perspective_mat(glm::perspective<float>(45.0f, width/height, 0.1f, 100.0f)) {
+  perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 100.0f)) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);
