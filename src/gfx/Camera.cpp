@@ -37,5 +37,5 @@ void Camera::move_forward(float dist) {
 
 void Camera::move_right(float dist) {
   glm::vec3 left = glm::cross(up, dir); 
-  this->translate(dist*left);
+  this->translate(-dist*left);
 }
