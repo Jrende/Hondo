@@ -3,26 +3,20 @@
 
 namespace Input {
   namespace {
-    void handle_key(Key key) {
-      if(mappings.count(key) > 0) {
-	//Get action related to key
-	Action action = mappings[key];
-	//And iterate through the actions listeners
-	for(auto handler: handlers[action]) {
-	  handler();
-	}
+    void handle_key(int key) {
+      if(handlers.count(key) > 0) {
+	handlers[key]();
       }
     }
   }
 
-  void key_callback(GLFWwindow* window, Key key, int scancode, int action, int mods) {
+  void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if(action == GLFW_PRESS) {
       if (key == GLFW_KEY_ESCAPE) {
 	glfwSetWindowShouldClose(window, GL_TRUE);
       }
       handle_key(key);
-      //TODO:Only insert if repeat
-      if(mappings.count(key) > 0 && is_repeatable(mappings[key])) {
+      if(handlers.count(key) > 0 && Actions::is_repeatable(key)) {
 	currentKeys.insert(key);
       }
     } else if(action == GLFW_RELEASE) {
@@ -31,13 +25,13 @@ namespace Input {
   }
 
   void handle_input() {
-    for(Key key: currentKeys) {
+    for(int key: currentKeys) {
       handle_key(key);
     }
   }
 
-  void on(Action action, const std::function<void()> handler) {
-    handlers[action].push_back(handler); 
+  void on(int key, const std::function<void()> handler) {
+    handlers[key] = handler; 
   }
   
   void cursor_pos_callback(GLFWwindow* window, double x, double y) {
@@ -65,7 +59,7 @@ namespace Input {
     Input::deltaY = 0;
   }
 
-  bool is_key_down(Key key) {
+  bool is_key_down(int key) {
       return currentKeys.count(key) != 0;
   }
 

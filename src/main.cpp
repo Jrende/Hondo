@@ -1,19 +1,20 @@
-#define GLM_FORCE_RADIANS
-
-#include <GL/glew.h>
-#include <glfw3.h>
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
 
+#include <GL/glew.h>
+#include <glfw3.h>
+
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 #include "gfx/Renderer.h"
+#include "gfx/ObjLoader.h"
 #include "gfx/VertexArray.h"
 #include "gfx/shader/SimpleShader.h"
 #include "input/Input.h"
-#include "input/Action.h"
-#include "gfx/ObjLoader.h"
-#include <glm/gtx/string_cast.hpp>
+#include "input/Actions.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -62,51 +63,53 @@ int main(int argc, char ** argv) {
     Input::set_active_window(window);
   }
 
-  Input::on(Action::Forward, []() {
+  Input::on(Actions::Forward, []() {
     camera->move_forward(step);
   });
 
-  Input::on(Action::Backward, []() {
+  Input::on(Actions::Backward, []() {
     camera->move_forward(-step);
   });
 
-  Input::on(Action::Left, []() {
+  Input::on(Actions::Left, []() {
     camera->move_right(-step);
   });
 
-  Input::on(Action::Right, []() {
+  Input::on(Actions::Right, []() {
     camera->move_right(step);
   });
 
-  Input::on(Action::Up, []() {
+  Input::on(Actions::Up, []() {
     camera->translate({0, -step, 0});
   });
 
-  Input::on(Action::Down, []() {
+  Input::on(Actions::Down, []() {
     camera->translate({0, step, 0});
   });
 
-  Input::on(Action::Down, []() {
-    camera->translate({0, step, 0});
-  });
-
-  Input::on(Action::LockMouse, []() {
+  Input::on(GLFW_KEY_G, []() {
       Input::lock_mouse();
   });
 
-  Input::on(Action::Test, []() {
-  });
-
-  ObjLoader loader("assets/Cube.obj");
-  std::cout << loader.vertexCount << std::endl;
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.getVertices(), loader.vertexCount, {3, 2, 3}));
-
-  auto&& rObj1 = RenderObject(vArrayPtr);
   Renderer renderer(width, height);
+  ObjLoader loader("assets/Cube.obj");
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.getVertices(), loader.vertexCount, {3, 2, 3}));
+  /*
+  for(int i = 0; i < 10; i++) {
+    for(int j = 0; j < 10; j++) {
+      for(int k = 0; k < 10; k++) {
+      */
+	auto&& rObj1 = RenderObject(vArrayPtr);
+//	rObj1.translate({i*1.5f, j*1.5f, k*1.5f});
+	rObj1.color = {1, 1, 1};
+	renderer.add_object(rObj1);
+	/*
+      }
+    }
+  }
+  */
+
   renderer.set_camera(camera);
-  rObj1.translate({-0.5f, -0.5f, -1});
-  rObj1.color = glm::vec3(1,0,0);
-  renderer.add_object(rObj1);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
   while (!glfwWindowShouldClose(window)) {
