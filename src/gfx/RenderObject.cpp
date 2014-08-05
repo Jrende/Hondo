@@ -1,20 +1,17 @@
 #include "RenderObject.h"
+
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 #include <glm/gtx/string_cast.hpp>
+#include <iostream>
 
-RenderObject::RenderObject(std::shared_ptr<VertexArray> vArray):
-  vArray(vArray),
-  model_matrix(1.0f) {
-  }
-RenderObject::RenderObject(const RenderObject& other):
-  vArray(other.vArray),
-  model_matrix(other.model_matrix),
-  color(other.color) {
-  }
+RenderObject::RenderObject(std::shared_ptr<VertexArray> vertex_array, Mesh mesh):
+  mesh(mesh),
+  vertex_array(vertex_array)
+{
+}
 
-void RenderObject::render() {
-  vArray->render();
+void RenderObject::render() const {
+  vertex_array->render(mesh);
 }
 
 void RenderObject::translate(const glm::vec3& pos) {

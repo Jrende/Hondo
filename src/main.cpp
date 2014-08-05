@@ -8,6 +8,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <SOIL.h>
 
 #include "gfx/Renderer.h"
 #include "gfx/ObjLoader.h"
@@ -40,7 +41,7 @@ int main(int argc, char ** argv) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  GLFWwindow* window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(width, height, "glHondo", NULL, NULL);
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -62,6 +63,7 @@ int main(int argc, char ** argv) {
     glfwSetKeyCallback(window, Input::key_callback);
     Input::set_active_window(window);
   }
+  Renderer renderer(width, height);
 
   Input::on(Actions::Forward, []() {
     camera->move_forward(step);
@@ -87,27 +89,64 @@ int main(int argc, char ** argv) {
     camera->translate({0, step, 0});
   });
 
+  Input::on(GLFW_KEY_Z, [&] {
+      renderer.toggle_wireframe();
+  });
+
   Input::on(GLFW_KEY_G, []() {
       Input::lock_mouse();
   });
+  ObjLoader loader;
+  //second cube should have start as 24, and length 36
+  loader.preload("assets/SmoothCube.obj");
+  loader.preload("assets/Cube.obj");
+  loader.load_preloaded_data();
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.get_vertices(), loader.get_indices(), loader.vertex_count, {3, 2, 3}));
 
-  Renderer renderer(width, height);
-  ObjLoader loader("assets/Cube.obj");
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.getVertices(), loader.vertexCount, {3, 2, 3}));
+  Input::on(GLFW_KEY_U, [&]() {
+      vArrayPtr->add_start();
+  });
+
+  Input::on(GLFW_KEY_J, [&]() {
+      vArrayPtr->sub_start();
+  });
+
+  Input::on(GLFW_KEY_I, [&]() {
+      vArrayPtr->add_end();
+  });
+
+  Input::on(GLFW_KEY_K, [&]() {
+      vArrayPtr->sub_end();
+  });
+
   /*
-  for(int i = 0; i < 10; i++) {
-    for(int j = 0; j < 10; j++) {
-      for(int k = 0; k < 10; k++) {
-      */
-	auto&& rObj1 = RenderObject(vArrayPtr);
-//	rObj1.translate({i*1.5f, j*1.5f, k*1.5f});
+  int a,b,c;
+  a = b = c = 30;
+  std::cout << "Lets draw " << a*b*c << " cubes!" << std::endl;
+  for(int i = 0; i < a; i++) {
+    for(int j = 0; j < b; j++) {
+      for(int k = 0; k < c; k++) {
+	auto&& rObj1 = RenderObject(vArrayPtr, loader.mesh_list[0]);
+	rObj1.translate({i*3.0f, j*3.0f, k*3.0f});
 	rObj1.color = {1, 1, 1};
 	renderer.add_object(rObj1);
-	/*
       }
     }
   }
   */
+  for(const auto& mesh: loader.mesh_list) {
+    std::cout << mesh.start << ", " << mesh.end << std::endl;
+  }
+
+  auto&& rObj2 = RenderObject(vArrayPtr, loader.mesh_list[0]);
+  rObj2.translate({4, 0, 0});
+  rObj2.color = {1, 1, 1};
+  renderer.add_object(rObj2);
+
+  auto&& rObj1 = RenderObject(vArrayPtr, loader.mesh_list[1]);
+  rObj1.translate({0, 0, 0});
+  rObj1.color = {1, 1, 1};
+  renderer.add_object(rObj1);
 
   renderer.set_camera(camera);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

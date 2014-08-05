@@ -5,8 +5,8 @@
 #include <glm/gtx/string_cast.hpp>
 SimpleShader::SimpleShader(): 
   shader_program("simple"),
-  colorID(shader_program.get_uniform("color")),
-  mvpMatID(shader_program.get_uniform("mvpMat"))
+  colorID(shader_program.get_uniform("instance.color")),
+  mvpMatID(shader_program.get_uniform("instance.mvpMat"))
 {
 }
 
