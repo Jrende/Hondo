@@ -11,6 +11,7 @@ add_subdirectory(glfw-3.0.4)
 include_directories (SYSTEM
   glfw-3.0.4/include/GLFW/
   glew-1.10.0/include/
+  SOIL/src/
 )
 
 set(OPENGL_LIBRARY

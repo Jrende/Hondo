@@ -12,6 +12,7 @@ include_directories(SYSTEM
   lib/glew-1.10.0/include/
   lib/glm
   lib/boost_1_55_0/
+  lib/SOIL/src/
 )
 
 set(ALL_LIBS
@@ -19,6 +20,11 @@ set(ALL_LIBS
   ${Boost_LIBRARIES}
   GLEW_1100
   glfw
+  SOIL
+)
+
+link_directories(
+  lib/SOIL/lib
 )
 
 add_definitions(
