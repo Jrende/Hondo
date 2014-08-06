@@ -2,9 +2,9 @@
 #define __HONDO_RENDEROBJECT_H__
 class RenderObject;
 
-#include "ObjLoader.h"
-#include "RenderObject.h"
-#include "VertexArray.h"
+#include "ObjLoader.hpp"
+#include "RenderObject.hpp"
+#include "VertexArray.hpp"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

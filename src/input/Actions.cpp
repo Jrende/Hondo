@@ -1,7 +1,7 @@
 #include <set>
 #include <iostream>
 #include <glfw3.h>
-#include "Actions.h"
+#include "Actions.hpp"
 
 namespace Actions {
   namespace {

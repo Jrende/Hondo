@@ -1,7 +1,7 @@
 #ifndef __HONDO_CAMERA_H__
 #define __HONDO_CAMERA_H__
 class Camera;
-#include "RenderObject.h"
+#include "RenderObject.hpp"
 #include <glm/gtc/quaternion.hpp>
 class Camera {
   private:

@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "ShaderProgram.hpp"
 #include "ShaderUtils.cpp"
 
 ShaderProgram::ShaderProgram(std::string shader_name_):

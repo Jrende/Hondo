@@ -1,4 +1,3 @@
-#include "ObjLoader.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,6 +5,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/range.hpp>
 #include <boost/tokenizer.hpp>
+
+#include "ObjLoader.hpp"
 #include "ObjLoaderUtils.cpp"
 
 using namespace boost;
@@ -16,30 +17,29 @@ ObjLoader::ObjLoader():
   vertex_count(0), 
   vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
   index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
-{
-}
+{ }
 
 void ObjLoader::load_file(std::string path) {
-    std::ifstream file;
-    file.open(path, std::ios::in);
-    if(!file.is_open()) {
-      printf("Failed to open %s!", path.c_str());
-      exit(EXIT_FAILURE);
+  std::ifstream file;
+  file.open(path, std::ios::in);
+  if(!file.is_open()) {
+    printf("Failed to open %s!", path.c_str());
+    exit(EXIT_FAILURE);
+  }
+  std::string line;
+  char_separator<char> space_sep(" ");
+  while(getline(file, line)) {
+    boost::trim(line);
+    tokenizer<char_separator<char> > st(line, space_sep);
+    std::vector<std::string> tokens;
+    //Might make parsing faster.
+    //tokens.reserve(4);
+    for(auto& token: st) {
+      tokens.push_back(token);
     }
-    std::string line;
-    char_separator<char> space_sep(" ");
-    while(getline(file, line)) {
-      boost::trim(line);
-      tokenizer<char_separator<char> > st(line, space_sep);
-      std::vector<std::string> tokens;
-      //Might make parsing faster.
-      //tokens.reserve(4);
-      for(auto& token: st) {
-	tokens.push_back(token);
-      }
-      handleTokens(tokens);
-    }
-    file.close();
+    handleTokens(tokens);
+  }
+  file.close();
 }
 
 void ObjLoader::handleTokens(std::vector<std::string> tokens) {
@@ -60,62 +60,52 @@ void ObjLoader::handleTokens(std::vector<std::string> tokens) {
 
 void ObjLoader::createFace(const std::vector<std::string>& face) {
   char_separator<char> slash_sep("/");
-    for(const auto& vertTokens: face) {
-      //Is the vertex already loaded to the buffer?
-      unsigned int i = 0;
-      while(i < loaded_vertices.size()) {
-	if(!strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
-	  break;
-	}
-	i++;
+  for(const auto& vertTokens: face) {
+    //Is the vertex already loaded to the buffer?
+    unsigned int i = 0;
+    while(i < loaded_vertices.size()) {
+      if(!strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
+	break;
       }
-      //Either we reached the end, or we found a matching vert
-      if(i < loaded_vertices.size() && !strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
-	index_array->push_back((unsigned int) (i + last_index_count));
-	continue;
-      }
-      tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
-      std::vector<int> vert;
-      for(const auto& t: tokenizer)
-	vert.push_back(atoi(t.c_str()) - 1);
-      for(const auto& pos: posList[vert[0]])
-	vertex_array->push_back(pos);
-      for(const auto& uv: uvList[vert[1]]) 
-	vertex_array->push_back(uv);
-      for(const auto& normal: normalList[vert[2]]) 
-	vertex_array->push_back(normal);
-      index_array->push_back(last_index++);
-      loaded_vertices.push_back(vertTokens);
+      i++;
     }
-}
-
-std::shared_ptr<std::vector<unsigned int>> ObjLoader::get_indices() {
-  return index_array;
-}
-
-std::shared_ptr<std::vector<float>> ObjLoader::get_vertices() {
-  return vertex_array;
+    //Either we reached the end, or we found a matching vert
+    if(i < loaded_vertices.size() && !strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
+      index_array->push_back((unsigned int) (i + last_index_count));
+      continue;
+    }
+    tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
+    std::vector<int> vert;
+    for(const auto& t: tokenizer)
+      vert.push_back(atoi(t.c_str()) - 1);
+    for(const auto& pos: posList[vert[0]])
+      vertex_array->push_back(pos);
+    for(const auto& uv: uvList[vert[1]]) 
+      vertex_array->push_back(uv);
+    for(const auto& normal: normalList[vert[2]]) 
+      vertex_array->push_back(normal);
+    index_array->push_back(last_index++);
+    loaded_vertices.push_back(vertTokens);
+  }
 }
 
 std::vector<std::string> get_tokens(std::string line) {
-    static char_separator<char> space_sep(" ");
-    boost::trim(line);
-    tokenizer<char_separator<char> > st(line, space_sep);
-    std::vector<std::string> tokens;
-    //Might make parsing faster.
-    //tokens.reserve(4);
-    for(auto& token: st) {
-      tokens.push_back(token);
-    }
-    return tokens;
+  static char_separator<char> space_sep(" ");
+  boost::trim(line);
+  tokenizer<char_separator<char> > st(line, space_sep);
+  std::vector<std::string> tokens;
+  //Might make parsing faster.
+  //tokens.reserve(4);
+  for(auto& token: st) {
+    tokens.push_back(token);
+  }
+  return tokens;
 }
 
-//Shit's on fire, yo
 std::vector<Mesh> ObjLoader::preload(std::string filename) {
   file_list.push_back(filename);
   std::vector<Mesh> ret;
   std::ifstream file;
-  //The vert count for the current file;
   int current_vertex_count = 0;
   file.open(filename, std::ios::in);
   if(!file.is_open()) {
@@ -131,14 +121,15 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
 	mesh.name = last_name;
 	mesh.start = last_end;
 	mesh.end = vertex_count;
+	//mesh.material = mtl_loader.materials[last_material];
+
 	mesh_list.push_back(mesh); 
 	ret.push_back(mesh); 
       }
 
       last_name = tokens[1];
       last_end = vertex_count;
-    }
-    if(!strcmp(tokens[0].c_str(), "f")) {
+    } else if(!strcmp(tokens[0].c_str(), "f")) {
       if(tokens.size() == 4) {
 	vertex_count += 3;
 	current_vertex_count += 3;
@@ -146,14 +137,21 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
 	vertex_count += 6;
 	current_vertex_count += 6;
       }
+    } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
+      //mtl_loader.load_materials(tokens[1]);
+    } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
+      last_material = tokens[1];
     }
   }
   Mesh mesh;
   mesh.name = last_name;
   mesh.start = last_end;
   mesh.end = vertex_count;
+  //mesh.material = mtl_loader.materials[last_material];
+
   mesh_list.push_back(mesh); 
   ret.push_back(mesh);
+
   file.close();
   last_end = vertex_count;
 
@@ -171,11 +169,5 @@ void ObjLoader::load_preloaded_data() {
     uvList.clear();
     normalList.clear();
     last_index_count = last_index;
-    //std::cout << "last index_count: " << last_index_count << std::endl;
   }
-  for(const auto& i: (*vertex_array)) {
-    std::cout << i << ", ";
-  }
-  std::cout << std::endl;
-  //std::cout << std::endl; - " << mesh.end << std::endl;
 }

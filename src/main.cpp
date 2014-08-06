@@ -10,12 +10,12 @@
 #include <glm/gtx/string_cast.hpp>
 #include <SOIL.h>
 
-#include "gfx/Renderer.h"
-#include "gfx/ObjLoader.h"
-#include "gfx/VertexArray.h"
-#include "gfx/shader/SimpleShader.h"
-#include "input/Input.h"
-#include "input/Actions.h"
+#include "gfx/Renderer.hpp"
+#include "gfx/ObjLoader.hpp"
+#include "gfx/VertexArray.hpp"
+#include "gfx/shader/SimpleShader.hpp"
+#include "input/Input.hpp"
+#include "input/Actions.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -101,7 +101,7 @@ int main(int argc, char ** argv) {
   loader.preload("assets/SmoothCube.obj");
   loader.preload("assets/Cube.obj");
   loader.load_preloaded_data();
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.get_vertices(), loader.get_indices(), loader.vertex_count, {3, 2, 3}));
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3}));
 
   Input::on(GLFW_KEY_U, [&]() {
       vArrayPtr->add_start();

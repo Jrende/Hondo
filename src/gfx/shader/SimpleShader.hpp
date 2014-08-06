@@ -1,7 +1,7 @@
 #ifndef __HONDO_SIMPLESHADER_H__
 #define __HONDO_SIMPLESHADER_H__
 class SimpleShader;
-#include "ShaderProgram.h"
+#include "ShaderProgram.hpp"
 #include <glm/glm.hpp>
 class SimpleShader {
   private:

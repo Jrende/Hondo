@@ -5,7 +5,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include "Actions.h"
+#include "Actions.hpp"
 namespace Input {
   typedef std::function<void()> ActionHandler;
   namespace {

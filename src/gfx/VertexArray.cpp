@@ -2,9 +2,10 @@
 #include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
-#include "VertexArray.h"
 #include <GL/glew.h>
 #include <glfw3.h>
+
+#include "VertexArray.hpp"
 
 VertexArray::VertexArray(std::shared_ptr<std::vector<float>> vertex_data, std::shared_ptr<std::vector<unsigned int>> index_data, unsigned int size, std::vector<unsigned int> attribute_sizes):
   vertex_count(size),

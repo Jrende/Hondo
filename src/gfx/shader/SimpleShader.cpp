@@ -1,5 +1,5 @@
-#include "SimpleShader.h"
-#include "ShaderProgram.h"
+#include "SimpleShader.hpp"
+#include "ShaderProgram.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>

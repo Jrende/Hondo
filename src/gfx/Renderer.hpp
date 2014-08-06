@@ -5,10 +5,10 @@ class Renderer;
 #include <memory>
 #include <glm/glm.hpp>
 
-#include "RenderObject.h"
-#include "shader/SimpleShader.h"
-#include "Camera.h"
-#include "VertexArray.h"
+#include "RenderObject.hpp"
+#include "shader/SimpleShader.hpp"
+#include "Camera.hpp"
+#include "VertexArray.hpp"
 class Renderer {
   private:
     glm::mat4 perspective_mat;
