@@ -7,12 +7,7 @@ class ObjLoader;
 #include <set>
 #include <memory>
 #include "MtlLoader.hpp"
-struct Mesh {
-  std::string name;
-  int start;
-  int end;
-  Material material;
-};
+#include "../Mesh.hpp"
 class ObjLoader {
   private:
     std::vector<std::array<float, 3>> posList;

@@ -42,9 +42,9 @@ void MtlLoader::load_materials(const std::string& path) {
 }
 
 GLuint load_texture(const std::string& path) {
-  std::cout << ("load texture: /home/tokjos/Dev/cpp/glHondo/assets/" + path).c_str() << std::endl;
+  std::cout << ("load texture: " + path).c_str() << std::endl;
   GLuint tex_2d = SOIL_load_OGL_texture(
-      ("/home/tokjos/Dev/cpp/glHondo/assets/" + path).c_str(),
+      ("assets/" + path).c_str(),
       SOIL_LOAD_AUTO,
       SOIL_CREATE_NEW_ID,
       SOIL_FLAG_MIPMAPS |

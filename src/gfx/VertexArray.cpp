@@ -74,13 +74,6 @@ void VertexArray::flip(void) {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
-  /*
-  index_data->clear();
-  for(unsigned int i = 0; i < vertex_count; i++) {
-    index_data->push_back(i);
-  }
-  */
-  std::cout << "create index buffer of size " << index_data->size() << std::endl;
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data->size() * sizeof(unsigned int), index_data->data(), GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

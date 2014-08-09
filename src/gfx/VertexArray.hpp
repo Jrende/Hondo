@@ -5,7 +5,7 @@ class VertexArray;
 #include <vector>
 #include <memory>
 
-#include "ObjLoader.hpp"
+#include "Mesh.hpp"
 class VertexArray {
   private:
     unsigned int vertex_count;

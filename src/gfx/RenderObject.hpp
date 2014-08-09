@@ -6,7 +6,7 @@ class RenderObject;
 #include <string>
 #include <memory>
 
-#include "ObjLoader.hpp"
+#include "Mesh.hpp"
 #include "RenderObject.hpp"
 #include "VertexArray.hpp"
 #include "shader/SimpleShader.hpp"

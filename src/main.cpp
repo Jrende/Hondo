@@ -12,7 +12,7 @@
 #include <SOIL.h>
 
 #include "gfx/Renderer.hpp"
-#include "gfx/ObjLoader.hpp"
+#include "gfx/importer/ObjLoader.hpp"
 #include "gfx/VertexArray.hpp"
 #include "gfx/shader/SimpleShader.hpp"
 #include "input/Input.hpp"
