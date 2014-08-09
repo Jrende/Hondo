@@ -11,7 +11,7 @@ struct Mesh {
   std::string name;
   int start;
   int end;
-  //Material material;
+  Material material;
 };
 class ObjLoader {
   private:
@@ -27,7 +27,7 @@ class ObjLoader {
     unsigned int last_end;
     std::string last_name;
     std::string last_material;
-    //MtlLoader mtl_loader;
+    MtlLoader mtl_loader;
   public:
     ObjLoader();
 

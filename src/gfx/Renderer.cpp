@@ -11,8 +11,8 @@ Renderer::Renderer(int width, int height):
 
 Renderer::Renderer(const Renderer& other) { }
 
-void Renderer::add_object(const RenderObject& rObj) {
-  render_map[rObj.vertex_array].push_back(rObj);
+void Renderer::add_object(const std::shared_ptr<RenderObject>& rObj) {
+  render_map[rObj->vertex_array].push_back(rObj);
 }
 
 void Renderer::set_camera(std::shared_ptr<Camera> camera) {
@@ -29,10 +29,11 @@ void Renderer::render() {
       glm::mat4 mvp_mat = glm::mat4();
       mvp_mat *= this->perspective_mat;
       mvp_mat *= camera->get_view_mat();
-      mvp_mat *= render_object.model_matrix;
+      mvp_mat *= render_object->model_matrix;
       shader.set_MVP(mvp_mat);
-      shader.set_color(render_object.color);
-      render_object.render();
+      shader.set_color(render_object->color);
+      render_object->bind_material(shader);
+      render_object->render();
     }
     entry.first->unbind();
   }

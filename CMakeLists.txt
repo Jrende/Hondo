@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.6)
 project (glHondo)
 
+link_directories(
+  lib/SOIL/lib
+)
+
 find_package(OpenGL REQUIRED)
 
 set(CMAKE_CXX_FLAGS "-std=c++1y -static-libgcc -static-libstdc++")
@@ -8,23 +12,18 @@ set(CMAKE_CXX_FLAGS "-std=c++1y -static-libgcc -static-libstdc++")
 add_subdirectory(lib)
 
 include_directories(SYSTEM
+  lib/SOIL/src/
   lib/glfw-3.0.4/include/GLFW
   lib/glew-1.10.0/include/
   lib/glm
   lib/boost_1_55_0/
-  lib/SOIL/src/
 )
 
 set(ALL_LIBS
-  ${OPENGL_LIBRARY}
+  SOIL
   ${Boost_LIBRARIES}
   GLEW_1100
   glfw
-  SOIL
-)
-
-link_directories(
-  lib/SOIL/lib
 )
 
 add_definitions(

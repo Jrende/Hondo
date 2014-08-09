@@ -17,7 +17,9 @@ ObjLoader::ObjLoader():
   vertex_count(0), 
   vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
   index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
-{ }
+{
+  
+}
 
 void ObjLoader::load_file(std::string path) {
   std::ifstream file;
@@ -121,7 +123,7 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
 	mesh.name = last_name;
 	mesh.start = last_end;
 	mesh.end = vertex_count;
-	//mesh.material = mtl_loader.materials[last_material];
+	mesh.material = mtl_loader.materials[last_material];
 
 	mesh_list.push_back(mesh); 
 	ret.push_back(mesh); 
@@ -138,7 +140,7 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
 	current_vertex_count += 6;
       }
     } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
-      //mtl_loader.load_materials(tokens[1]);
+      mtl_loader.load_materials("assets/" + tokens[1]);
     } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
       last_material = tokens[1];
     }
@@ -147,7 +149,7 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
   mesh.name = last_name;
   mesh.start = last_end;
   mesh.end = vertex_count;
-  //mesh.material = mtl_loader.materials[last_material];
+  mesh.material = mtl_loader.materials[last_material];
 
   mesh_list.push_back(mesh); 
   ret.push_back(mesh);

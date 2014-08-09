@@ -8,11 +8,13 @@ class SimpleShader {
     ShaderProgram shader_program;
     const GLuint colorID;
     const GLuint mvpMatID;
+    const GLuint diffuse_sampler_id;
   public:
     SimpleShader(); 
     void operator()();
     void stop();
-    void set_MVP(glm::mat4 mvpMat);
-    void set_color(glm::vec3 color);
+    void set_MVP(const glm::mat4& mvpMat);
+    void set_color(const glm::vec3& color);
+    void set_diffuse_sampler(int sampler);
 };
 #endif

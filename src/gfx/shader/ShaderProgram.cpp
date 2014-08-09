@@ -22,7 +22,10 @@ ShaderProgram::ShaderProgram(std::string shader_name_):
   glLinkProgram(shader_program);
 }
 
-ShaderProgram::ShaderProgram(const ShaderProgram& other): ShaderProgram(other.shader_name) {}
+ShaderProgram::ShaderProgram(const ShaderProgram& other): ShaderProgram(other.shader_name) {
+  std::cout << "Warning! Copy constructor of " << other.shader_name << " called!" << std::endl;
+  
+}
 
 ShaderProgram::~ShaderProgram() {
   //Might be a good idea to detach shader before deleting.
