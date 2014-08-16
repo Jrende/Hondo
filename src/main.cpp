@@ -28,11 +28,13 @@ auto camera = std::make_shared<Camera>();
 float step = 0.01f;
 
 void rotate_camera() {
-  //std::cout << "rotate (" << Input::getMouseDX() << ", " << Input::getMouseDY() << ")" << std::endl;
   camera->rotate(-Input::get_mouse_dx() / 100.0f, camera->up);
   camera->rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera->up, camera->dir));
 }
 
+float randx() {
+  return (float) (rand() % 100)/100;
+}
 const int width = 640;
 const int height = 480;
 int main(int argc, char ** argv) {
@@ -99,28 +101,11 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  //second cube should have start as 24, and length 36
-  loader.preload("assets/SmoothCube.obj");
-  loader.preload("assets/Cube2.obj");
+  //loader.preload("assets/sponza.obj");
+  loader.preload("assets/Cube.obj");
+  //loader.preload("assets/Cube.obj");
   loader.load_preloaded_data();
   auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3}));
-
-  Input::on(GLFW_KEY_U, [&]() {
-      vArrayPtr->add_start();
-  });
-
-  Input::on(GLFW_KEY_J, [&]() {
-      vArrayPtr->sub_start();
-  });
-
-  Input::on(GLFW_KEY_I, [&]() {
-      vArrayPtr->add_end();
-  });
-
-  Input::on(GLFW_KEY_K, [&]() {
-      vArrayPtr->sub_end();
-  });
-
   /*
   int a,b,c;
   a = b = c = 30;
@@ -136,15 +121,24 @@ int main(int argc, char ** argv) {
     }
   }
   */
-  auto rObj1 = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
-  rObj1->translate({4, 0, 0});
-  rObj1->color = {1, 1, 1};
-  renderer.add_object(rObj1);
 
+  auto rObj1 = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
+  rObj1->translate({0, 0, 0});
+  rObj1->color = {1, 1, 1};
+  //renderer.add_object(rObj1);
+  std::cout << "(" << loader.mesh_list[0].start << ", " << loader.mesh_list[0].end << ")" << std::endl;
+
+  /*
   auto rObj2 = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[1]));
   rObj2->translate({0, 0, 0});
   rObj2->color = {1, 1, 1};
   renderer.add_object(rObj2);
+
+  for(const auto& mesh: loader.mesh_list) {
+    auto rObj1 = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, mesh));
+    renderer.add_object(rObj1);
+  }
+  */
 
   renderer.set_camera(camera);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -157,7 +151,20 @@ int main(int argc, char ** argv) {
     rotate_camera();
 
     renderer.render();
-    rObj1->set_position({sin(i * (PI/180)) * radius, 0, cos(i * (PI/180)) * radius});
+    for(int j = 0; j < 10; j++) {
+      for(int r = 0; r < 10; r++) {
+	for(int t = 0; t < 10; t++) {
+	  renderer.draw_point({j*2, r*2, t*2});
+	}
+      }
+    }
+    renderer.draw_line({0.1,0,0}, { 1,0,0});
+    renderer.draw_line({-0.1,0,0}, {-1,0,0});
+    renderer.draw_line({0,0.1,0}, {0, 1,0});
+    renderer.draw_line({0,-0.1,0}, {0,-1,0});
+    renderer.draw_line({0,0,0.1}, {0,0, 1});
+    renderer.draw_line({0,0,-0.1}, {0,0,-1});
+    //rObj1->set_position({sin(i * (PI/180)) * radius, 0, cos(i * (PI/180)) * radius});
     glfwSwapBuffers(window);
 
     Input::reset_delta();

@@ -8,7 +8,7 @@ namespace ObjLoaderUtils {
   template<long long unsigned int n>
     inline std::array<float, n> toFloatArray(const std::vector<std::string>& input) {
       std::array<float, n> ret;
-      for(unsigned int i = 0; i < input.size(); i++) {
+      for(unsigned int i = 0; i < n; i++) {
 	ret[i] = strtof(input[i].c_str(), NULL);
       }
       return ret;

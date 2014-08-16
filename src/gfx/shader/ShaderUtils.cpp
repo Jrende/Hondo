@@ -7,6 +7,8 @@ namespace ShaderUtils {
   inline std::string get_shader_type_string(GLuint type) {
     if(type == GL_FRAGMENT_SHADER) {
       return "frag";
+    } else if(type == GL_GEOMETRY_SHADER) {
+      return "geom";
     } else if(type == GL_VERTEX_SHADER) {
       return "vert";
     } else {
@@ -27,8 +29,8 @@ namespace ShaderUtils {
     std::ifstream file;
     file.open(path, std::ios::in);
     if(!file.is_open()) {
-      printf("Failed to open %s!", path.c_str());
-      exit(EXIT_FAILURE);
+      printf("Failed to open %s!\n", path.c_str());
+      return "";
     }
     std::string line;
     std::stringbuf src;

@@ -9,6 +9,12 @@ ShaderProgram::ShaderProgram(std::string shader_name_):
 	ShaderUtils::load_file("glsl/" + shader_name_ + ".vert")
       )
   ),
+  geometry_shader(
+      compile(
+	GL_GEOMETRY_SHADER,
+	ShaderUtils::load_file("glsl/" + shader_name_ + ".geom")
+      )
+  ),
   fragment_shader(
       compile(
 	GL_FRAGMENT_SHADER,
@@ -18,6 +24,12 @@ ShaderProgram::ShaderProgram(std::string shader_name_):
   shader_program(glCreateProgram())
 {
   glAttachShader(shader_program, vertex_shader);
+  if(geometry_shader) {
+    std::cout << "Woah! We have a geometry shader (" << geometry_shader << ")" << std::endl;
+    glAttachShader(shader_program, geometry_shader);
+  } else {
+    std::cout << "No geometry shader today..." << std::endl;
+  }
   glAttachShader(shader_program, fragment_shader);
   glLinkProgram(shader_program);
 }
@@ -55,6 +67,9 @@ GLuint ShaderProgram::get_uniform(std::string name) {
 }
 
 GLuint ShaderProgram::compile(GLuint type, std::string source) {
+  if(source.length() == 0) {
+    return 0;
+  }
   int shader = glCreateShader(type);
   if(!shader) {
     std::cout << "Error creating " << shader_name << ".frag" << std::endl;

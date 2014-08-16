@@ -13,7 +13,7 @@ class ObjLoader {
     std::vector<std::array<float, 3>> posList;
     std::vector<std::array<float, 2>> uvList;
     std::vector<std::array<float, 3>> normalList;
-    std::vector<std::string> loaded_vertices;
+    std::map<std::string, unsigned int> loaded_vertices_map;
     
     void createFace(const std::vector<std::string>& face);
     std::vector<std::string> file_list;
@@ -33,8 +33,8 @@ class ObjLoader {
     std::shared_ptr<std::vector<unsigned int>> index_array;
 
     void load_preloaded_data();
-    void load_file(std::string path);
-    void handleTokens(std::vector<std::string> tokens);
-    std::vector<Mesh> preload(std::string filename);
+    void load_file(const std::string& path);
+    void handleTokens(std::vector<std::string>& tokens);
+    std::vector<Mesh> preload(const std::string& filename);
 };
 #endif

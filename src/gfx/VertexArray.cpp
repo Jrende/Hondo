@@ -11,21 +11,12 @@ VertexArray::VertexArray(std::shared_ptr<std::vector<float>> vertex_data, std::s
   vertex_count(size),
   attribute_sizes(attribute_sizes),
   vertex_data(vertex_data),
-  index_data(index_data),
-  start(0),
-  end(0)
+  index_data(index_data)
 {
   init();
   flip();
 }
 
-
-VertexArray::VertexArray(unsigned int vertex_count, std::vector<unsigned int> attribute_sizes):
-  vertex_count(vertex_count),
-  attribute_sizes(attribute_sizes)
-{
-  init();
-}
 
 VertexArray::VertexArray(const VertexArray& other):
   vertex_count(other.vertex_count),
@@ -88,9 +79,11 @@ void VertexArray::bind() {
 }
 
 void VertexArray::render(Mesh mesh) {
-  //std::cout << mesh.start << ", " << mesh.end << std::endl;
-  //glDrawElementsBaseVertex(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 0);
-  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.end - mesh.start, GL_UNSIGNED_INT, (void*) (mesh.start * 4), 0);
+  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.end - mesh.start, GL_UNSIGNED_INT, (void*) (mesh.start * 4L), 0);
+}
+
+void VertexArray::render_array(GLuint mode) {
+  glDrawArrays(mode, 0, vertex_count);
 }
 
 void VertexArray::unbind() {
@@ -99,21 +92,4 @@ void VertexArray::unbind() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
   is_bound = false;
-}
-
-void VertexArray::add_start() {
-  start+=3;
-  std::cout << "start: " << start << std::endl;
-}
-void VertexArray::sub_start() {
-  start-=3;
-  std::cout << "start: " << start << std::endl;
-}
-void VertexArray::add_end() {
-  end+=3;
-  std::cout << "end: " << end << std::endl;
-}
-void VertexArray::sub_end() {
-  end-=3;
-  std::cout << "end: " << end << std::endl;
 }

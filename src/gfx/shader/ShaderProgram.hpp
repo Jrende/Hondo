@@ -8,7 +8,7 @@ class ShaderProgram;
 class ShaderProgram {
   private:
     const std::string shader_name;
-    const GLuint vertex_shader, fragment_shader, shader_program;
+    const GLuint vertex_shader, geometry_shader, fragment_shader, shader_program;
     GLuint compile(GLuint type, std::string source);
   public:
     explicit ShaderProgram(std::string shader_name_);

@@ -12,8 +12,11 @@
 using namespace boost;
 using namespace ObjLoaderUtils;
 ObjLoader::ObjLoader():
-  last_index(0), 
   last_index_count(0), 
+  last_index(0), 
+  last_end(0), 
+  last_name(""),
+  last_material(),
   vertex_count(0), 
   vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
   index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
@@ -21,7 +24,7 @@ ObjLoader::ObjLoader():
   
 }
 
-void ObjLoader::load_file(std::string path) {
+void ObjLoader::load_file(const std::string& path) {
   std::ifstream file;
   file.open(path, std::ios::in);
   if(!file.is_open()) {
@@ -32,19 +35,21 @@ void ObjLoader::load_file(std::string path) {
   char_separator<char> space_sep(" ");
   while(getline(file, line)) {
     boost::trim(line);
-    tokenizer<char_separator<char> > st(line, space_sep);
-    std::vector<std::string> tokens;
-    //Might make parsing faster.
-    //tokens.reserve(4);
-    for(auto& token: st) {
-      tokens.push_back(token);
+    if(line.size() > 0) {
+      tokenizer<char_separator<char> > st(line, space_sep);
+      std::vector<std::string> tokens;
+      //Might make parsing faster.
+      //tokens.reserve(4);
+      for(auto& token: st) {
+	tokens.push_back(token);
+      }
+      handleTokens(tokens);
     }
-    handleTokens(tokens);
   }
   file.close();
 }
 
-void ObjLoader::handleTokens(std::vector<std::string> tokens) {
+void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
   const char* type = popFirstToken(tokens).c_str();
   if(!strcmp(type, "v")) {
     auto vert = toFloatArray<3>(tokens);
@@ -56,7 +61,12 @@ void ObjLoader::handleTokens(std::vector<std::string> tokens) {
     auto vert = toFloatArray<3>(tokens);
     normalList.push_back(vert);
   } else if(!strcmp(type, "f")) {
-    createFace(tokens);
+    if(tokens.size() == 3) {
+      createFace({tokens[0], tokens[1], tokens[2]});
+    } else if(tokens.size() == 4) {
+      createFace({tokens[0], tokens[2], tokens[3]});
+      createFace({tokens[0], tokens[1], tokens[2]});
+    }
   }
 }
 
@@ -64,16 +74,8 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
   char_separator<char> slash_sep("/");
   for(const auto& vertTokens: face) {
     //Is the vertex already loaded to the buffer?
-    unsigned int i = 0;
-    while(i < loaded_vertices.size()) {
-      if(!strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
-	break;
-      }
-      i++;
-    }
-    //Either we reached the end, or we found a matching vert
-    if(i < loaded_vertices.size() && !strcmp(loaded_vertices[i].c_str(), vertTokens.c_str())) {
-      index_array->push_back((unsigned int) (i + last_index_count));
+    if(loaded_vertices_map.count(vertTokens) > 0) {
+      index_array->push_back(loaded_vertices_map[vertTokens] + last_index_count);
       continue;
     }
     tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
@@ -86,8 +88,9 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
       vertex_array->push_back(uv);
     for(const auto& normal: normalList[vert[2]]) 
       vertex_array->push_back(normal);
-    index_array->push_back(last_index++);
-    loaded_vertices.push_back(vertTokens);
+    loaded_vertices_map[vertTokens] = last_index;
+    index_array->push_back(last_index);
+    last_index++;
   }
 }
 
@@ -104,7 +107,7 @@ std::vector<std::string> get_tokens(std::string line) {
   return tokens;
 }
 
-std::vector<Mesh> ObjLoader::preload(std::string filename) {
+std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
   file_list.push_back(filename);
   std::vector<Mesh> ret;
   std::ifstream file;
@@ -117,6 +120,10 @@ std::vector<Mesh> ObjLoader::preload(std::string filename) {
   std::string line;
   while(getline(file, line)) {
     auto tokens = get_tokens(line);
+    if(tokens.size() == 0) {
+      continue;
+    }
+
     if(!strcmp(tokens[0].c_str(), "g")) {
       if(current_vertex_count > 0) {
 	Mesh mesh;
@@ -166,7 +173,8 @@ void ObjLoader::load_preloaded_data() {
   last_index_count = 0;
   for(const auto& file: file_list) {
     load_file(file);
-    loaded_vertices.clear();
+    //loaded_vertices.clear();
+    loaded_vertices_map.clear();
     posList.clear();
     uvList.clear();
     normalList.clear();

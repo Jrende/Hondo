@@ -17,20 +17,19 @@ class VertexArray {
     GLuint vao_id, vbo_id, index_buf_id;
     void flip(void);
     void init();
-    int start, end;
   public:
     bool is_bound;
     VertexArray();
-    VertexArray(std::shared_ptr<std::vector<float>> vertex_data, std::shared_ptr<std::vector<unsigned int>> index_data, unsigned int size, std::vector<unsigned int> attribute_sizes);
+    VertexArray(
+	std::shared_ptr<std::vector<float>> vertex_data,
+	std::shared_ptr<std::vector<unsigned int>> index_data,
+	unsigned int size,
+	std::vector<unsigned int> attribute_sizes);
     VertexArray(const VertexArray& other);
-    VertexArray(unsigned int size, std::vector<unsigned int> attribute_sizes);
     ~VertexArray();
     void render(Mesh mesh);
+    void render_array(GLuint mode);
     void bind();
     void unbind();
-    void add_start();
-    void sub_start();
-    void add_end();
-    void sub_end();
 };
 #endif
