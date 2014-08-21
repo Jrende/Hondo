@@ -75,7 +75,7 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
   for(const auto& vertTokens: face) {
     //Is the vertex already loaded to the buffer?
     if(loaded_vertices_map.count(vertTokens) > 0) {
-      index_array->push_back(loaded_vertices_map[vertTokens] + last_index_count);
+      index_array->push_back(loaded_vertices_map[vertTokens]);
       continue;
     }
     tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
@@ -129,8 +129,10 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
 	Mesh mesh;
 	mesh.name = last_name;
 	mesh.start = last_end;
-	mesh.end = vertex_count;
+	mesh.end = vertex_count + last_end;
 	mesh.material = mtl_loader.materials[last_material];
+	std::cout << "vert count: " << vertex_count << std::endl;
+	std::cout << "last end: " << last_end << std::endl;
 
 	mesh_list.push_back(mesh); 
 	ret.push_back(mesh); 
@@ -155,7 +157,9 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
   Mesh mesh;
   mesh.name = last_name;
   mesh.start = last_end;
-  mesh.end = vertex_count;
+  mesh.end = vertex_count + last_end;
+  std::cout << "vert count: " << vertex_count << std::endl;
+  std::cout << "last end: " << last_end << std::endl;
   mesh.material = mtl_loader.materials[last_material];
 
   mesh_list.push_back(mesh); 
