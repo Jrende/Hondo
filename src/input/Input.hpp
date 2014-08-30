@@ -22,7 +22,8 @@ namespace Input {
   void cursor_pos_callback(GLFWwindow* window, double x, double y);
   void reset_delta();
   void handle_input();
-  void on(int key, const std::function<void()> handler);
+  void on(int key, const std::function<void()>& handler);
+  void on(int key, const std::function<void()>& handler, bool repeat);
   double get_mouse_x();
   double get_mouse_y();
   double get_mouse_dx();

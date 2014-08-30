@@ -24,4 +24,8 @@ namespace Actions {
   bool is_repeatable(int action) {
     return repeatables.count(action) > 0;
   }
+
+  void set_repeatable(int action) {
+    repeatables.insert(action);
+  }
 }

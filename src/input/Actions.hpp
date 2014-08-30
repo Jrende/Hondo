@@ -9,5 +9,6 @@ namespace Actions {
   extern int Up;
   extern int Down;
   bool is_repeatable(int action);
+  void set_repeatable(int action);
 }
 #endif

@@ -30,8 +30,15 @@ namespace Input {
     }
   }
 
-  void on(int key, const std::function<void()> handler) {
+  void on(int key, const std::function<void()>& handler) {
+    on(key, handler, false);
+  }
+
+  void on(int key, const std::function<void()>& handler, bool repeat) {
     handlers[key] = handler; 
+    if(repeat) {
+      Actions::set_repeatable(key);
+    }
   }
   
   void cursor_pos_callback(GLFWwindow* window, double x, double y) {
