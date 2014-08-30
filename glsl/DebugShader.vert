@@ -6,6 +6,7 @@ uniform vec3 pos;
 uniform vec3 color;
 
 void main() {
+  gl_PointSize = 5;
   gl_Position = mvp_mat * vec4(pos, 1.0);
 }
 
