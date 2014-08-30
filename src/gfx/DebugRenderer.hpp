@@ -4,8 +4,8 @@ class DebugRenderer;
 #include <vector>
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include "shader/DebugShader.hpp"
-#include "shader/LineShader.hpp"
+#include "shader/debugshader/DebugShader.hpp"
+#include "shader/debugshader/LineShader.hpp"
 #include "Camera.hpp"
 #include "VertexArray.hpp"
 class DebugRenderer {
