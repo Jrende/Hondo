@@ -25,10 +25,7 @@ ShaderProgram::ShaderProgram(std::string shader_name_):
 {
   glAttachShader(shader_program, vertex_shader);
   if(geometry_shader) {
-    std::cout << "Woah! We have a geometry shader (" << geometry_shader << ")" << std::endl;
     glAttachShader(shader_program, geometry_shader);
-  } else {
-    std::cout << "No geometry shader today..." << std::endl;
   }
   glAttachShader(shader_program, fragment_shader);
   glLinkProgram(shader_program);

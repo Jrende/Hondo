@@ -27,10 +27,19 @@ RenderObject::RenderObject(const RenderObject& other):
   std::cout << "RenderObject copy constructor called" << std::endl;
 }
 
-void RenderObject::bind_material(SimpleShader& simple_shader) const {
-  simple_shader.set_diffuse_sampler(0);
+void RenderObject::bind_diffuse() const {
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, mesh.material.diffuse_map);
+}
+
+void RenderObject::bind_normal() const {
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, mesh.material.normal_map);
+}
+
+void RenderObject::bind_specular() const {
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, mesh.material.specular_map);
 }
 
 void RenderObject::translate(const glm::vec3& pos) {
