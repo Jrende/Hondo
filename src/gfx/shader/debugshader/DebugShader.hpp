@@ -1,7 +1,7 @@
 #ifndef __HONDO_DEBUGSHADER_H__
 #define __HONDO_DEBUGSHADER_H__
 class DebugShader;
-#include "ShaderProgram.hpp"
+#include "../ShaderProgram.hpp"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 class DebugShader {

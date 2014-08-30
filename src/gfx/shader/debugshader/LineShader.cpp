@@ -1,5 +1,4 @@
 #include "LineShader.hpp"
-#include "ShaderProgram.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 LineShader::LineShader(): 
