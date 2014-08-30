@@ -6,7 +6,6 @@
 #include <boost/range.hpp>
 #include <boost/tokenizer.hpp>
 #include <SOIL.h>
-#include <GL/glew.h>
 
 #include "ObjLoaderUtils.cpp"
 #include "MtlLoader.hpp"
@@ -48,9 +47,9 @@ GLuint load_texture(const std::string& path) {
       SOIL_LOAD_AUTO,
       SOIL_CREATE_NEW_ID,
       SOIL_FLAG_MIPMAPS |
-      SOIL_FLAG_INVERT_Y |
-      SOIL_FLAG_NTSC_SAFE_RGB |
-      SOIL_FLAG_COMPRESS_TO_DXT
+      SOIL_FLAG_INVERT_Y
+      //SOIL_FLAG_NTSC_SAFE_RGB |
+      //SOIL_FLAG_COMPRESS_TO_DXT
       );
   return tex_2d;
 }
