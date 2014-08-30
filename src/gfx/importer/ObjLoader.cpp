@@ -131,8 +131,6 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
 	mesh.start = last_end;
 	mesh.end = vertex_count + last_end;
 	mesh.material = mtl_loader.materials[last_material];
-	std::cout << "vert count: " << vertex_count << std::endl;
-	std::cout << "last end: " << last_end << std::endl;
 
 	mesh_list.push_back(mesh); 
 	ret.push_back(mesh); 
@@ -158,8 +156,6 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
   mesh.name = last_name;
   mesh.start = last_end;
   mesh.end = vertex_count + last_end;
-  std::cout << "vert count: " << vertex_count << std::endl;
-  std::cout << "last end: " << last_end << std::endl;
   mesh.material = mtl_loader.materials[last_material];
 
   mesh_list.push_back(mesh); 
