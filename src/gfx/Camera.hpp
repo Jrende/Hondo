@@ -10,7 +10,7 @@ class Camera {
     glm::quat rot;
     glm::mat4 view_mat;
     void translate(glm::vec3 pos);
-    glm::mat4 get_view_mat();
+    const glm::mat4& get_view_mat();
     void rotate(float angle, glm::vec3 axis);
     void move_forward(float dist);
     void move_right(float dist);
