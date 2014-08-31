@@ -20,5 +20,9 @@ namespace ObjLoaderUtils {
     return first;
   }
 
+  inline std::array<float, 3> calcTangents(std::array<float, 3> normal, std::array<float, 3> uv) {
+    return std::array<float, 3>();
+  }
+
 }
 #endif

@@ -16,7 +16,7 @@ struct Vertex {
 };
 
 struct Face {
-  std::vector<Vert> verts;
+  std::vector<Vertex> verts;
 };
 
 class ObjLoader {
