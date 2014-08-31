@@ -8,6 +8,17 @@ class ObjLoader;
 #include <memory>
 #include "MtlLoader.hpp"
 #include "../Mesh.hpp"
+
+struct Vertex {
+  std::array<float, 3> pos;
+  std::array<float, 2> uv;
+  std::array<float, 3> normal;
+};
+
+struct Face {
+  std::vector<Vert> verts;
+};
+
 class ObjLoader {
   private:
     std::vector<std::array<float, 3>> posList;
@@ -24,6 +35,7 @@ class ObjLoader {
     std::string last_material;
     MtlLoader mtl_loader;
   public:
+
     ObjLoader();
 
     std::vector<Mesh> mesh_list;

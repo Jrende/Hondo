@@ -72,7 +72,9 @@ void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
 
 void ObjLoader::createFace(const std::vector<std::string>& face) {
   char_separator<char> slash_sep("/");
-  for(const auto& vertTokens: face) {
+  Face f;
+  for(int i = 0; i < face.size(); i++) {
+    const auto& vertTokens = face[i];
     //Is the vertex already loaded to the buffer?
     if(loaded_vertices_map.count(vertTokens) > 0) {
       index_array->push_back(loaded_vertices_map[vertTokens]);
@@ -80,17 +82,34 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
     }
     tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
     std::vector<int> vert;
-    for(const auto& t: tokenizer)
+    for(const auto& t: tokenizer) {
       vert.push_back(atoi(t.c_str()) - 1);
-    for(const auto& pos: posList[vert[0]])
-      vertex_array->push_back(pos);
-    for(const auto& uv: uvList[vert[1]]) 
-      vertex_array->push_back(uv);
-    for(const auto& normal: normalList[vert[2]]) 
-      vertex_array->push_back(normal);
+    }
+    Vertex vertex;
+    for(int j = 0; j < 3; j++)
+      vertex.pos[j] = posList[vert[0]][j];
+    for(int j = 0; j < 2; j++)
+      vertex.uv[j] = uvList[vert[1]][j];
+    for(int j = 0; j < 3; j++)
+      vertex.normal[j] = normalList[vert[2]][j];
+    f.verts.push_back(v);
+
     loaded_vertices_map[vertTokens] = last_index;
     index_array->push_back(last_index);
     last_index++;
+  }
+
+  int i = 0;
+  for(const auto& vert: f.verts) {
+    for(const auto& val: vert.pos) {
+      vertex_array->push_back(val);
+    }
+    for(const auto& val: vert.uv) {
+      vertex_array->push_back(val);
+    }
+    for(const auto& val: vert.normal) {
+      vertex_array->push_back(val);
+    }
   }
 }
 
@@ -180,4 +199,9 @@ void ObjLoader::load_preloaded_data() {
     normalList.clear();
     last_index_count = last_index;
   }
+  /*
+  for(const auto& p: (*vertex_array)) {
+    std::cout << p << ", ";
+  }
+  */
 }
