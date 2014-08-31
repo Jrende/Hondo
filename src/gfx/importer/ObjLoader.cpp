@@ -92,7 +92,7 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
       vertex.uv[j] = uvList[vert[1]][j];
     for(int j = 0; j < 3; j++)
       vertex.normal[j] = normalList[vert[2]][j];
-    f.verts.push_back(v);
+    f.verts.push_back(vertex);
 
     loaded_vertices_map[vertTokens] = last_index;
     index_array->push_back(last_index);
