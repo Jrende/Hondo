@@ -7,7 +7,7 @@
 #include <boost/tokenizer.hpp>
 
 #include "ObjLoader.hpp"
-#include "ObjLoaderUtils.cpp"
+#include "ObjLoaderUtils.hpp"
 
 using namespace boost;
 using namespace ObjLoaderUtils;
@@ -70,11 +70,11 @@ void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
   }
 }
 
-void ObjLoader::createFace(const std::vector<std::string>& face) {
+void ObjLoader::createFace(const std::vector<std::string>& face_string) {
   char_separator<char> slash_sep("/");
-  Face f;
-  for(int i = 0; i < face.size(); i++) {
-    const auto& vertTokens = face[i];
+  Face face;
+  for(int i = 0; i < face_string.size(); i++) {
+    const auto& vertTokens = face_string[i];
     //Is the vertex already loaded to the buffer?
     if(loaded_vertices_map.count(vertTokens) > 0) {
       index_array->push_back(loaded_vertices_map[vertTokens]);
@@ -92,24 +92,23 @@ void ObjLoader::createFace(const std::vector<std::string>& face) {
       vertex.uv[j] = uvList[vert[1]][j];
     for(int j = 0; j < 3; j++)
       vertex.normal[j] = normalList[vert[2]][j];
-    f.verts.push_back(vertex);
+    face.verts.push_back(vertex);
 
     loaded_vertices_map[vertTokens] = last_index;
     index_array->push_back(last_index);
     last_index++;
   }
 
-  int i = 0;
-  for(const auto& vert: f.verts) {
-    for(const auto& val: vert.pos) {
+  calcTangent(face);
+  for(const auto& vert: face.verts) {
+    for(const auto& val: vert.pos)
       vertex_array->push_back(val);
-    }
-    for(const auto& val: vert.uv) {
+    for(const auto& val: vert.uv)
       vertex_array->push_back(val);
-    }
-    for(const auto& val: vert.normal) {
+    for(const auto& val: vert.normal)
       vertex_array->push_back(val);
-    }
+    //for(const auto& val: vert.tangent)
+      //vertex_array->push_back(val);
   }
 }
 

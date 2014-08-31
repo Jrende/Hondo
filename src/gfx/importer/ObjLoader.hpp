@@ -9,16 +9,6 @@ class ObjLoader;
 #include "MtlLoader.hpp"
 #include "../Mesh.hpp"
 
-struct Vertex {
-  std::array<float, 3> pos;
-  std::array<float, 2> uv;
-  std::array<float, 3> normal;
-};
-
-struct Face {
-  std::vector<Vertex> verts;
-};
-
 class ObjLoader {
   private:
     std::vector<std::array<float, 3>> posList;

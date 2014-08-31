@@ -7,7 +7,7 @@
 #include <boost/tokenizer.hpp>
 #include <SOIL.h>
 
-#include "ObjLoaderUtils.cpp"
+#include "ObjLoaderUtils.hpp"
 #include "MtlLoader.hpp"
 using namespace boost;
 using namespace ObjLoaderUtils;
