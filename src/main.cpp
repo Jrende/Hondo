@@ -105,10 +105,11 @@ int main(int argc, char ** argv) {
   });
   ObjLoader loader;
   loader.preload("assets/Cube.obj");
-  loader.preload("assets/Floor.obj");
+  //loader.preload("assets/Floor.obj");
   loader.load_preloaded_data();
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3}));
+  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}));
 
+  /*
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
       if((i % 2 == 0) || (j % 2 == 0)) {
@@ -123,7 +124,6 @@ int main(int argc, char ** argv) {
     }
   }
 
-  /*
   const auto& cube = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
   cube->translate({0, 1.01, 0});
   renderer.add_object(cube);
@@ -132,6 +132,10 @@ int main(int argc, char ** argv) {
   floor->scale({10, 1, 10});
   renderer.add_object(floor);
   */
+
+  const auto& cube = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
+  cube->translate({0, 1.01, 0});
+  renderer.add_object(cube);
 
   renderer.set_camera(camera);
   auto pl = std::shared_ptr<PointLight>(new PointLight({0,2,0}, {1,1,1}));

@@ -6,10 +6,11 @@
 #include <string>
 
 struct Vertex {
-  std::array<float, 3> pos;
-  std::array<float, 2> uv;
-  std::array<float, 3> normal;
-  std::array<float, 3> tangent;
+  std::array<float, 3> pos = {{123,123,123}};
+  std::array<float, 2> uv = {{123,123}};
+  std::array<float, 3> normal = {{123,123,123}};
+  std::array<float, 3> tangent = {{123,123,123}};
+  std::array<float, 3> bitangent = {{123,123,123}};
 };
 
 struct Face {

@@ -17,6 +17,7 @@ ObjLoader::ObjLoader():
   last_end(0), 
   last_name(""),
   last_material(),
+  loaded_vertices_map(),
   vertex_count(0), 
   vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
   index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
@@ -107,8 +108,10 @@ void ObjLoader::createFace(const std::vector<std::string>& face_string) {
       vertex_array->push_back(val);
     for(const auto& val: vert.normal)
       vertex_array->push_back(val);
-    //for(const auto& val: vert.tangent)
-      //vertex_array->push_back(val);
+    for(const auto& val: vert.tangent)
+      vertex_array->push_back(val);
+    for(const auto& val: vert.bitangent)
+      vertex_array->push_back(val);
   }
 }
 
