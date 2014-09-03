@@ -31,6 +31,8 @@ void Renderer::set_camera(std::shared_ptr<Camera> camera) {
 
 void Renderer::render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glDisable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE);
   //pair<shared_ptr<LightShader>, vector<shared_ptr<Light>>> lights;
   //foreach type of light
   for(const auto& light_type: lights) {
@@ -70,6 +72,7 @@ void Renderer::render() {
 	}
 	vertex_format.first->unbind();
       }
+      glEnable(GL_BLEND);
     }
   }
 }
