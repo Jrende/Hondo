@@ -101,18 +101,5 @@ namespace ObjLoaderUtils {
       v.bitangent[1] = bt2.y;
       v.bitangent[2] = bt2.z;
     }
-    /*
-    for(auto& vertex: face.verts) {
-      const glm::vec3& n({vertex.normal.x, vertex.normal.y, vertex.normal.z}_
-      const glm::vec3& n({vertex.normal.x, vertex.normal.y, vertex.normal.z}_
-    }
-
-    face.verts[0].tangent = {sdir.x, sdir.y, sdir.z}
-    face.verts[0].bitangent = {tdir.x, tdir.y, tdir.z};
-    face.verts[1].tangent = {sdir.x, sdir.y, sdir.z};
-    face.verts[1].bitangent = {tdir.x, tdir.y, tdir.z};
-    face.verts[2].tangent = {sdir.x, sdir.y, sdir.z};
-    face.verts[2].bitangent = {tdir.x, tdir.y, tdir.z};
-    */
   }
 }

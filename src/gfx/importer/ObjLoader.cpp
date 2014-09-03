@@ -12,13 +12,6 @@
 using namespace boost;
 using namespace ObjLoaderUtils;
 ObjLoader::ObjLoader():
-  last_index_count(0), 
-  last_index(0), 
-  last_end(0), 
-  last_name(""),
-  last_material(),
-  loaded_vertices_map(),
-  vertex_count(0), 
   vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
   index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
 {
@@ -74,7 +67,7 @@ void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
 void ObjLoader::createFace(const std::vector<std::string>& face_string) {
   char_separator<char> slash_sep("/");
   Face face;
-  for(int i = 0; i < face_string.size(); i++) {
+  for(auto i = 0u; i < face_string.size(); i++) {
     const auto& vertTokens = face_string[i];
     //Is the vertex already loaded to the buffer?
     if(loaded_vertices_map.count(vertTokens) > 0) {

@@ -138,29 +138,35 @@ int main(int argc, char ** argv) {
   renderer.add_object(cube);
 
   renderer.set_camera(camera);
-  auto pl = std::shared_ptr<PointLight>(new PointLight({0,2,0}, {1,1,1}));
-  renderer.add_light(pl);
+
+  auto pl1 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {1,0,0}));
+  renderer.add_light(pl1);
+
+  auto pl2 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {0,0,1}));
+  renderer.add_light(pl2);
+
+  auto pl3 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {0,1,0}));
+  renderer.add_light(pl3);
 
   Input::on(GLFW_KEY_I, [&] {
-      pl->translate({ 0.01f, 0, 0});
+      pl1->translate({ 0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_K, [&] {
-      pl->translate({-0.01f, 0, 0});
+      pl1->translate({-0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_J, [&] {
-      pl->translate({0, 0,  0.01f});
+      pl1->translate({0, 0,  0.01f});
   }, true);
   Input::on(GLFW_KEY_L, [&] {
-      pl->translate({0, 0, -0.01f});
+      pl1->translate({0, 0, -0.01f});
   }, true);
   Input::on(GLFW_KEY_O, [&] {
-      pl->translate({0,  0.01f, 0});
+      pl1->translate({0,  0.01f, 0});
   }, true);
   Input::on(GLFW_KEY_U, [&] {
-      pl->translate({0,-0.01f, 0});
+      pl1->translate({0,-0.01f, 0});
   }, true);
 
-  const int radius = 2;
   float i = 0;
   camera->translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
@@ -169,7 +175,9 @@ int main(int argc, char ** argv) {
     rotate_camera();
 
     renderer.render();
-    renderer.draw_point(pl->pos);
+    renderer.draw_point(pl1->pos);
+    renderer.draw_point(pl2->pos);
+    renderer.draw_point(pl3->pos);
     renderer.draw_line({0, 0, 0}, {0, 1, 0});
 
     glfwSwapBuffers(window);

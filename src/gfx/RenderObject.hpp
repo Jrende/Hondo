@@ -14,15 +14,14 @@ class RenderObject;
 class RenderObject {
   private:
   public:
-    glm::mat4 model_matrix;
     RenderObject(std::shared_ptr<VertexArray> vArray, Mesh mesh);
     RenderObject(const RenderObject& other);
 
+    const Mesh mesh;
     const std::shared_ptr<VertexArray> vertex_array;
     glm::vec3 pos, scale_val;
+    glm::mat4 model_matrix;
     glm::quat rot;
-
-    const Mesh mesh;
 
     void render() const;
     void translate(const glm::vec3& pos);

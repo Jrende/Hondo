@@ -2,6 +2,7 @@
 #define __HONDO_SIMPLESHADER_H__
 class SimpleShader;
 #include "ShaderProgram.hpp"
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 class SimpleShader {
   private:

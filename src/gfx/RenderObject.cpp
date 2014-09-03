@@ -6,23 +6,22 @@
 #include <GL/glew.h>
 
 RenderObject::RenderObject(std::shared_ptr<VertexArray> vertex_array, Mesh mesh):
-  vertex_array(vertex_array),
   mesh(mesh),
-  model_matrix(),
+  vertex_array(vertex_array),
   pos(0, 0, 0),
   scale_val(1, 1, 1),
+  model_matrix(),
   rot()
 {
 }
 
-void RenderObject::render() const {
-  vertex_array->render(mesh);
-}
-
 RenderObject::RenderObject(const RenderObject& other):
-    vertex_array(other.vertex_array),
-    model_matrix(other.model_matrix),
-    mesh(other.mesh)
+  mesh(other.mesh),
+  vertex_array(other.vertex_array),
+  pos(other.pos),
+  scale_val(other.scale_val),
+  model_matrix(other.model_matrix),
+  rot(other.rot)
 {
   std::cout << "RenderObject copy constructor called" << std::endl;
 }
@@ -43,12 +42,10 @@ void RenderObject::bind_specular() const {
 }
 
 void RenderObject::translate(const glm::vec3& pos) {
-  //model_matrix = glm::translate(model_matrix, pos);
   this->pos += pos;
 }
 
 void RenderObject::scale(const glm::vec3& scale) {
-  //model_matrix = glm::scale(model_matrix, scale);
   this->scale_val *= scale;
 }
 
@@ -66,4 +63,8 @@ const glm::mat4& RenderObject::get_model_matrix() {
 
 void RenderObject::set_position(const glm::vec3& pos) {
   this->pos = pos;
+}
+
+void RenderObject::render() const {
+  vertex_array->render(mesh);
 }
