@@ -32,8 +32,8 @@ class ObjLoader {
 
     std::vector<Mesh> mesh_list;
 
-    std::shared_ptr<std::vector<float>> vertex_array;
-    std::shared_ptr<std::vector<unsigned int>> index_array;
+    std::vector<float> vertex_array;
+    std::vector<unsigned int> index_array;
 
     void load_preloaded_data();
     void load_file(const std::string& path);

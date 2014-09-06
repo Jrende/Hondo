@@ -21,6 +21,10 @@ LightShader::LightShader(std::string name):
 {
 }
 
+bool LightShader::operator<(const LightShader& other) const {
+  return shader_program.get_id() < other.shader_program.get_id();
+}
+
 void LightShader::use_shader() {
   shader_program.use();
 }
@@ -85,3 +89,4 @@ void LightShader::set_material(const Material& mat) {
   glUniform1f(specular_exponent_id, mat.specular_exponent);
 }
 
+    //virtual void set_light(const Light& light) const;

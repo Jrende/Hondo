@@ -16,6 +16,7 @@ class ShaderProgram {
     ~ShaderProgram();
     void use();
     void stop();
+    unsigned int get_id() const;
     GLuint get_uniform(std::string name);
 };
 #endif

@@ -16,23 +16,21 @@ class Renderer;
 class Renderer {
   private:
     glm::mat4 perspective_mat;
-
-    //SimpleShader shader;
     DebugRenderer debug_renderer;
+    Camera camera;
     std::shared_ptr<PointLightShader> point_light_shader;
 
-    std::map<std::shared_ptr<VertexArray>, std::vector<std::shared_ptr<RenderObject>>> render_map;
+    std::map<VertexArray, std::vector<std::shared_ptr<RenderObject>>> render_map;
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
-    std::shared_ptr<Camera> camera;
-    Renderer(const Renderer& other);
+    Renderer(const Renderer& other) = delete;
   public:
     Renderer(int width, int height);
-    void add_object(const std::shared_ptr<RenderObject>& rObj);
-    void set_camera(std::shared_ptr<Camera> camera);
-    void render();
+    Camera& get_camera();
+    void add_object(std::shared_ptr<RenderObject> rObj);
+    void add_light(std::shared_ptr<Light> point_light);
     void toggle_wireframe();
+    void render();
     void draw_line(const glm::vec3& from, const glm::vec3& to);
     void draw_point(const glm::vec3& pos);
-    void add_light(const std::shared_ptr<Light>& point_light);
 };
 #endif

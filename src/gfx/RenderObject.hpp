@@ -13,12 +13,13 @@ class RenderObject;
 #include "shader/SimpleShader.hpp"
 class RenderObject {
   private:
+    void swap(RenderObject& first, RenderObject& second);
   public:
-    RenderObject(std::shared_ptr<VertexArray> vArray, Mesh mesh);
+    RenderObject(const VertexArray& vertex_array, const Mesh& mesh);
     RenderObject(const RenderObject& other);
 
-    const Mesh mesh;
-    const std::shared_ptr<VertexArray> vertex_array;
+    const Mesh& mesh;
+    const VertexArray& vertex_array;
     glm::vec3 pos, scale_val;
     glm::mat4 model_matrix;
     glm::quat rot;

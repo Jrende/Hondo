@@ -5,7 +5,7 @@
 #include <iostream>
 #include <GL/glew.h>
 
-RenderObject::RenderObject(std::shared_ptr<VertexArray> vertex_array, Mesh mesh):
+RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
   mesh(mesh),
   vertex_array(vertex_array),
   pos(0, 0, 0),
@@ -23,7 +23,7 @@ RenderObject::RenderObject(const RenderObject& other):
   model_matrix(other.model_matrix),
   rot(other.rot)
 {
-  std::cout << "RenderObject copy constructor called" << std::endl;
+  std::cout << "Invoked RenderObject copy constructor" << std::endl;
 }
 
 void RenderObject::bind_diffuse() const {
@@ -66,5 +66,5 @@ void RenderObject::set_position(const glm::vec3& pos) {
 }
 
 void RenderObject::render() const {
-  vertex_array->render(mesh);
+  vertex_array.render(mesh);
 }

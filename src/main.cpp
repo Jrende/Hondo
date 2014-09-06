@@ -3,7 +3,6 @@
 #include <GL/glew.h>
 #include <glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
@@ -25,12 +24,11 @@ static void error_callback(int error, const char* description)
   fputs(description, stderr);
 }
 
-auto camera = std::make_shared<Camera>();
 float step = 0.01f;
 
-void rotate_camera() {
-  camera->rotate(-Input::get_mouse_dx() / 100.0f, camera->up);
-  camera->rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera->up, camera->dir));
+void rotate_camera(Camera& camera) {
+  camera.rotate(-Input::get_mouse_dx() / 100.0f, camera.up);
+  camera.rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera.up, camera.dir));
 }
 
 float randx() {
@@ -71,29 +69,30 @@ int main(int argc, char ** argv) {
     Input::set_active_window(window);
   }
   Renderer renderer(width, height);
+  auto& camera = renderer.get_camera();
 
-  Input::on(Actions::Forward, []() {
-    camera->move_forward(step);
+  Input::on(Actions::Forward, [&]() {
+    camera.move_forward(step);
   });
 
-  Input::on(Actions::Backward, []() {
-    camera->move_forward(-step);
+  Input::on(Actions::Backward, [&]() {
+    camera.move_forward(-step);
   });
 
-  Input::on(Actions::Left, []() {
-    camera->move_right(-step);
+  Input::on(Actions::Left, [&]() {
+    camera.move_right(-step);
   });
 
-  Input::on(Actions::Right, []() {
-    camera->move_right(step);
+  Input::on(Actions::Right, [&]() {
+    camera.move_right(step);
   });
 
-  Input::on(Actions::Up, []() {
-    camera->translate({0, step, 0});
+  Input::on(Actions::Up, [&]() {
+    camera.translate({0, step, 0});
   });
 
-  Input::on(Actions::Down, []() {
-    camera->translate({0, -step, 0});
+  Input::on(Actions::Down, [&]() {
+    camera.translate({0, -step, 0});
   });
 
   Input::on(GLFW_KEY_Z, [&] {
@@ -107,45 +106,50 @@ int main(int argc, char ** argv) {
   loader.preload("assets/Cube.obj");
   //loader.preload("assets/Floor.obj");
   loader.load_preloaded_data();
-  auto vArrayPtr = std::shared_ptr<VertexArray>(new VertexArray(loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}));
 
   /*
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
       if((i % 2 == 0) || (j % 2 == 0)) {
-	const auto& cube = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
-	cube->translate({i*4.0f, 1.01f, j*4.0f});
+	auto cube = RenderObject(vArrayPtr, loader.mesh_list[0]);
+	cube.translate({i*4.0f, 1.01f, j*4.0f});
 	renderer.add_object(cube);
       }
-      const auto& floor = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[1]));
-      floor->translate({i*4.0f, 0, j*4.0f});
-      floor->scale({2, 2, 2});
+      auto floor = RenderObject(vArrayPtr, loader.mesh_list[1]);
+      floor.translate({i*4.0f, 0, j*4.0f});
+      floor.scale({2, 2, 2});
       renderer.add_object(floor);
     }
   }
 
-  const auto& cube = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
-  cube->translate({0, 1.01, 0});
+  auto cube = RenderObject(vArrayPtr, loader.mesh_list[0]);
+  cube.translate({0, 1.01, 0});
   renderer.add_object(cube);
 
-  const auto& floor = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[1]));
-  floor->scale({10, 1, 10});
+  auto floor = RenderObject(vArrayPtr, loader.mesh_list[1]);
+  floor.scale({10, 1, 10});
   renderer.add_object(floor);
   */
+  const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
 
-  const auto& cube = std::shared_ptr<RenderObject>(new RenderObject(vArrayPtr, loader.mesh_list[0]));
+  auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
   cube->translate({0, 1.01, 0});
   renderer.add_object(cube);
 
-  renderer.set_camera(camera);
+  /*
+  auto cube2 = RenderObject{vArrayPtr, loader.mesh_list[0]};
+  cube2.translate({0, 1.01, 0});
+  renderer.add_object(cube2);
+  */
 
-  auto pl1 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {1,0,0}));
+
+  auto pl1 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{1, 0, 0});
   renderer.add_light(pl1);
 
-  auto pl2 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {0,0,1}));
+  auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 1, 0});
   renderer.add_light(pl2);
 
-  auto pl3 = std::shared_ptr<PointLight>(new PointLight({0,2.2,0}, {0,1,0}));
+  auto pl3 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 0, 1});
   renderer.add_light(pl3);
 
   Input::on(GLFW_KEY_I, [&] {
@@ -168,11 +172,11 @@ int main(int argc, char ** argv) {
   }, true);
 
   float i = 0;
-  camera->translate({0, 2, 0});
+  camera.translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
     Input::handle_input();
     glfwPollEvents();
-    rotate_camera();
+    rotate_camera(camera);
 
     renderer.render();
     renderer.draw_point(pl1->pos);
@@ -193,6 +197,6 @@ int main(int argc, char ** argv) {
   }
   glfwDestroyWindow(window);
   glfwTerminate();
-  exit(EXIT_SUCCESS);
+  return 0;
 }
 

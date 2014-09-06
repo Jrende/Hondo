@@ -6,11 +6,7 @@
 DebugRenderer::DebugRenderer():
   debug_shader(),
   line_shader(),
-  vertex_array(
-      std::make_shared<std::vector<float>>(std::vector<float>({0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f})),
-      std::make_shared<std::vector<unsigned int>>(std::vector<unsigned int>({0})),
-      2,
-      {3})
+  vertex_array({0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, {0}, 2, {3})
 {
   
 }

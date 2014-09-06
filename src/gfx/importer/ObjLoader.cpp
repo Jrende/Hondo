@@ -12,15 +12,14 @@
 using namespace boost;
 using namespace ObjLoaderUtils;
 ObjLoader::ObjLoader():
-  vertex_array(std::shared_ptr<std::vector<float>>(new std::vector<float>())),
-  index_array(std::shared_ptr<std::vector<unsigned int>>(new std::vector<unsigned int>()))
+  vertex_array(),
+  index_array()
 {
   
 }
 
 void ObjLoader::load_file(const std::string& path) {
-  std::ifstream file;
-  file.open(path, std::ios::in);
+  std::ifstream file(path);
   if(!file.is_open()) {
     printf("Failed to open %s!", path.c_str());
     exit(EXIT_FAILURE);
@@ -40,7 +39,6 @@ void ObjLoader::load_file(const std::string& path) {
       handleTokens(tokens);
     }
   }
-  file.close();
 }
 
 void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
@@ -71,7 +69,7 @@ void ObjLoader::createFace(const std::vector<std::string>& face_string) {
     const auto& vertTokens = face_string[i];
     //Is the vertex already loaded to the buffer?
     if(loaded_vertices_map.count(vertTokens) > 0) {
-      index_array->push_back(loaded_vertices_map[vertTokens]);
+      index_array.push_back(loaded_vertices_map[vertTokens]);
       continue;
     }
     tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
@@ -89,22 +87,22 @@ void ObjLoader::createFace(const std::vector<std::string>& face_string) {
     face.verts.push_back(vertex);
 
     loaded_vertices_map[vertTokens] = last_index;
-    index_array->push_back(last_index);
+    index_array.push_back(last_index);
     last_index++;
   }
 
   calcTangent(face);
   for(const auto& vert: face.verts) {
     for(const auto& val: vert.pos)
-      vertex_array->push_back(val);
+      vertex_array.push_back(val);
     for(const auto& val: vert.uv)
-      vertex_array->push_back(val);
+      vertex_array.push_back(val);
     for(const auto& val: vert.normal)
-      vertex_array->push_back(val);
+      vertex_array.push_back(val);
     for(const auto& val: vert.tangent)
-      vertex_array->push_back(val);
+      vertex_array.push_back(val);
     for(const auto& val: vert.bitangent)
-      vertex_array->push_back(val);
+      vertex_array.push_back(val);
   }
 }
 
@@ -183,7 +181,7 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
 
 void ObjLoader::load_preloaded_data() {
   std::cout << "Reserving " << vertex_count << " for vertex array" << std::endl;
-  vertex_array->reserve(vertex_count);
+  vertex_array.reserve(vertex_count);
   last_index_count = 0;
   for(const auto& file: file_list) {
     load_file(file);

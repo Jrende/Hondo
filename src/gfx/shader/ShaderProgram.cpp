@@ -84,3 +84,7 @@ GLuint ShaderProgram::compile(GLuint type, std::string source) {
   }
   return shader;
 }
+
+unsigned int ShaderProgram::get_id() const {
+  return shader_program;
+}
