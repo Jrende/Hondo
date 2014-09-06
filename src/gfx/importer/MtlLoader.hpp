@@ -1,5 +1,5 @@
-#ifndef __HONDO_MTLLOADER_H__
-#define __HONDO_MTLLOADER_H__
+#ifndef HONDO_MTLLOADER_HPP
+#define HONDO_MTLLOADER_HPP
 class MtlLoader;
 #include <map>
 #include <vector>

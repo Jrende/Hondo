@@ -1,5 +1,5 @@
-#ifndef __HONDO_MATERIAL_H__
-#define __HONDO_MATERIAL_H__
+#ifndef HONDO_MATERIAL_HPP
+#define HONDO_MATERIAL_HPP
 class Material;
 #include <string>
 #define GLM_FORCE_RADIANS

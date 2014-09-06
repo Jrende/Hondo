@@ -1,5 +1,5 @@
-#ifndef __HONDO_RENDEROBJECT_H__
-#define __HONDO_RENDEROBJECT_H__
+#ifndef HONDO_RENDEROBJECT_HPP
+#define HONDO_RENDEROBJECT_HPP
 class RenderObject;
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

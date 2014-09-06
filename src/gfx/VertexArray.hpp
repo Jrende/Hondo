@@ -1,5 +1,5 @@
-#ifndef __HONDO_VERTEXARRAY_H__
-#define __HONDO_VERTEXARRAY_H__
+#ifndef HONDO_VERTEXARRAY_HPP
+#define HONDO_VERTEXARRAY_HPP
 class VertexArray;
 #include <GL/glew.h>
 #include <vector>

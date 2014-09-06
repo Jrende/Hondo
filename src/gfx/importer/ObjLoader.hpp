@@ -1,5 +1,5 @@
-#ifndef __HONDO_OBJLOADER_H__
-#define __HONDO_OBJLOADER_H__
+#ifndef HONDO_OBJLOADER_HPP
+#define HONDO_OBJLOADER_HPP
 class ObjLoader;
 #include <string>
 #include <vector>

@@ -1,5 +1,5 @@
-#ifndef __HONDO_LIGHT_H__
-#define __HONDO_LIGHT_H__
+#ifndef HONDO_LIGHT_HPP
+#define HONDO_LIGHT_HPP
 class Light;
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

@@ -1,5 +1,5 @@
-#ifndef __HONDO_DEBUGRENDERER_H__
-#define __HONDO_DEBUGRENDERER_H__
+#ifndef HONDO_DEBUGRENDERER_HPP
+#define HONDO_DEBUGRENDERER_HPP
 class DebugRenderer;
 #include <vector>
 #define GLM_FORCE_RADIANS

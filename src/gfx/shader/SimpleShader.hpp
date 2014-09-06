@@ -1,5 +1,5 @@
-#ifndef __HONDO_SIMPLESHADER_H__
-#define __HONDO_SIMPLESHADER_H__
+#ifndef HONDO_SIMPLESHADER_HPP
+#define HONDO_SIMPLESHADER_HPP
 class SimpleShader;
 #include "ShaderProgram.hpp"
 #define GLM_FORCE_RADIANS

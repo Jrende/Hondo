@@ -1,5 +1,5 @@
-#ifndef __HONDO_OBJLOADERUTILS_H__
-#define __HONDO_OBJLOADERUTILS_H__
+#ifndef HONDO_OBJLOADERUTILS_HPP
+#define HONDO_OBJLOADERUTILS_HPP
 
 #include <array>
 #include <vector>

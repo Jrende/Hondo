@@ -1,5 +1,5 @@
-#ifndef __HONDO_SHADERPROGRAM_H__
-#define __HONDO_SHADERPROGRAM_H__
+#ifndef HONDO_SHADERPROGRAM_HPP
+#define HONDO_SHADERPROGRAM_HPP
 class ShaderProgram;
 #include <string>
 #include <vector>

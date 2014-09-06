@@ -1,5 +1,5 @@
-#ifndef __HONDO_LIGHTSHADER_H__
-#define __HONDO_LIGHTSHADER_H__
+#ifndef HONDO_LIGHTSHADER_HPP
+#define HONDO_LIGHTSHADER_HPP
 class LightShader;
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

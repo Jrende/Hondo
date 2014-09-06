@@ -1,5 +1,5 @@
-#ifndef __HONDO_LINESHADER_H__
-#define __HONDO_LINESHADER_H__
+#ifndef HONDO_LINESHADER_HPP
+#define HONDO_LINESHADER_HPP
 class LineShader;
 #include "../ShaderProgram.hpp"
 #define GLM_FORCE_RADIANS

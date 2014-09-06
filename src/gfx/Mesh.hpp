@@ -1,5 +1,5 @@
-#ifndef __HONDO_MESH_H__
-#define __HONDO_MESH_H__
+#ifndef HONDO_MESH_HPP
+#define HONDO_MESH_HPP
 class Mesh;
 #include <string>
 #include "Material.hpp"

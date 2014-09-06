@@ -1,5 +1,5 @@
-#ifndef __HONDO_SPOTLIGHT_H__
-#define __HONDO_SPOTLIGHT_H__
+#ifndef HONDO_SPOTLIGHT_HPP
+#define HONDO_SPOTLIGHT_HPP
 class SpotLight;
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

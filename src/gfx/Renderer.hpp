@@ -1,5 +1,5 @@
-#ifndef __HONDO_RENDERER_H__
-#define __HONDO_RENDERER_H__
+#ifndef HONDO_RENDERER_HPP
+#define HONDO_RENDERER_HPP
 class Renderer;
 #include <map>
 #include <memory>

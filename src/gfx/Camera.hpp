@@ -1,5 +1,5 @@
-#ifndef __HONDO_CAMERA_H__
-#define __HONDO_CAMERA_H__
+#ifndef HONDO_CAMERA_HPP
+#define HONDO_CAMERA_HPP
 class Camera;
 #include "RenderObject.hpp"
 #include <glm/gtc/quaternion.hpp>

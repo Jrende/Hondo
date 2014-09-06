@@ -1,5 +1,5 @@
-#ifndef __HONDO_POINTLIGHTSHADER_H__
-#define __HONDO_POINTLIGHTSHADER_H__
+#ifndef HONDO_POINTLIGHTSHADER_HPP
+#define HONDO_POINTLIGHTSHADER_HPP
 class PointLightShader;
 #include <glm/glm.hpp>
 

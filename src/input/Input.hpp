@@ -1,5 +1,5 @@
-#ifndef __HONDO_INPUT_H__
-#define __HONDO_INPUT_H__
+#ifndef HONDO_INPUT_HPP
+#define HONDO_INPUT_HPP
 #include <glfw3.h>
 #include <functional>
 #include <map>

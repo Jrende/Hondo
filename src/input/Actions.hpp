@@ -1,5 +1,5 @@
-#ifndef __HONDO_ACTIONS_H__
-#define __HONDO_ACTIONS_H__
+#ifndef HONDO_ACTIONS_HPP
+#define HONDO_ACTIONS_HPP
 //Add repeat
 namespace Actions {
   extern int Forward;
