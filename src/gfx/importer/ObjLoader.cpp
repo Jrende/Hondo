@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
 #include <stdio.h>
@@ -62,37 +63,54 @@ void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
   }
 }
 
+  template<long long unsigned int n>
+    void printVec(std::array<float, n> vec) {
+      for(const auto& v: vec)
+	std::cout << v << ", ";
+      std::cout << "\n";
+    }
+
+//TODO: First load triangle, then decide if it is already indexed
 void ObjLoader::createFace(const std::vector<std::string>& face_string) {
   char_separator<char> slash_sep("/");
   Face face;
+  face.verts.resize(3);
   for(auto i = 0u; i < face_string.size(); i++) {
     const auto& vertTokens = face_string[i];
     //Is the vertex already loaded to the buffer?
+    Vertex vertex;
     if(loaded_vertices_map.count(vertTokens) > 0) {
       index_array.push_back(loaded_vertices_map[vertTokens]);
-      continue;
+      vertex.isIndexed = true;
     }
     tokenizer<char_separator<char> > tokenizer(vertTokens, slash_sep);
     std::vector<int> vert;
-    for(const auto& t: tokenizer) {
+    for(const auto& t: tokenizer)
       vert.push_back(atoi(t.c_str()) - 1);
-    }
-    Vertex vertex;
     for(int j = 0; j < 3; j++)
       vertex.pos[j] = posList[vert[0]][j];
     for(int j = 0; j < 2; j++)
       vertex.uv[j] = uvList[vert[1]][j];
     for(int j = 0; j < 3; j++)
       vertex.normal[j] = normalList[vert[2]][j];
-    face.verts.push_back(vertex);
+    face.verts[i] = vertex;
+    //face.verts.push_back(vertex);
+    std::cout << face.verts[i].pos[0] << ", ";
+    std::cout << face.verts[i].pos[1] << ", ";
+    std::cout << face.verts[i].pos[2] << "\n";
 
-    loaded_vertices_map[vertTokens] = last_index;
-    index_array.push_back(last_index);
-    last_index++;
+    if(!vertex.isIndexed) {
+      loaded_vertices_map[vertTokens] = last_index;
+      index_array.push_back(last_index);
+      last_index++;
+    }
   }
 
   calcTangent(face);
   for(const auto& vert: face.verts) {
+    if(vert.isIndexed) {
+      continue;
+    }
     for(const auto& val: vert.pos)
       vertex_array.push_back(val);
     for(const auto& val: vert.uv)

@@ -11,6 +11,7 @@ struct Vertex {
   std::array<float, 3> normal;
   std::array<float, 3> tangent;
   std::array<float, 3> bitangent;
+  bool isIndexed = false;
 };
 
 struct Face {
