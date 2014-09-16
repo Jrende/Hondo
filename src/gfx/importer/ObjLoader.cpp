@@ -70,7 +70,6 @@ void ObjLoader::handleTokens(std::vector<std::string>& tokens) {
       std::cout << "\n";
     }
 
-//TODO: First load triangle, then decide if it is already indexed
 void ObjLoader::createFace(const std::vector<std::string>& face_string) {
   char_separator<char> slash_sep("/");
   Face face;
@@ -94,10 +93,6 @@ void ObjLoader::createFace(const std::vector<std::string>& face_string) {
     for(int j = 0; j < 3; j++)
       vertex.normal[j] = normalList[vert[2]][j];
     face.verts[i] = vertex;
-    //face.verts.push_back(vertex);
-    std::cout << face.verts[i].pos[0] << ", ";
-    std::cout << face.verts[i].pos[1] << ", ";
-    std::cout << face.verts[i].pos[2] << "\n";
 
     if(!vertex.isIndexed) {
       loaded_vertices_map[vertTokens] = last_index;
