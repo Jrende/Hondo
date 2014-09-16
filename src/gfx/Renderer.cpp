@@ -77,11 +77,11 @@ void Renderer::render() {
   }
 }
 
-void Renderer::draw_line(const glm::vec3& from, const glm::vec3& to) {
+void Renderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color) {
   glm::mat4 mvp_mat = glm::mat4();
   mvp_mat *= this->perspective_mat;
   mvp_mat *= camera.get_view_mat();
-  debug_renderer.draw_line(from, to, mvp_mat);
+  debug_renderer.draw_line(from, to, mvp_mat, color);
 }
 
 void Renderer::draw_point(const glm::vec3& pos) {

@@ -30,7 +30,7 @@ class Renderer {
     void add_light(std::shared_ptr<Light> point_light);
     void toggle_wireframe();
     void render();
-    void draw_line(const glm::vec3& from, const glm::vec3& to);
+    void draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color);
     void draw_point(const glm::vec3& pos);
 };
 #endif

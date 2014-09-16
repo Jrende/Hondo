@@ -11,11 +11,11 @@ DebugRenderer::DebugRenderer():
   
 }
 
-void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::mat4& vp_mat) {
+void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::mat4& vp_mat, const glm::vec3& color) {
   //Optimization opportunity: No need to rebind shader every line
   //Also, vertex_buffer binding might be reusable between line and point
   line_shader();
-  line_shader.set_color({1,1,1});
+  line_shader.set_color(color);
   line_shader.set_MVP(vp_mat);
   line_shader.set_from(from);
   line_shader.set_to(to);
