@@ -8,17 +8,21 @@ Renderer::Renderer(int width, int height):
   perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 100.0f)),
   debug_renderer(),
   camera(),
-  point_light_shader(std::make_shared<PointLightShader>())
+  point_light_shader(std::make_shared<PointLightShader>()),
+  spot_light_shader(std::make_shared<SpotLightShader>()),
+  dir_light_shader(std::make_shared<LightShader>())
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
   glDepthMask(GL_TRUE);
 
-  glEnable(GL_CULL_FACE);
+  //glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   lights[point_light_shader];
+  lights[spot_light_shader];
+  lights[dir_light_shader];
 }
 
 void Renderer::add_object(std::shared_ptr<RenderObject> rObj) {
@@ -108,6 +112,15 @@ void Renderer::toggle_wireframe() {
   }
 }
 
-void Renderer::add_light(std::shared_ptr<Light> point_light) {
+void Renderer::add_light(std::shared_ptr<PointLight> point_light) {
   lights[point_light_shader].push_back(point_light);
 }
+
+void Renderer::add_light(std::shared_ptr<SpotLight> spot_light) {
+  lights[spot_light_shader].push_back(spot_light);
+}
+
+void Renderer::add_light(std::shared_ptr<Light> dir_light) {
+  lights[dir_light_shader].push_back(dir_light);
+}
+

@@ -62,7 +62,6 @@ vec4 getSpecular(vec3 normal) {
 
 void main() {
   vec3 normal = getNormal();
-  //vec3 normal = normalize(Normal0);
   vec4 color = texture2D(diffuse_sampler, TexCoord0.st);
   color += getSpecular(normal);
   color *= getDiffuse(normal);

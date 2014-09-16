@@ -133,7 +133,7 @@ int main(int argc, char ** argv) {
   const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
 
   auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
-  cube->translate({0, 1.01, 0});
+  //cube->translate({0, 1.01, 0});
   renderer.add_object(cube);
 
   /*
@@ -143,14 +143,22 @@ int main(int argc, char ** argv) {
   */
 
 
-  auto pl1 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{1, 0, 0});
+
+  /*
+  auto pl1 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{1, 1, 1});
+  renderer.add_light(pl1);
+  */
+
+  auto pl1 = std::make_shared<Light>(glm::vec3{1, 1, 1}, glm::vec3{1, 1, 1});
   renderer.add_light(pl1);
 
+  /*
   auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 1, 0});
   renderer.add_light(pl2);
 
   auto pl3 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 0, 1});
   renderer.add_light(pl3);
+  */
 
   Input::on(GLFW_KEY_I, [&] {
       pl1->translate({ 0.01f, 0, 0});
@@ -171,6 +179,20 @@ int main(int argc, char ** argv) {
       pl1->translate({0,-0.01f, 0});
   }, true);
 
+  std::vector<glm::vec3> positions;
+  std::vector<glm::vec3> normals;
+  std::vector<glm::vec3> tangents;
+  std::vector<glm::vec3> bitangents;
+  const auto& va = loader.vertex_array;
+  int size = loader.vertex_array.size() / 14;
+  std::cout << "size: " << size << std::endl;
+  for(auto i = 0; i < loader.vertex_array.size(); i+=14) {
+    positions.push_back({va[i + 0], va[i + 1], va[i + 2]});
+    normals.push_back({va[i + 5], va[i + 6], va[i + 7]});
+    tangents.push_back({va[i + 8], va[i + 9], va[i + 10]});
+    bitangents.push_back({va[i + 11], va[i + 12], va[i + 13]});
+  }
+
   float i = 0;
   camera.translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
@@ -179,10 +201,8 @@ int main(int argc, char ** argv) {
     rotate_camera(camera);
 
     renderer.render();
+
     renderer.draw_point(pl1->pos);
-    renderer.draw_point(pl2->pos);
-    renderer.draw_point(pl3->pos);
-    renderer.draw_line({0, 0, 0}, {0, 1, 0});
 
     glfwSwapBuffers(window);
 

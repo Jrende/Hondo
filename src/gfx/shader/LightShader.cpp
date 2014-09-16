@@ -2,8 +2,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
-LightShader::LightShader(std::string name): 
+LightShader::LightShader(std::string name, std::string light_name): 
   shader_program(name),
+  light_name(light_name),
 
   mvp_mat_id(shader_program.get_uniform("mvpMatrix")),
   model_mat_id(shader_program.get_uniform("modelMatrix")),
@@ -12,13 +13,16 @@ LightShader::LightShader(std::string name):
   diffuse_sampler_id(shader_program.get_uniform("diffuse_sampler")),
   specular_sampler_id(shader_program.get_uniform("specular_sampler")),
   normal_sampler_id(shader_program.get_uniform("normal_sampler")),
-  light_color_id(shader_program.get_uniform("pointLight.color")),
-  light_ambientintensity_id(shader_program.get_uniform("pointLight.ambientIntensity")),
-  light_position_id(shader_program.get_uniform("pointLight.position")),
-  light_diffuseintensity_id(shader_program.get_uniform("pointLight.diffuseIntensity")),
+  light_color_id(shader_program.get_uniform(light_name + ".color")),
+  light_ambientintensity_id(shader_program.get_uniform(light_name + ".ambientIntensity")),
+  light_position_id(shader_program.get_uniform(light_name + ".position")),
+  light_diffuseintensity_id(shader_program.get_uniform(light_name + ".diffuseIntensity")),
   specular_intensity_id(shader_program.get_uniform("specular_intensity")),
   specular_exponent_id(shader_program.get_uniform("specular_exponent"))
 {
+}
+
+LightShader::LightShader(): LightShader("DirLight", "dirLight") {
 }
 
 bool LightShader::operator<(const LightShader& other) const {
@@ -77,16 +81,14 @@ void LightShader::set_light_position(const glm::vec3& light_position) {
   glUniform3fv(light_position_id, 1, glm::value_ptr(light_position));
 }
 
-void LightShader::set_base_light(const Light& light) {
-  set_light_position(light.pos);
-  set_light_color(light.color);
-  set_light_ambientintensity(light.ambient_intensity);
-  set_light_diffuseintensity(light.diffuse_intensity);
-}
-
 void LightShader::set_material(const Material& mat) {
   glUniform1f(specular_intensity_id, mat.specular_intensity);
   glUniform1f(specular_exponent_id, mat.specular_exponent);
 }
 
-    //virtual void set_light(const Light& light) const;
+void LightShader::set_light(const Light& light) {
+  set_light_position(light.pos);
+  set_light_color(light.color);
+  set_light_ambientintensity(light.ambient_intensity);
+  set_light_diffuseintensity(light.diffuse_intensity);
+}

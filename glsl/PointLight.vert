@@ -19,7 +19,6 @@ uniform vec3 eyeDir;
 
 void main(void) {
 	gl_Position = mvpMatrix * vec4(Position, 1.0);
-
 	TexCoord0 = TexCoord;
 	Normal0 = (modelMatrix * vec4(Normal, 0.0)).xyz;
 	WorldPos0 = (modelMatrix * vec4(Position, 1.0)).xyz;

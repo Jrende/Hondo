@@ -11,8 +11,8 @@ class LightShader;
 class LightShader {
   protected:
     ShaderProgram shader_program;
-    void set_base_light(const Light& light);
   private:
+    std::string light_name;
     GLuint mvp_mat_id,
 	   model_mat_id,
 	   eye_pos_id,
@@ -30,7 +30,8 @@ class LightShader {
 	   specular_intensity_id,
 	   specular_exponent_id;
   public:
-    LightShader(std::string name); 
+    LightShader(); 
+    LightShader(std::string name, std::string light_name);
     void use_shader();
     void stop();
     void set_diffuse_sampler(int sampler);
@@ -47,6 +48,6 @@ class LightShader {
     void set_light_position(const glm::vec3& light_position);
     void set_material(const Material& mat);
     bool operator<(const LightShader& other) const;
-    virtual void set_light(const Light& light) = 0;
+    virtual void set_light(const Light& light);
 };
 #endif
