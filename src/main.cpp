@@ -53,6 +53,9 @@ static void error_callback(int error, const char* description)
 }
 
 float step = 0.01f;
+static void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
+  step = fmax(0.01f, fmin(step * pow(1.5, y_offset), 5));
+}
 
 void rotate_camera(Camera& camera) {
   camera.rotate(-Input::get_mouse_dx() / 100.0f, camera.up);
@@ -91,9 +94,12 @@ int main(int argc, char ** argv) {
     printf("Version: %s\n", version);
     glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
     glfwSetKeyCallback(window, Input::key_callback);
+    glfwSetScrollCallback(window, scroll_callback);
     Input::set_active_window(window);
   }
   Renderer renderer(width, height);
+
+
   auto& camera = renderer.get_camera();
 
   Input::on(Actions::Forward, [&]() {
