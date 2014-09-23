@@ -7,5 +7,5 @@ uniform vec3 color;
 uniform mat4 mvp_mat;
 
 void main() {
-      outColor = vec4(color, 1.0f);
+      outColor = vec4(color, 0.1f);
 }

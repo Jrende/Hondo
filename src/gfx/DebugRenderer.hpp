@@ -17,6 +17,7 @@ class DebugRenderer {
   public:
     DebugRenderer();
     void draw_point(const glm::vec3& pos, const glm::mat4& vp_mat);
+    void draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::mat4& vp_mat, const glm::vec3& color);
     void draw_line(const glm::vec3& from, const glm::vec3& to, const glm::mat4& vp_mat, const glm::vec3& color);
 };
 #endif

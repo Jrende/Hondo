@@ -19,6 +19,34 @@
 #include "input/Input.hpp"
 #include "DebugUtils.h"
 
+std::vector<std::pair<glm::vec3, glm::vec3>> rain;
+void draw_rain(Renderer* r) {
+  static float speed = 0.5;
+  //if((rand() % 100)/100.0 < 0.5) {
+  //for(int i = 0; i < 5; i++) {
+  {
+    auto x = ((rand() % 100)/100.0) * 10.0f;
+    auto y = 20;
+    auto z = ((rand() % 100)/100.0) * 10.0f;
+    glm::vec3 from = glm::vec3(x,y,z);
+    glm::vec3 to = from + glm::vec3{5, -16, 5};
+    rain.push_back(std::make_pair(from, to));
+  }
+  std::vector<std::pair<glm::vec3, glm::vec3>> new_rain;
+  for(auto& rain_pos: rain) {
+    auto& from = std::get<0>(rain_pos);
+    auto& to = std::get<1>(rain_pos);
+    auto dir = glm::normalize(to - from);
+    from += dir * speed;
+    to += dir * speed;
+    if(from.y > 0) {
+      new_rain.push_back(rain_pos);
+    }
+  }
+  r->draw_lines(rain, {0.1, 0.1, 0.1});
+  rain = new_rain;
+}
+
 static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
@@ -31,9 +59,6 @@ void rotate_camera(Camera& camera) {
   camera.rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera.up, camera.dir));
 }
 
-float randx() {
-  return (float) (rand() % 100)/100;
-}
 const int width = 1024;
 const int height = 768;
 int main(int argc, char ** argv) {
@@ -199,8 +224,10 @@ int main(int argc, char ** argv) {
     Input::handle_input();
     glfwPollEvents();
     rotate_camera(camera);
+    renderer.pre_render();
 
     renderer.render();
+    draw_rain(&renderer);
 
     renderer.draw_point(pl1->pos);
 

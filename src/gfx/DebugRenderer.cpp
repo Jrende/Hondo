@@ -11,6 +11,20 @@ DebugRenderer::DebugRenderer():
   
 }
 
+void DebugRenderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::mat4& vp_mat, const glm::vec3& color) {
+  line_shader();
+  line_shader.set_color(color);
+  line_shader.set_MVP(vp_mat);
+  vertex_array.bind();
+  for(const auto& line: lines) {
+    line_shader.set_from(std::get<0>(line));
+    line_shader.set_to(std::get<1>(line));
+    glDrawArrays(GL_POINTS, 0, 1);
+  }
+  vertex_array.unbind();
+  line_shader.stop();
+}
+
 void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::mat4& vp_mat, const glm::vec3& color) {
   //Optimization opportunity: No need to rebind shader every line
   //Also, vertex_buffer binding might be reusable between line and point

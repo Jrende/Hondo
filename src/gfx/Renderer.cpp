@@ -12,12 +12,14 @@ Renderer::Renderer(int width, int height):
   spot_light_shader(std::make_shared<SpotLightShader>()),
   dir_light_shader(std::make_shared<LightShader>())
 {
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
   glDepthMask(GL_TRUE);
 
-  //glEnable(GL_CULL_FACE);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+  glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   lights[point_light_shader];
@@ -33,8 +35,11 @@ Camera& Renderer::get_camera() {
   return camera;
 }
 
-void Renderer::render() {
+void Renderer::pre_render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::render() {
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
   //foreach type of light
@@ -81,7 +86,17 @@ void Renderer::render() {
   }
 }
 
+void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
+  glEnable(GL_BLEND);
+  glm::mat4 mvp_mat = glm::mat4();
+  mvp_mat *= this->perspective_mat;
+  mvp_mat *= camera.get_view_mat();
+  debug_renderer.draw_lines(lines, mvp_mat, color);
+}
+
+
 void Renderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color) {
+  glEnable(GL_BLEND);
   glm::mat4 mvp_mat = glm::mat4();
   mvp_mat *= this->perspective_mat;
   mvp_mat *= camera.get_view_mat();
