@@ -23,6 +23,9 @@ class Renderer {
     std::shared_ptr<PointLightShader> point_light_shader;
     std::shared_ptr<SpotLightShader> spot_light_shader;
     std::shared_ptr<LightShader> dir_light_shader;
+    std::vector<std::shared_ptr<Light>> light_list;
+    int shown_light_index = -1;
+    int last_shown_light_index = 0;
 
     std::map<VertexArray, std::vector<std::shared_ptr<RenderObject>>> render_map;
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
@@ -39,6 +42,9 @@ class Renderer {
     void toggle_wireframe();
     void pre_render();
     void render();
+    void show_single_light(int index);
+    std::shared_ptr<Light> get_shown_light();
+    int light_count();
     void draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color);
     void draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color);
     void draw_point(const glm::vec3& pos);

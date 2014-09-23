@@ -53,6 +53,8 @@ static void error_callback(int error, const char* description)
 }
 
 float step = 0.01f;
+int selected_light = -1;
+
 static void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
   step = fmax(0.01f, fmin(step * pow(1.5, y_offset), 5));
 }
@@ -135,94 +137,74 @@ int main(int argc, char ** argv) {
   });
   ObjLoader loader;
   loader.preload("assets/Cube.obj");
-  //loader.preload("assets/Floor.obj");
+  loader.preload("assets/Floor.obj");
   loader.load_preloaded_data();
 
-  /*
+  const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
       if((i % 2 == 0) || (j % 2 == 0)) {
-	auto cube = RenderObject(vArrayPtr, loader.mesh_list[0]);
-	cube.translate({i*4.0f, 1.01f, j*4.0f});
+	auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
+	cube->translate({i*4.0f, 1.01f, j*4.0f});
 	renderer.add_object(cube);
       }
-      auto floor = RenderObject(vArrayPtr, loader.mesh_list[1]);
-      floor.translate({i*4.0f, 0, j*4.0f});
-      floor.scale({2, 2, 2});
+      auto floor = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[1]);
+      floor->translate({i*4.0f, 0, j*4.0f});
+      floor->scale({2, 2, 2});
       renderer.add_object(floor);
     }
   }
 
-  auto cube = RenderObject(vArrayPtr, loader.mesh_list[0]);
-  cube.translate({0, 1.01, 0});
-  renderer.add_object(cube);
-
-  auto floor = RenderObject(vArrayPtr, loader.mesh_list[1]);
-  floor.scale({10, 1, 10});
-  renderer.add_object(floor);
-  */
-  const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
-
-  auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
-  //cube->translate({0, 1.01, 0});
-  renderer.add_object(cube);
-
-  /*
-  auto cube2 = RenderObject{vArrayPtr, loader.mesh_list[0]};
-  cube2.translate({0, 1.01, 0});
-  renderer.add_object(cube2);
-  */
-
-
-
-  /*
-  auto pl1 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{1, 1, 1});
-  renderer.add_light(pl1);
-  */
-
-  auto pl1 = std::make_shared<Light>(glm::vec3{1, 1, 1}, glm::vec3{1, 1, 1});
+  auto pl1 = std::make_shared<SpotLight>(glm::vec3{0, 2, 0}, glm::vec3{0, -1, 0}, glm::vec3{1,1,1});
+  pl1->ambient_intensity = 0.10;
+  pl1->diffuse_intensity = 2.00;
   renderer.add_light(pl1);
 
-  /*
+  auto pl = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  pl->ambient_intensity = 0.10;
+  pl->diffuse_intensity = 0.10;
+  renderer.add_light(pl);
+
   auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 1, 0});
+  pl2->ambient_intensity = 0;
   renderer.add_light(pl2);
 
   auto pl3 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 0, 1});
+  pl3->ambient_intensity = 0;
   renderer.add_light(pl3);
-  */
 
   Input::on(GLFW_KEY_I, [&] {
-      pl1->translate({ 0.01f, 0, 0});
+      renderer.get_shown_light()->translate({ 0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_K, [&] {
-      pl1->translate({-0.01f, 0, 0});
+      renderer.get_shown_light()->translate({-0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_J, [&] {
-      pl1->translate({0, 0,  0.01f});
+      renderer.get_shown_light()->translate({0, 0,  0.01f});
   }, true);
   Input::on(GLFW_KEY_L, [&] {
-      pl1->translate({0, 0, -0.01f});
+      renderer.get_shown_light()->translate({0, 0, -0.01f});
   }, true);
   Input::on(GLFW_KEY_O, [&] {
-      pl1->translate({0,  0.01f, 0});
+      renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
   Input::on(GLFW_KEY_U, [&] {
-      pl1->translate({0,-0.01f, 0});
+      renderer.get_shown_light()->translate({0,-0.01f, 0});
   }, true);
 
-  std::vector<glm::vec3> positions;
-  std::vector<glm::vec3> normals;
-  std::vector<glm::vec3> tangents;
-  std::vector<glm::vec3> bitangents;
-  const auto& va = loader.vertex_array;
-  int size = loader.vertex_array.size() / 14;
-  std::cout << "size: " << size << std::endl;
-  for(auto i = 0; i < loader.vertex_array.size(); i+=14) {
-    positions.push_back({va[i + 0], va[i + 1], va[i + 2]});
-    normals.push_back({va[i + 5], va[i + 6], va[i + 7]});
-    tangents.push_back({va[i + 8], va[i + 9], va[i + 10]});
-    bitangents.push_back({va[i + 11], va[i + 12], va[i + 13]});
-  }
+  Input::on(GLFW_KEY_PAGE_UP, [&] {
+      if(selected_light < renderer.light_count()) {
+	renderer.show_single_light(++selected_light);
+      }
+  }, false);
+  Input::on(GLFW_KEY_PAGE_DOWN, [&] {
+      if(selected_light > 0) {
+	renderer.show_single_light(--selected_light);
+      }
+  }, false);
+  Input::on(GLFW_KEY_RIGHT_CONTROL, [&] {
+	renderer.show_single_light(-1);
+  }, false);
 
   float i = 0;
   camera.translate({0, 2, 0});

@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 #include <memory>
+#include <math.h>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
@@ -50,6 +51,10 @@ void Renderer::render() {
     //Remove when lights are implemented
     //foreach light instance
     for(auto& light: light_type.second) {
+      //std::cout << "light " << light_index << "==" << (light_list[light_index] != light) << "\n";
+      if(shown_light_index != -1 && light_list[shown_light_index] != light) {
+	continue;
+      }
       //Might need static_cast
       shader->set_light(*light);
       //foreach vertex format
@@ -129,13 +134,34 @@ void Renderer::toggle_wireframe() {
 
 void Renderer::add_light(std::shared_ptr<PointLight> point_light) {
   lights[point_light_shader].push_back(point_light);
+  light_list.push_back(point_light);
 }
 
 void Renderer::add_light(std::shared_ptr<SpotLight> spot_light) {
   lights[spot_light_shader].push_back(spot_light);
+  light_list.push_back(spot_light);
 }
 
 void Renderer::add_light(std::shared_ptr<Light> dir_light) {
   lights[dir_light_shader].push_back(dir_light);
+  light_list.push_back(dir_light);
 }
 
+void Renderer::show_single_light(int index) {
+  last_shown_light_index = fmax(0, shown_light_index);
+  index = fmax(-1, fmin(index, light_list.size() - 1));
+  std::cout << "Show light " << index << "\n";
+  shown_light_index = index;
+}
+
+std::shared_ptr<Light> Renderer::get_shown_light() {
+  if(shown_light_index == -1) {
+    return light_list[last_shown_light_index];
+  } else {
+    return light_list[shown_light_index];
+  }
+}
+
+int Renderer::light_count() {
+  return light_list.size();
+}
