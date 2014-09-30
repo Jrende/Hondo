@@ -38,6 +38,6 @@ class ObjLoader {
     void load_preloaded_data();
     void load_file(const std::string& path);
     void handleTokens(std::vector<std::string>& tokens);
-    std::vector<Mesh> preload(const std::string& filename);
+    void preload(const std::string& filename);
 };
 #endif

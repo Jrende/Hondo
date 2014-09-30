@@ -12,6 +12,7 @@
 
 using namespace boost;
 using namespace ObjLoaderUtils;
+using std::cout;
 ObjLoader::ObjLoader():
   vertex_array(),
   index_array()
@@ -132,17 +133,19 @@ std::vector<std::string> get_tokens(std::string line) {
   return tokens;
 }
 
-std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
+void ObjLoader::preload(const std::string& filename) {
   file_list.push_back(filename);
-  std::vector<Mesh> ret;
-  std::ifstream file;
   int current_vertex_count = 0;
-  file.open(filename, std::ios::in);
+  std::ifstream file(filename);
   if(!file.is_open()) {
     printf("Failed to open %s!", filename.c_str());
     exit(EXIT_FAILURE);
   }
   std::string line;
+
+  Mesh current_mesh;
+  current_mesh.name = "initial";
+  current_mesh.start = vertex_count;
   while(getline(file, line)) {
     auto tokens = get_tokens(line);
     if(tokens.size() == 0) {
@@ -150,46 +153,31 @@ std::vector<Mesh> ObjLoader::preload(const std::string& filename) {
     }
 
     if(!strcmp(tokens[0].c_str(), "g")) {
-      if(current_vertex_count > 0) {
-	Mesh mesh;
-	mesh.name = last_name;
-	mesh.start = last_end;
-	mesh.end = vertex_count + last_end;
-	mesh.material = mtl_loader.materials[last_material];
-
-	mesh_list.push_back(mesh); 
-	ret.push_back(mesh); 
+      current_mesh.end = vertex_count + current_mesh.start;
+      cout << "end: " << current_mesh.end << "\n";
+      if((current_mesh.start - current_mesh.end) > 0) {
+	mesh_list.push_back(current_mesh); 
       }
 
-      last_name = tokens[1];
-      last_end = vertex_count;
+      current_mesh = Mesh();
+      current_mesh.name = tokens[1];
+      current_mesh.start = current_vertex_count + vertex_count;
     } else if(!strcmp(tokens[0].c_str(), "f")) {
       if(tokens.size() == 4) {
-	vertex_count += 3;
 	current_vertex_count += 3;
       } else if(tokens.size() == 5) {
-	vertex_count += 6;
 	current_vertex_count += 6;
       }
     } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
       mtl_loader.load_materials("assets/" + tokens[1]);
     } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
-      last_material = tokens[1];
+      current_mesh.material = mtl_loader.materials[tokens[1]];
     }
   }
-  Mesh mesh;
-  mesh.name = last_name;
-  mesh.start = last_end;
-  mesh.end = vertex_count + last_end;
-  mesh.material = mtl_loader.materials[last_material];
+  current_mesh.end = current_vertex_count + current_mesh.start;
+  mesh_list.push_back(current_mesh);
 
-  mesh_list.push_back(mesh); 
-  ret.push_back(mesh);
-
-  file.close();
-  last_end = vertex_count;
-
-  return ret;
+  vertex_count += current_vertex_count;
 }
 
 void ObjLoader::load_preloaded_data() {
