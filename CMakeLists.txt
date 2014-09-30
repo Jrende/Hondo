@@ -13,15 +13,19 @@ add_subdirectory(lib)
 
 include_directories(SYSTEM
   lib/SOIL/src/
+  lib/bullet3/src
   lib/glfw-3.0.4/include/GLFW
   lib/glew-1.10.0/include/
   lib/glm
-  lib/boost_1_55_0/
 )
 
 set(ALL_LIBS
   SOIL
   ${Boost_LIBRARIES}
+  Bullet3Common
+  BulletCollision
+  BulletDynamics
+  LinearMath
   GLEW_1100
   glfw
 )

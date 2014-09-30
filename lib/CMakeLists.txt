@@ -8,6 +8,18 @@ SET(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
 SET(GLFW_BUILD_TESTS OFF CACHE STRING "" FORCE)
 add_subdirectory(glfw-3.0.4)
 
+set(BOOST_ROOT boost_1_55_0)
+find_package(Boost
+  1.55.0
+  REQUIRED
+)
+
+MESSAGE("Boost information:") 
+MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
+MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
+MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
+include_directories (${Boost_INCLUDE_DIRS})
+
 include_directories (SYSTEM
   glfw-3.0.4/include/GLFW/
   glew-1.10.0/include/
