@@ -1,9 +1,9 @@
 #include "Renderer.hpp"
-#include <memory>
-#include <math.h>
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
+#include <math.h>
+#include <memory>
 #include <stdlib.h>
 Renderer::Renderer(int width, int height):
   perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 100.0f)),
@@ -20,9 +20,9 @@ Renderer::Renderer(int width, int height):
 
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-  glFrontFace(GL_CCW);
+  //glEnable(GL_CULL_FACE);
+  //glCullFace(GL_BACK);
+  //glFrontFace(GL_CCW);
   lights[point_light_shader];
   lights[spot_light_shader];
   lights[dir_light_shader];
@@ -61,12 +61,14 @@ void Renderer::render() {
       for(auto& vertex_format: render_map) {
 	vertex_format.first.bind();
 	for(auto& render_object: vertex_format.second) {
+	  const glm::mat4& obj_model_mat = render_object->get_model_matrix();
+
 	  glm::mat4 mvp_mat = glm::mat4();
 	  mvp_mat *= this->perspective_mat;
 	  mvp_mat *= camera.get_view_mat();
-	  mvp_mat *= render_object->get_model_matrix();
+	  mvp_mat *= obj_model_mat;
 	  shader->set_mvp_mat(mvp_mat);
-	  shader->set_model_mat(render_object->get_model_matrix());
+	  shader->set_model_mat(obj_model_mat);
 	  
 	  shader->set_eye_pos(camera.pos);
 	  shader->set_eye_dir(camera.dir);
@@ -89,6 +91,7 @@ void Renderer::render() {
       glEnable(GL_BLEND);
     }
   }
+  draw_sky();
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
@@ -98,7 +101,6 @@ void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& li
   mvp_mat *= camera.get_view_mat();
   debug_renderer.draw_lines(lines, mvp_mat, color);
 }
-
 
 void Renderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color) {
   glEnable(GL_BLEND);
@@ -165,3 +167,26 @@ std::shared_ptr<Light> Renderer::get_shown_light() {
 int Renderer::light_count() {
   return light_list.size();
 }
+
+void Renderer::set_skybox(std::shared_ptr<SkyBox> skybox) {
+  this->skybox = skybox;
+}
+
+void Renderer::draw_sky() {
+  glDepthFunc(GL_EQUAL);
+  glDepthRange(1, 1);
+  skybox->update_pos();
+  sky_shader();
+  glm::mat4 mvp_mat = glm::mat4();
+  mvp_mat *= this->perspective_mat;
+  mvp_mat *= camera.get_view_mat();
+  sky_shader.set_mvp_mat(mvp_mat);
+  sky_shader.set_model_mat(skybox->get_model_matrix());
+  skybox->vertex_array.bind();
+  skybox->render();
+  skybox->vertex_array.unbind();
+  sky_shader.stop();
+  glDepthRange(0, 1);
+  glDepthFunc(GL_LEQUAL);
+}
+

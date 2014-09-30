@@ -10,8 +10,8 @@ RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
   vertex_array(vertex_array),
   pos(0, 0, 0),
   scale_val(1, 1, 1),
-  model_matrix(),
-  rot()
+  rot(),
+  model_matrix()
 {
 }
 
@@ -20,8 +20,8 @@ RenderObject::RenderObject(const RenderObject& other):
   vertex_array(other.vertex_array),
   pos(other.pos),
   scale_val(other.scale_val),
-  model_matrix(other.model_matrix),
-  rot(other.rot)
+  rot(other.rot),
+  model_matrix(other.model_matrix)
 {
   std::cout << "Invoked RenderObject copy constructor" << std::endl;
 }
@@ -54,7 +54,7 @@ void RenderObject::rotate(float angle, const glm::vec3& axis) {
 }
 
 const glm::mat4& RenderObject::get_model_matrix() {
-  model_matrix = glm::mat4(1.0f);
+  model_matrix = glm::mat4();
   model_matrix = glm::translate(model_matrix, pos);
   model_matrix = glm::scale(model_matrix, scale_val);
   model_matrix = model_matrix * glm::mat4_cast(rot);

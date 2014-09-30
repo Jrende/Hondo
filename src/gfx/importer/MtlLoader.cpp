@@ -16,8 +16,7 @@ last_material_name("")
 {
 }
 void MtlLoader::load_materials(const std::string& path) {
-    std::ifstream file;
-    file.open(path, std::ios::in);
+    std::ifstream file(path);
     if(!file.is_open()) {
       printf("Failed to open %s!", path.c_str());
       exit(EXIT_FAILURE);
@@ -37,7 +36,7 @@ void MtlLoader::load_materials(const std::string& path) {
 	handle_tokens(tokens);
       }
     }
-    file.close();
+
 }
 
 GLuint load_texture(const std::string& path) {

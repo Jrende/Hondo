@@ -7,9 +7,11 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <btBulletDynamicsCommon.h>
 
 #include "gfx/Renderer.hpp"
 #include "gfx/VertexArray.hpp"
+#include "gfx/SkyBox.hpp"
 #include "gfx/importer/ObjLoader.hpp"
 #include "gfx/lights/Light.hpp"
 #include "gfx/lights/PointLight.hpp"
@@ -138,7 +140,16 @@ int main(int argc, char ** argv) {
   ObjLoader loader;
   loader.preload("assets/Cube.obj");
   loader.preload("assets/Floor.obj");
+  loader.preload("assets/SkyDome16.obj");
   loader.load_preloaded_data();
+
+  /*
+  std::vector<VertexArray> vert_arrays;
+  for(const auto& array: loader.get_arrays()) {
+    const auto& vArrayPtr = VertexArray{array, loader.index_array, array.size() / 14, {3, 2, 3, 3, 3}};
+    vert_arrays.push_back(vArrayPtr);
+  }
+  */
 
   const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
   for(int i = -5; i < 5; i++) {
@@ -154,6 +165,9 @@ int main(int argc, char ** argv) {
       renderer.add_object(floor);
     }
   }
+
+  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, vArrayPtr, loader.mesh_list[2]);
+  renderer.set_skybox(sky);
 
   auto pl1 = std::make_shared<SpotLight>(glm::vec3{0, 2, 0}, glm::vec3{0, -1, 0}, glm::vec3{1,1,1});
   pl1->ambient_intensity = 0.10;

@@ -21,8 +21,8 @@ class RenderObject {
     const Mesh& mesh;
     const VertexArray& vertex_array;
     glm::vec3 pos, scale_val;
-    glm::mat4 model_matrix;
     glm::quat rot;
+    glm::mat4 model_matrix;
 
     void render() const;
     void translate(const glm::vec3& pos);
