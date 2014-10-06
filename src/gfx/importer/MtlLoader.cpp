@@ -39,7 +39,10 @@ void MtlLoader::load_materials(const std::string& path) {
 
 }
 
-GLuint load_texture(const std::string& path) {
+GLuint MtlLoader::load_texture(const std::string& path) {
+  if(textures.count(path) > 0) {
+    return textures[path];
+  }
   std::cout << ("load texture: " + path).c_str() << std::endl;
   GLuint tex_2d = SOIL_load_OGL_texture(
       ("assets/" + path).c_str(),
@@ -50,6 +53,7 @@ GLuint load_texture(const std::string& path) {
       //SOIL_FLAG_NTSC_SAFE_RGB |
       //SOIL_FLAG_COMPRESS_TO_DXT
       );
+  textures[path] = tex_2d;
   return tex_2d;
 }
 
