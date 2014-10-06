@@ -1,5 +1,5 @@
-#ifndef HONDO_SIMPLESHADER_HPP
-#define HONDO_SIMPLESHADER_HPP
+#ifndef HONDO_SKYSHADER_HPP
+#define HONDO_SKYSHADER_HPP
 class SkyShader;
 #include "ShaderProgram.hpp"
 #define GLM_FORCE_RADIANS
