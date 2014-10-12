@@ -75,9 +75,6 @@ int query_DXT_capability( void );
 #define SOIL_RGBA_S3TC_DXT1		0x83F1
 #define SOIL_RGBA_S3TC_DXT3		0x83F2
 #define SOIL_RGBA_S3TC_DXT5		0x83F3
-typedef void (APIENTRY * P_SOIL_GLCOMPRESSEDTEXIMAGE2DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid * data);
-typedef const GLubyte* (APIENTRY * P_SOIL_GLGETSTRINGIPROC) (GLenum name, GLuint index);
-P_SOIL_GLCOMPRESSEDTEXIMAGE2DPROC soilGlCompressedTexImage2D = NULL;
 unsigned int SOIL_direct_load_DDS(
 		const char *filename,
 		unsigned int reuse_texture_ID,
@@ -1286,7 +1283,7 @@ unsigned int
 					}
 					if( DDS_data )
 					{
-						soilGlCompressedTexImage2D(
+						glCompressedTexImage2D(
 							opengl_texture_target, MIPlevel,
 							internal_texture_format, MIPwidth, MIPheight, 0,
 							DDS_size, DDS_data );
@@ -1736,7 +1733,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 					S3TC_type, GL_UNSIGNED_BYTE, DDS_data );
 			} else
 			{
-				soilGlCompressedTexImage2D(
+				glCompressedTexImage2D(
 					cf_target, 0,
 					S3TC_type, width, height, 0,
 					DDS_main_size, DDS_data );
@@ -1766,7 +1763,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 				} else
 				{
 					mip_size = ((w+3)/4)*((h+3)/4)*block_size;
-					soilGlCompressedTexImage2D(
+					glCompressedTexImage2D(
 						cf_target, i,
 						S3TC_type, w, h, 0,
 						mip_size, &DDS_data[byte_offset] );
