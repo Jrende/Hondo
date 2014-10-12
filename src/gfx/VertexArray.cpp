@@ -92,7 +92,7 @@ void VertexArray::bind() const {
 }
 
 void VertexArray::render(Mesh mesh) const {
-  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.end - mesh.start, GL_UNSIGNED_INT, (void*) (mesh.start * 4L), 0);
+  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.count, GL_UNSIGNED_INT, (void*) (mesh.start * 4L), mesh.base_vertex);
 }
 
 void VertexArray::render_array(GLuint mode) {

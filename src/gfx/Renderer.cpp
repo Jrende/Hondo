@@ -20,9 +20,9 @@ Renderer::Renderer(int width, int height):
 
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-  //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);
-  //glFrontFace(GL_CCW);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
   lights[point_light_shader];
   lights[spot_light_shader];
   lights[dir_light_shader];
@@ -47,8 +47,11 @@ void Renderer::render() {
   for(auto& light_type: lights) {
     auto& shader = light_type.first;
 
+    for(auto& light: light_type.second) {
+      draw_point(light->pos);
+    }
+
     shader->use_shader();
-    //Remove when lights are implemented
     //foreach light instance
     for(auto& light: light_type.second) {
       //std::cout << "light " << light_index << "==" << (light_list[light_index] != light) << "\n";

@@ -138,10 +138,10 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  loader.preload("assets/Cube.obj");
-  loader.preload("assets/Floor.obj");
-  loader.preload("assets/SkyDome16.obj");
-  loader.load_preloaded_data();
+  loader.load_meshes("assets/Cube.obj");
+  //loader.load_meshes("assets/Floor.obj");
+  //loader.load_meshes("assets/SkyDome16.obj");
+  //loader.load_preloaded_data();
 
   /*
   std::vector<VertexArray> vert_arrays;
@@ -149,7 +149,6 @@ int main(int argc, char ** argv) {
     const auto& vArrayPtr = VertexArray{array, loader.index_array, array.size() / 14, {3, 2, 3, 3, 3}};
     vert_arrays.push_back(vArrayPtr);
   }
-  */
 
   const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
   for(int i = -5; i < 5; i++) {
@@ -159,6 +158,14 @@ int main(int argc, char ** argv) {
 	cube->translate({i*4.0f, 1.01f, j*4.0f});
 	renderer.add_object(cube);
       }
+
+      if((i % 3 == 0) && (j % 3 == 0)) {
+	auto r = ((rand() % 100)/100.0); auto g = ((rand() % 100)/100.0); auto b = ((rand() % 100)/100.0);
+	auto pl2 = std::make_shared<PointLight>(glm::vec3{i * 4, 2.1, j * 4}, glm::vec3{r, g, b});
+	pl2->ambient_intensity = 0;
+	renderer.add_light(pl2);
+      }
+
       auto floor = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[1]);
       floor->translate({i*4.0f, 0, j*4.0f});
       floor->scale({2, 2, 2});
@@ -169,24 +176,7 @@ int main(int argc, char ** argv) {
   std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, vArrayPtr, loader.mesh_list[2]);
   renderer.set_skybox(sky);
 
-  auto pl1 = std::make_shared<SpotLight>(glm::vec3{0, 2, 0}, glm::vec3{0, -1, 0}, glm::vec3{1,1,1});
-  pl1->ambient_intensity = 0.10;
-  pl1->diffuse_intensity = 2.00;
-  renderer.add_light(pl1);
-
-  auto pl = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
-  pl->ambient_intensity = 0.10;
-  pl->diffuse_intensity = 0.10;
-  renderer.add_light(pl);
-
-  auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 1, 0});
-  pl2->ambient_intensity = 0;
-  renderer.add_light(pl2);
-
-  auto pl3 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 0, 1});
-  pl3->ambient_intensity = 0;
-  renderer.add_light(pl3);
-
+  */
   Input::on(GLFW_KEY_I, [&] {
       renderer.get_shown_light()->translate({ 0.01f, 0, 0});
   }, true);
@@ -230,8 +220,6 @@ int main(int argc, char ** argv) {
 
     renderer.render();
     draw_rain(&renderer);
-
-    renderer.draw_point(pl1->pos);
 
     glfwSwapBuffers(window);
 
