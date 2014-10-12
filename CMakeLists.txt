@@ -17,7 +17,7 @@ add_library(GLEW_1100 STATIC
   ${GLEW_INCLUDE}
 )
 
-set(SOIL_SOURCE lib/SOIL/src)
+set(SOIL_SOURCE lib/SOIL)
 file(GLOB SOIL_SOURCES "${SOIL_SOURCE}/*.c")
 file(GLOB SOIL_HEADERS "${SOIL_SOURCE}/*.h")
 add_library(SOIL STATIC
@@ -47,6 +47,7 @@ set(ALL_LIBS
   GLEW_1100
   SOIL
   ${OPENGL_LIBRARY}
+  ${GLFW_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 
