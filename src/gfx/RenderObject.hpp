@@ -15,16 +15,15 @@ class RenderObject {
   private:
     void swap(RenderObject& first, RenderObject& second);
   public:
-    RenderObject(const VertexArray& vertex_array, const Mesh& mesh);
+    RenderObject(Mesh& mesh);
     RenderObject(const RenderObject& other);
 
-    const Mesh& mesh;
-    const VertexArray& vertex_array;
+    Mesh& mesh;
     glm::vec3 pos, scale_val;
     glm::quat rot;
     glm::mat4 model_matrix;
 
-    void render() const;
+    void render();
     void translate(const glm::vec3& pos);
     void scale(const glm::vec3& scale);
     void rotate(float angle, const glm::vec3& axis);

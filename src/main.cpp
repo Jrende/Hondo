@@ -7,7 +7,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <btBulletDynamicsCommon.h>
 
 #include "gfx/Renderer.hpp"
 #include "gfx/VertexArray.hpp"
@@ -138,9 +137,13 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  loader.load_meshes("assets/Cube.obj");
-  //loader.load_meshes("assets/Floor.obj");
-  //loader.load_meshes("assets/SkyDome16.obj");
+  const auto& cube = loader.load_meshes("assets/Cube.obj");
+  const auto& floor = loader.load_meshes("assets/Floor.obj");
+  const auto& skybox = loader.load_meshes("assets/SkyDome16.obj");
+  std::cout << "cube len: " << cube.size();
+  std::cout << "floor len: " << floor.size();
+  std::cout << "skybox len: " << skybox.size();
+  renderer.add_object(std::make_shared<RenderObject>(RenderObject((cube[0]))));
   //loader.load_preloaded_data();
 
   /*

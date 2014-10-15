@@ -29,7 +29,7 @@ Renderer::Renderer(int width, int height):
 }
 
 void Renderer::add_object(std::shared_ptr<RenderObject> rObj) {
-  render_map[rObj->vertex_array].push_back(rObj);
+  render_map[*(rObj->mesh.vertex_array)].push_back(rObj);
 }
 
 Camera& Renderer::get_camera() {
@@ -94,7 +94,7 @@ void Renderer::render() {
       glEnable(GL_BLEND);
     }
   }
-  draw_sky();
+  //draw_sky();
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
@@ -176,6 +176,7 @@ void Renderer::set_skybox(std::shared_ptr<SkyBox> skybox) {
 }
 
 void Renderer::draw_sky() {
+  /*
   glDepthFunc(GL_EQUAL);
   glDepthRange(1, 1);
   skybox->update_pos();
@@ -185,11 +186,11 @@ void Renderer::draw_sky() {
   mvp_mat *= camera.get_view_mat();
   sky_shader.set_mvp_mat(mvp_mat);
   sky_shader.set_model_mat(skybox->get_model_matrix());
-  skybox->vertex_array.bind();
+  skybox->mesh.vertex_array.bind();
   skybox->render();
-  skybox->vertex_array.unbind();
+  skybox->mesh.vertex_array.unbind();
   sky_shader.stop();
   glDepthRange(0, 1);
   glDepthFunc(GL_LEQUAL);
+  */
 }
-

@@ -1,7 +1,7 @@
 
 #include "SkyBox.hpp"
-SkyBox::SkyBox(Camera const& camera, const VertexArray& vertex_array, const Mesh& mesh):
-  RenderObject(vertex_array, mesh),
+SkyBox::SkyBox(Camera const& camera, Mesh& mesh):
+  RenderObject(mesh),
   camera(camera)
 {
 

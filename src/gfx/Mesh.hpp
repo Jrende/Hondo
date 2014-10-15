@@ -13,5 +13,6 @@ class Mesh {
     std::string name;
     Material material;
     std::shared_ptr<VertexArray> vertex_array;
+    void render();
 };
 #endif

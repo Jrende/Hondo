@@ -5,9 +5,8 @@
 #include <iostream>
 #include <GL/glew.h>
 
-RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
+RenderObject::RenderObject(Mesh& mesh) :
   mesh(mesh),
-  vertex_array(vertex_array),
   pos(0, 0, 0),
   scale_val(1, 1, 1),
   rot(),
@@ -17,7 +16,6 @@ RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
 
 RenderObject::RenderObject(const RenderObject& other):
   mesh(other.mesh),
-  vertex_array(other.vertex_array),
   pos(other.pos),
   scale_val(other.scale_val),
   rot(other.rot),
@@ -65,6 +63,6 @@ void RenderObject::set_position(const glm::vec3& pos) {
   this->pos = pos;
 }
 
-void RenderObject::render() const {
-  vertex_array.render(mesh);
+void RenderObject::render() {
+  mesh.render();
 }
