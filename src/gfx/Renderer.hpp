@@ -4,6 +4,7 @@ class Renderer;
 #include <map>
 #include <memory>
 #include <glm/glm.hpp>
+#include <GL/glew.h>
 
 #include "Camera.hpp"
 #include "DebugRenderer.hpp"

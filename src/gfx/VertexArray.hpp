@@ -14,26 +14,28 @@ class VertexArray {
     std::vector<unsigned int> index_data;
 
     unsigned int attr_size_sum;
-    GLuint vao_id, vbo_id, index_buf_id;
+    bool is_flipped = false;
     void flip(void);
     void init();
   public:
+    static int val1;
+    static int val2;
+    VertexArray(const VertexArray& other);
+    GLuint vao_id, vbo_id, index_buf_id;
     bool operator<(const VertexArray& other) const;
-    VertexArray();
+    VertexArray() = default;
     VertexArray(
 	std::vector<float> vertex_data,
 	std::vector<unsigned int> index_data,
 	unsigned int size,
 	std::vector<unsigned int> attribute_sizes);
-    VertexArray(const VertexArray& other);
     ~VertexArray();
-    void render(Mesh mesh) const;
+    void render(const Mesh& mesh) const;
     void render_array(GLuint mode);
     void bind() const;
     void unbind() const;
     void swap(VertexArray& l, VertexArray& r);
-    VertexArray operator=(VertexArray&& other);
-    VertexArray operator=(VertexArray& other);
-
+    VertexArray& operator=(VertexArray& other) = default;
+    VertexArray& operator=(VertexArray&& other);
 };
 #endif

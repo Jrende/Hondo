@@ -16,7 +16,6 @@ class RenderObject {
     void swap(RenderObject& first, RenderObject& second);
   public:
     RenderObject(Mesh& mesh);
-    RenderObject(const RenderObject& other);
 
     Mesh& mesh;
     glm::vec3 pos, scale_val;

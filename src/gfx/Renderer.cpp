@@ -29,7 +29,9 @@ Renderer::Renderer(int width, int height):
 }
 
 void Renderer::add_object(std::shared_ptr<RenderObject> rObj) {
-  render_map[*(rObj->mesh.vertex_array)].push_back(rObj);
+  if(rObj->mesh.vertex_array) {
+    render_map[*rObj->mesh.vertex_array].push_back(rObj);
+  }
 }
 
 Camera& Renderer::get_camera() {

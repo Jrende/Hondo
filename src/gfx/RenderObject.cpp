@@ -14,16 +14,6 @@ RenderObject::RenderObject(Mesh& mesh) :
 {
 }
 
-RenderObject::RenderObject(const RenderObject& other):
-  mesh(other.mesh),
-  pos(other.pos),
-  scale_val(other.scale_val),
-  rot(other.rot),
-  model_matrix(other.model_matrix)
-{
-  std::cout << "Invoked RenderObject copy constructor" << std::endl;
-}
-
 void RenderObject::bind_diffuse() const {
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, mesh.material.diffuse_map);

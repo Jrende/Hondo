@@ -137,27 +137,27 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  const auto& cube = loader.load_meshes("assets/Cube.obj");
-  const auto& floor = loader.load_meshes("assets/Floor.obj");
-  const auto& skybox = loader.load_meshes("assets/SkyDome16.obj");
-  std::cout << "cube len: " << cube.size();
-  std::cout << "floor len: " << floor.size();
-  std::cout << "skybox len: " << skybox.size();
-  renderer.add_object(std::make_shared<RenderObject>(RenderObject((cube[0]))));
-  //loader.load_preloaded_data();
+  loader.preload_file("assets/Cube.obj");
+  loader.preload_file("assets/Floor.obj");
+  loader.preload_file("assets/SkyDome16.obj");
+  loader.load_files();
+  Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
+  Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
+  std::cout << "\ncube vao_id: " << cube_mesh.vertex_array->vao_id << "\n";
+  std::cout << "floor vao_id: " << floor_mesh.vertex_array->vao_id << "\n";
+  Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
 
-  /*
-  std::vector<VertexArray> vert_arrays;
-  for(const auto& array: loader.get_arrays()) {
-    const auto& vArrayPtr = VertexArray{array, loader.index_array, array.size() / 14, {3, 2, 3, 3, 3}};
-    vert_arrays.push_back(vArrayPtr);
-  }
+  std::cout << "cube_mesh vertex: (" << cube_mesh.vertex_start << ", " << cube_mesh.vertex_count << ")\n";
+  std::cout << "cube_mesh index: (" << cube_mesh.index_start << ", " << cube_mesh.index_count << ")\n";
+  std::cout << std::endl;
+  std::cout << "floor_mesh vertex: (" << floor_mesh.vertex_start << ", " << floor_mesh.vertex_count << ")\n";
+  std::cout << "floor_mesh index: (" << floor_mesh.index_start << ", " << floor_mesh.index_count << ")\n";
+  //std::cout << "skybox len: " << skybox.size();
 
-  const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
       if((i % 2 == 0) || (j % 2 == 0)) {
-	auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
+	auto cube = std::make_shared<RenderObject>(cube_mesh);
 	cube->translate({i*4.0f, 1.01f, j*4.0f});
 	renderer.add_object(cube);
       }
@@ -169,17 +169,16 @@ int main(int argc, char ** argv) {
 	renderer.add_light(pl2);
       }
 
-      auto floor = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[1]);
+      auto floor = std::make_shared<RenderObject>(floor_mesh);
       floor->translate({i*4.0f, 0, j*4.0f});
       floor->scale({2, 2, 2});
       renderer.add_object(floor);
     }
   }
 
-  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, vArrayPtr, loader.mesh_list[2]);
+  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
   renderer.set_skybox(sky);
 
-  */
   Input::on(GLFW_KEY_I, [&] {
       renderer.get_shown_light()->translate({ 0.01f, 0, 0});
   }, true);
@@ -195,6 +194,25 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_O, [&] {
       renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
+
+  Input::on(GLFW_KEY_V, [&] {
+      VertexArray::val1 -= 1;
+      std::cout << "val1: " << VertexArray::val1 << "\n";
+  }, true);
+  Input::on(GLFW_KEY_B, [&] {
+      VertexArray::val1 += 1;
+      std::cout << "val1: " << VertexArray::val1 << "\n";
+  }, true);
+
+  Input::on(GLFW_KEY_N, [&] {
+      VertexArray::val2 -= 1;
+      std::cout << "val2: " << VertexArray::val2 << "\n";
+  });
+  Input::on(GLFW_KEY_M, [&] {
+      VertexArray::val2 += 1;
+      std::cout << "val2: " << VertexArray::val2 << "\n";
+  });
+
   Input::on(GLFW_KEY_U, [&] {
       renderer.get_shown_light()->translate({0,-0.01f, 0});
   }, true);

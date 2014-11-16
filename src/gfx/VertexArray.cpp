@@ -6,8 +6,15 @@
 #include <glfw3.h>
 
 #include "VertexArray.hpp"
+int VertexArray::val1 = 0;
+int VertexArray::val2 = 0;
 
-VertexArray::VertexArray(std::vector<float> vertex_data, std::vector<unsigned int> index_data, unsigned int size, std::vector<unsigned int> attribute_sizes):
+VertexArray::VertexArray(
+    std::vector<float> vertex_data,
+    std::vector<unsigned int> index_data,
+    unsigned int size,
+    std::vector<unsigned int> attribute_sizes
+  ):
   vertex_count(size),
   attribute_sizes(attribute_sizes),
   vertex_data(vertex_data),
@@ -15,8 +22,8 @@ VertexArray::VertexArray(std::vector<float> vertex_data, std::vector<unsigned in
 {
   init();
   flip();
+  std::cout << "Invoked constructor of VertexArray" << std::endl;
 }
-
 
 VertexArray::VertexArray(const VertexArray& other):
   vertex_count(other.vertex_count),
@@ -29,22 +36,18 @@ VertexArray::VertexArray(const VertexArray& other):
   index_buf_id(other.index_buf_id)
 {
   std::cout << "Invoked copy constructor of VertexArray" << std::endl;
+  //init();
+  //flip();
 }
 
-VertexArray VertexArray::operator=(VertexArray&& other) {
+VertexArray& VertexArray::operator=(VertexArray&& other) {
   std::cout << "Invoked VertexArray move assignment operator" << std::endl;
   swap(*this, other);
   return *this;
 }
 
-VertexArray VertexArray::operator=(VertexArray& other) {
-  std::cout << "Invoked VertexArray copy assignment operator" << std::endl;
-  VertexArray render_object{other};
-  swap(*this, render_object);
-  return *this;
-}
-
 VertexArray::~VertexArray() {
+  std::cout << "Deleted VertexArray: " << vao_id << std::endl;
   glDeleteVertexArrays(1, &vao_id);
   glDeleteBuffers(1, &vbo_id);
   glDeleteBuffers(1, &index_buf_id);
@@ -61,6 +64,7 @@ void VertexArray::init() {
 }
 
 void VertexArray::flip(void) {
+  is_flipped = true;
   int data_size = attr_size_sum * vertex_count * sizeof(float);
 
   glBindVertexArray(vao_id);
@@ -91,8 +95,9 @@ void VertexArray::bind() const {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
 }
 
-void VertexArray::render(Mesh mesh) const {
-  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.count, GL_UNSIGNED_INT, (void*) (mesh.start * 4L), mesh.base_vertex);
+void VertexArray::render(const Mesh& mesh) const {
+  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.index_count + val1, GL_UNSIGNED_INT, (void*) (0 * 4L), 0);
+  //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*) 0);
 }
 
 void VertexArray::render_array(GLuint mode) {
