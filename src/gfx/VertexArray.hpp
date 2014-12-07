@@ -9,13 +9,11 @@ class VertexArray;
 class VertexArray {
   private:
     unsigned int vertex_count;
+    unsigned int size;
     std::vector<unsigned int> attribute_sizes;
     std::vector<float> vertex_data;
     std::vector<unsigned int> index_data;
-
-    unsigned int attr_size_sum;
-    bool is_flipped = false;
-    void flip(void);
+    void create_buffers();
     void init();
   public:
     static int val1;

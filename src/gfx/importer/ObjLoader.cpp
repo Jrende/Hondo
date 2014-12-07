@@ -79,6 +79,7 @@ void ObjLoader::preload_file(const std::string& path) {
 }
 
 void ObjLoader::create_face(std::vector<std::string> tokens) {
+
   Face face;
   for(auto& v: tokens) {
     if(!strcmp(v.c_str(), "f")) continue;
@@ -133,24 +134,19 @@ void ObjLoader::add_face(Face& face) {
 
 void ObjLoader::load_files() {
   for(auto& filename_mesh_pair: meshes_per_file) {
-    std::cout << "Creating buffers for " << filename_mesh_pair.first << "\n";
     for(auto& mesh: filename_mesh_pair.second) {
-      std::vector<float> vertex_data(
-	  vertex_buffer.begin() + mesh.vertex_start * 14,
-	  vertex_buffer.begin() + ((mesh.vertex_start + mesh.vertex_count) * 14));
-      std::vector<unsigned int> index_data(
-	  index_buffer.begin() + mesh.index_start,
-	  index_buffer.begin() + (mesh.index_start + mesh.index_count));
-      std::vector<unsigned int> attr_data({3, 2, 3, 3, 3});
       auto vertex_array = std::make_shared<VertexArray>(
-	  vertex_data,
-	  index_data,
-	  mesh.index_count,
-	  attr_data
+	std::vector<float>(
+	    vertex_buffer.begin() + mesh.vertex_start * 14,
+	    vertex_buffer.begin() + ((mesh.vertex_start + mesh.vertex_count) * 14)),
+	std::vector<unsigned int>(
+	    index_buffer.begin() + mesh.index_start,
+	    index_buffer.begin() + (mesh.index_start + mesh.index_count)),
+	mesh.index_count,
+	std::vector<unsigned int>({3, 2, 3, 3, 3})
       );
       vertex_array_store.push_back(vertex_array);
       mesh.vertex_array = (*vertex_array_store.back());
-      std::cout << "name: " << mesh.name << "\n";
     }
   }
 }

@@ -20,7 +20,7 @@ char* toChar(T t) {
   return oss.str().c_str();
 }
 
-double calcFPS(GLFWwindow* window, double theTimeInterval = 1.0, std::string theWindowTitle = "NONE") {
+inline double calcFPS(GLFWwindow* window, double theTimeInterval = 1.0, std::string theWindowTitle = "NONE") {
   static double t0Value       = glfwGetTime(); // Set the initial time to now
   static int    fpsFrameCount = 0;             // Set the initial FPS frame count to 0
   static double fps           = 0.0;           // Set the initial FPS value to 0.0

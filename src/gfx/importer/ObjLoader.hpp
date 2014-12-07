@@ -16,6 +16,11 @@ class ObjLoader {
     MtlLoader mtl_loader;
     std::map<std::string, std::vector<Mesh>> meshes_per_file;
     std::vector<std::shared_ptr<VertexArray>> vertex_array_store;
+
+    std::vector<std::vector<float>> vertex_data_store;
+    std::vector<std::vector<unsigned int>> index_data_store;
+    std::vector<std::vector<unsigned int>> attr_data_store;
+
     std::vector<float> vertex_buffer;
     std::vector<unsigned int> index_buffer;
     std::vector<std::string> paths;
