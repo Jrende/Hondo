@@ -148,8 +148,12 @@ int main(int argc, char ** argv) {
   //Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
   std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
+  auto pl2 = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  pl2->ambient_intensity = 0.5f;
+  renderer.add_light(pl2);
+
   auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 5, 0}, glm::vec3{1, 1, 1});
-  pl2->ambient_intensity = 1.0f;
+  pl2->ambient_intensity = 0.0f;
   renderer.add_light(pl2);
 
   std::cout << "Amount of objects: " << sponza_meshes.size() << std::endl;

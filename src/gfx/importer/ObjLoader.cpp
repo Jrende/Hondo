@@ -11,6 +11,7 @@ using namespace boost;
 using namespace ObjLoaderUtils;
 using namespace std;
 
+//Might be source of problems
 void ObjLoader::create_vertex(const std::string& vertex_string, Vertex& vertex) {
   vector<string> tokenizer;
   split(tokenizer, vertex_string, is_any_of("/"));
@@ -48,7 +49,9 @@ void ObjLoader::preload_file(const std::string& path) {
     vector<string> tokens;
     split(tokens, line, is_any_of(" "));
 
-    if(!strcmp(tokens[0].c_str(), "v")) {
+    if(!strcmp(tokens[0].c_str(), "#")) {
+      continue;
+    } else if(!strcmp(tokens[0].c_str(), "v")) {
       for(int i = 0; i < 3; i++)
 	pos.push_back(strtof(tokens[i + 1].c_str(), NULL));
     } else if(!strcmp(tokens[0].c_str(), "vt")) {
@@ -61,6 +64,7 @@ void ObjLoader::preload_file(const std::string& path) {
       if(current_mesh.vertex_count > 0) 
 	meshes_per_file[path].push_back(current_mesh);
       current_mesh = Mesh(indices_count, vertices_count, tokens[1]);
+      last_index = 0;
     } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
       mtl_loader.load_materials("assets/" + tokens[1]);
     } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
@@ -79,7 +83,6 @@ void ObjLoader::preload_file(const std::string& path) {
 }
 
 void ObjLoader::create_face(std::vector<std::string> tokens) {
-
   Face face;
   for(auto& v: tokens) {
     if(!strcmp(v.c_str(), "f")) continue;
@@ -106,6 +109,7 @@ void ObjLoader::add_vertex_to_indices(int index) {
   index_buffer.push_back(index);
   current_mesh.index_count++;
   indices_count++;
+  unsigned int vert_start = current_mesh.vertex_start;
 }
 
 const std::vector<Mesh>& ObjLoader::get_meshes(const std::string& path) {
@@ -149,4 +153,15 @@ void ObjLoader::load_files() {
       mesh.vertex_array = (*vertex_array_store.back());
     }
   }
+
+  std::cout << "\n";
+  for(const auto& i: vertex_buffer) {
+    std::cout << i << ", ";
+  }
+  std::cout << "\n";
+  for(const auto& i: index_buffer) {
+    std::cout << i << ", ";
+  }
+  std::cout << "\n";
+
 }
