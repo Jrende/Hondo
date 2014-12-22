@@ -5,9 +5,8 @@
 #include <iostream>
 #include <GL/glew.h>
 
-RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
+RenderObject::RenderObject(Mesh& mesh) :
   mesh(mesh),
-  vertex_array(vertex_array),
   pos(0, 0, 0),
   scale_val(1, 1, 1),
   rot(),
@@ -15,28 +14,26 @@ RenderObject::RenderObject(const VertexArray& vertex_array, const Mesh& mesh) :
 {
 }
 
-RenderObject::RenderObject(const RenderObject& other):
-  mesh(other.mesh),
-  vertex_array(other.vertex_array),
-  pos(other.pos),
-  scale_val(other.scale_val),
-  rot(other.rot),
-  model_matrix(other.model_matrix)
-{
-  std::cout << "Invoked RenderObject copy constructor" << std::endl;
-}
-
 void RenderObject::bind_diffuse() const {
+  if(mesh.material.diffuse_map == 0) {
+    std::cout << mesh.material.name << " diffuse map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, mesh.material.diffuse_map);
 }
 
 void RenderObject::bind_normal() const {
+  if(mesh.material.normal_map == 0) {
+    std::cout << mesh.material.name << " normal map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, mesh.material.normal_map);
 }
 
 void RenderObject::bind_specular() const {
+  if(mesh.material.specular_map == 0) {
+    std::cout << mesh.material.name << " specular map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, mesh.material.specular_map);
 }
@@ -65,6 +62,6 @@ void RenderObject::set_position(const glm::vec3& pos) {
   this->pos = pos;
 }
 
-void RenderObject::render() const {
-  vertex_array.render(mesh);
+void RenderObject::render() {
+  mesh.render();
 }

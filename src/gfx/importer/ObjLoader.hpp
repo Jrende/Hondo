@@ -8,36 +8,39 @@ class ObjLoader;
 #include <memory>
 #include "MtlLoader.hpp"
 #include "../Mesh.hpp"
+#include "../VertexArray.hpp"
+#include "ObjLoaderUtils.hpp"
 
 class ObjLoader {
   private:
-    void createFace(const std::vector<std::string>& face);
-
-    std::vector<std::array<float, 3>> posList;
-    std::vector<std::array<float, 2>> uvList;
-    std::vector<std::array<float, 3>> normalList;
-    std::map<std::string, unsigned int> loaded_vertices_map;
-    
     MtlLoader mtl_loader;
-    std::vector<std::string> file_list;
-    unsigned int last_index_count = 0;
+    std::map<std::string, std::vector<Mesh>> meshes_per_file;
+    std::vector<std::shared_ptr<VertexArray>> vertex_array_store;
+
+    std::vector<std::vector<float>> vertex_data_store;
+    std::vector<std::vector<unsigned int>> index_data_store;
+    std::vector<std::vector<unsigned int>> attr_data_store;
+
+    std::vector<float> vertex_buffer;
+    std::vector<unsigned int> index_buffer;
+    std::vector<std::string> paths;
+    unsigned int vertices_count = 0;
+    unsigned int indices_count = 0;
     unsigned int last_index = 0;
-    unsigned int last_end = 0;
-    std::string last_name = "";
-    std::string last_material = "";
+    Mesh current_mesh;
+
+    std::map<std::string, int> loaded_vertices;
+    std::vector<float> pos;
+    std::vector<float> uvs;
+    std::vector<float> normals;
+
+    void create_face(std::vector<std::string> tokens);
+    void add_face(Face& face);
+    void add_vertex_to_indices(int index);
+    void create_vertex(const std::string& vertex_string, Vertex& vertex);
   public:
-    unsigned int vertex_count = 0;
-
-    ObjLoader();
-
-    std::vector<Mesh> mesh_list;
-
-    std::vector<float> vertex_array;
-    std::vector<unsigned int> index_array;
-
-    void load_preloaded_data();
-    void load_file(const std::string& path);
-    void handleTokens(std::vector<std::string>& tokens);
-    void preload(const std::string& filename);
+    void load_files();
+    void preload_file(const std::string& path);
+    const std::vector<Mesh>& get_meshes(const std::string& path);
 };
 #endif
