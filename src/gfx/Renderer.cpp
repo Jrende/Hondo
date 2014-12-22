@@ -99,7 +99,7 @@ void Renderer::render() {
       glEnable(GL_BLEND);
     }
   }
-  //draw_sky();
+  draw_sky();
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {

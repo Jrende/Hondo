@@ -65,6 +65,5 @@ void main() {
   vec4 color = texture2D(diffuse_sampler, TexCoord0.st);
   color += getSpecular(normal);
   color *= getDiffuse(normal);
-  //FragColor = color;
-  FragColor = vec4(1, 1, 1, 1);
+  FragColor = color;
 }

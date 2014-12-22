@@ -68,6 +68,10 @@ void ObjLoader::preload_file(const std::string& path) {
     } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
       mtl_loader.load_materials("assets/" + tokens[1]);
     } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
+      if(current_mesh.vertex_count > 0) 
+	meshes_per_file[path].push_back(current_mesh);
+      current_mesh = Mesh(indices_count, vertices_count, tokens[1]);
+      last_index = 0;
       current_mesh.material = mtl_loader.materials[tokens[1]];
     } else if(!strcmp(tokens[0].c_str(), "f")) {
       std::vector<std::string> quad_face{tokens[1], tokens[2], tokens[3]};
@@ -109,7 +113,6 @@ void ObjLoader::add_vertex_to_indices(int index) {
   index_buffer.push_back(index);
   current_mesh.index_count++;
   indices_count++;
-  unsigned int vert_start = current_mesh.vertex_start;
 }
 
 const std::vector<Mesh>& ObjLoader::get_meshes(const std::string& path) {
@@ -152,16 +155,6 @@ void ObjLoader::load_files() {
       vertex_array_store.push_back(vertex_array);
       mesh.vertex_array = (*vertex_array_store.back());
     }
+    std::cout << "file " << filename_mesh_pair.first << " loaded.\n";
   }
-
-  std::cout << "\n";
-  for(const auto& i: vertex_buffer) {
-    std::cout << i << ", ";
-  }
-  std::cout << "\n";
-  for(const auto& i: index_buffer) {
-    std::cout << i << ", ";
-  }
-  std::cout << "\n";
-
 }

@@ -13,6 +13,17 @@ inline int checkForGlError() {
   return error;
 }
 
+inline int checkForGlErrorNoShut() {
+  GLenum error; 
+  if((error = glGetError()) > 0) {
+    std::cout << "GL error " << error << "!\n";
+  } else {
+    std::cout << "No error\n";
+  }
+
+  return error;
+}
+
 template<class T>
 char* toChar(T t) {
   std::ostringstream oss;

@@ -15,16 +15,25 @@ RenderObject::RenderObject(Mesh& mesh) :
 }
 
 void RenderObject::bind_diffuse() const {
+  if(mesh.material.diffuse_map == 0) {
+    std::cout << mesh.material.name << " diffuse map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, mesh.material.diffuse_map);
 }
 
 void RenderObject::bind_normal() const {
+  if(mesh.material.normal_map == 0) {
+    std::cout << mesh.material.name << " normal map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, mesh.material.normal_map);
 }
 
 void RenderObject::bind_specular() const {
+  if(mesh.material.specular_map == 0) {
+    std::cout << mesh.material.name << " specular map not loaded\n";
+  }
   glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, mesh.material.specular_map);
 }

@@ -137,60 +137,37 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  //loader.preload_file("assets/Cube.obj");
-  //loader.preload_file("assets/Floor.obj");
   loader.preload_file("assets/sponza.obj");
-  //loader.preload_file("assets/SkyDome16.obj");
+  loader.preload_file("assets/SkyDome16.obj");
+  std::cout << "Load files\n";
   loader.load_files();
   std::cout << "Loading files done\n";
-  //Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
-  //Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
-  //Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
+  Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
   std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
   auto pl2 = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
-  pl2->ambient_intensity = 0.5f;
+  pl2->ambient_intensity = 0.1f;
   renderer.add_light(pl2);
 
-  auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 5, 0}, glm::vec3{1, 1, 1});
-  pl2->ambient_intensity = 0.0f;
-  renderer.add_light(pl2);
-
-  std::cout << "Amount of objects: " << sponza_meshes.size() << std::endl;
   for(auto& sponza_mesh: sponza_meshes) {
     auto mesh = std::make_shared<RenderObject>(sponza_mesh);
     mesh->scale({0.01, 0.01, 0.01});
     renderer.add_object(mesh);
   }
-  /*
-
-    auto mesh = std::make_shared<RenderObject>(sponza_meshes[0]);
-    mesh->translate({-476, -128, -224});
-    renderer.add_object(mesh);
 
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
-      if((i % 2 == 0) || (j % 2 == 0)) {
-	auto cube = std::make_shared<RenderObject>(cube_mesh);
-	cube->translate({i*4.0f, 1.01f, j*4.0f});
-	renderer.add_object(cube);
-      }
       if((i % 3 == 0) && (j % 3 == 0)) {
 	auto r = ((rand() % 100)/100.0); auto g = ((rand() % 100)/100.0); auto b = ((rand() % 100)/100.0);
 	auto pl2 = std::make_shared<PointLight>(glm::vec3{i * 4, 2.1, j * 4}, glm::vec3{r, g, b});
 	pl2->ambient_intensity = 0;
 	renderer.add_light(pl2);
       }
-      auto floor = std::make_shared<RenderObject>(floor_mesh);
-      floor->translate({i*4.0f, 0, j*4.0f});
-      floor->scale({2, 2, 2});
-      renderer.add_object(floor);
     }
   }
-  */
 
-  //std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
-  //renderer.set_skybox(sky);
+  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
+  renderer.set_skybox(sky);
 
   Input::on(GLFW_KEY_I, [&] {
       renderer.get_shown_light()->translate({ 0.01f, 0, 0});
