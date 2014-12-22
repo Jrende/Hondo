@@ -13,7 +13,7 @@
 	* everybody at gamedev.net
 */
 
-#define SOIL_CHECK_FOR_GL_ERRORS 0
+#define SOIL_CHECK_FOR_GL_ERRORS 1
 
 #include <GL/glew.h>
 #ifdef WIN32

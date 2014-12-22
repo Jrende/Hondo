@@ -7,7 +7,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <btBulletDynamicsCommon.h>
 
 #include "gfx/Renderer.hpp"
 #include "gfx/VertexArray.hpp"
@@ -138,54 +137,37 @@ int main(int argc, char ** argv) {
       Input::lock_mouse();
   });
   ObjLoader loader;
-  loader.preload("assets/Cube.obj");
-  loader.preload("assets/Floor.obj");
-  loader.preload("assets/SkyDome16.obj");
-  loader.load_preloaded_data();
+  loader.preload_file("assets/sponza.obj");
+  loader.preload_file("assets/SkyDome16.obj");
+  std::cout << "Load files\n";
+  loader.load_files();
+  std::cout << "Loading files done\n";
+  Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
+  std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
-  /*
-  std::vector<VertexArray> vert_arrays;
-  for(const auto& array: loader.get_arrays()) {
-    const auto& vArrayPtr = VertexArray{array, loader.index_array, array.size() / 14, {3, 2, 3, 3, 3}};
-    vert_arrays.push_back(vArrayPtr);
+  auto pl2 = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  pl2->ambient_intensity = 0.1f;
+  renderer.add_light(pl2);
+
+  for(auto& sponza_mesh: sponza_meshes) {
+    auto mesh = std::make_shared<RenderObject>(sponza_mesh);
+    mesh->scale({0.01, 0.01, 0.01});
+    renderer.add_object(mesh);
   }
-  */
 
-  const auto& vArrayPtr = VertexArray{loader.vertex_array, loader.index_array, loader.vertex_count, {3, 2, 3, 3, 3}};
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
-      if((i % 2 == 0) || (j % 2 == 0)) {
-	auto cube = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[0]);
-	cube->translate({i*4.0f, 1.01f, j*4.0f});
-	renderer.add_object(cube);
+      if((i % 3 == 0) && (j % 3 == 0)) {
+	auto r = ((rand() % 100)/100.0); auto g = ((rand() % 100)/100.0); auto b = ((rand() % 100)/100.0);
+	auto pl2 = std::make_shared<PointLight>(glm::vec3{i * 4, 2.1, j * 4}, glm::vec3{r, g, b});
+	pl2->ambient_intensity = 0;
+	renderer.add_light(pl2);
       }
-      auto floor = std::make_shared<RenderObject>(vArrayPtr, loader.mesh_list[1]);
-      floor->translate({i*4.0f, 0, j*4.0f});
-      floor->scale({2, 2, 2});
-      renderer.add_object(floor);
     }
   }
 
-  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, vArrayPtr, loader.mesh_list[2]);
+  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
   renderer.set_skybox(sky);
-
-  auto pl1 = std::make_shared<SpotLight>(glm::vec3{0, 2, 0}, glm::vec3{0, -1, 0}, glm::vec3{1,1,1});
-  pl1->ambient_intensity = 0.10;
-  pl1->diffuse_intensity = 2.00;
-  renderer.add_light(pl1);
-
-  auto pl = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
-  pl->ambient_intensity = 0.10;
-  pl->diffuse_intensity = 0.10;
-  renderer.add_light(pl);
-
-  auto pl2 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 1, 0});
-  pl2->ambient_intensity = 0;
-  renderer.add_light(pl2);
-
-  auto pl3 = std::make_shared<PointLight>(glm::vec3{0, 2.1, 0}, glm::vec3{0, 0, 1});
-  pl3->ambient_intensity = 0;
-  renderer.add_light(pl3);
 
   Input::on(GLFW_KEY_I, [&] {
       renderer.get_shown_light()->translate({ 0.01f, 0, 0});
@@ -202,6 +184,25 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_O, [&] {
       renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
+
+  Input::on(GLFW_KEY_V, [&] {
+      VertexArray::val1 -= 1;
+      std::cout << "val1: " << VertexArray::val1 << "\n";
+  }, true);
+  Input::on(GLFW_KEY_B, [&] {
+      VertexArray::val1 += 1;
+      std::cout << "val1: " << VertexArray::val1 << "\n";
+  }, true);
+
+  Input::on(GLFW_KEY_N, [&] {
+      VertexArray::val2 -= 1;
+      std::cout << "val2: " << VertexArray::val2 << "\n";
+  }, true);
+  Input::on(GLFW_KEY_M, [&] {
+      VertexArray::val2 += 1;
+      std::cout << "val2: " << VertexArray::val2 << "\n";
+  }, true);
+
   Input::on(GLFW_KEY_U, [&] {
       renderer.get_shown_light()->translate({0,-0.01f, 0});
   }, true);
@@ -230,8 +231,6 @@ int main(int argc, char ** argv) {
 
     renderer.render();
     draw_rain(&renderer);
-
-    renderer.draw_point(pl1->pos);
 
     glfwSwapBuffers(window);
 

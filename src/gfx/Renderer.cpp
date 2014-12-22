@@ -1,12 +1,13 @@
 #include "Renderer.hpp"
 #include <GL/glew.h>
+#include "../DebugUtils.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <math.h>
 #include <memory>
 #include <stdlib.h>
 Renderer::Renderer(int width, int height):
-  perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 100.0f)),
+  perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 1000.0f)),
   debug_renderer(),
   camera(),
   point_light_shader(std::make_shared<PointLightShader>()),
@@ -21,15 +22,17 @@ Renderer::Renderer(int width, int height):
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
   //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);
-  //glFrontFace(GL_CCW);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
   lights[point_light_shader];
   lights[spot_light_shader];
   lights[dir_light_shader];
 }
 
 void Renderer::add_object(std::shared_ptr<RenderObject> rObj) {
-  render_map[rObj->vertex_array].push_back(rObj);
+  if(rObj->mesh.vertex_array) {
+    render_map[*rObj->mesh.vertex_array].push_back(rObj);
+  }
 }
 
 Camera& Renderer::get_camera() {
@@ -47,8 +50,11 @@ void Renderer::render() {
   for(auto& light_type: lights) {
     auto& shader = light_type.first;
 
+    for(auto& light: light_type.second) {
+      draw_point(light->pos);
+    }
+
     shader->use_shader();
-    //Remove when lights are implemented
     //foreach light instance
     for(auto& light: light_type.second) {
       //std::cout << "light " << light_index << "==" << (light_list[light_index] != light) << "\n";
@@ -73,6 +79,7 @@ void Renderer::render() {
 	  shader->set_eye_pos(camera.pos);
 	  shader->set_eye_dir(camera.dir);
 
+	  //HANDLE CASE WHERE SPEC/NORMAL/DIFFUSE DOESN'T EXIST
 	  shader->set_diffuse_sampler(0);
 	  render_object->bind_diffuse();
 
@@ -82,6 +89,7 @@ void Renderer::render() {
 	  shader->set_specular_sampler(2);
 	  render_object->bind_specular();
 
+	  //checkForGlError();
 	  shader->set_material(render_object->mesh.material);
 
 	  render_object->render();
@@ -182,11 +190,10 @@ void Renderer::draw_sky() {
   mvp_mat *= camera.get_view_mat();
   sky_shader.set_mvp_mat(mvp_mat);
   sky_shader.set_model_mat(skybox->get_model_matrix());
-  skybox->vertex_array.bind();
+  skybox->mesh.vertex_array->bind();
   skybox->render();
-  skybox->vertex_array.unbind();
+  skybox->mesh.vertex_array->unbind();
   sky_shader.stop();
   glDepthRange(0, 1);
   glDepthFunc(GL_LEQUAL);
 }
-

@@ -7,7 +7,7 @@ class SkyBox: public RenderObject {
   private:
     const Camera& camera;
   public:
-    SkyBox(Camera const& camera, const VertexArray& vertex_array, const Mesh& mesh);
+    SkyBox(Camera const& camera, Mesh& mesh);
     void update_pos();
 };
 #endif

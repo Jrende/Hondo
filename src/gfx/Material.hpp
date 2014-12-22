@@ -10,12 +10,12 @@ class Material {
   public:
     std::string name;
 
-    GLuint diffuse_map;
-    GLuint specular_map;
-    GLuint normal_map;
+    GLuint diffuse_map = 0;
+    GLuint specular_map = 0;
+    GLuint normal_map = 0;
 
-    float specular_intensity;
-    float specular_exponent;
+    float specular_intensity = 5;
+    float specular_exponent = 100;
 
     Material();
     Material(std::string name);
