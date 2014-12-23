@@ -16,8 +16,6 @@ class VertexArray {
     void create_buffers();
     void init();
   public:
-    static int val1;
-    static int val2;
     VertexArray(const VertexArray& other);
     GLuint vao_id, vbo_id, index_buf_id;
     bool operator<(const VertexArray& other) const;

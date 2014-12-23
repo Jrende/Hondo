@@ -6,9 +6,6 @@
 #include <glfw3.h>
 
 #include "VertexArray.hpp"
-int VertexArray::val1 = 0;
-int VertexArray::val2 = 0;
-
 VertexArray::VertexArray(
     std::vector<float> vertex_data,
     std::vector<unsigned int> index_data,
@@ -28,11 +25,11 @@ VertexArray::VertexArray(const VertexArray& other):
   vertex_count(other.vertex_count),
   attribute_sizes(other.attribute_sizes),
   vertex_data(other.vertex_data),
-  index_data(other.index_data)
+  index_data(other.index_data),
+  vao_id(other.vao_id),
+  vbo_id(other.vbo_id),
+  index_buf_id(other.index_buf_id)
 {
-  init();
-  create_buffers();
-
 }
 
 VertexArray& VertexArray::operator=(VertexArray&& other) {
@@ -88,8 +85,7 @@ void VertexArray::bind() const {
 }
 
 void VertexArray::render(const Mesh& mesh) const {
-  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.index_count + val1, GL_UNSIGNED_INT, (void*) (0 * 4L), val2);
-  //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*) 0);
+  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.index_count, GL_UNSIGNED_INT, (void*) (0 * 4L), 0);
 }
 
 void VertexArray::render_array(GLuint mode) {
@@ -112,7 +108,7 @@ void VertexArray::swap(VertexArray& l, VertexArray& r) {
   std::swap(l.index_data, r.index_data);
   std::swap(l.vertex_count, r.vertex_count);
   std::swap(l.attribute_sizes, r.attribute_sizes);
-  l.create_buffers();
-  l.init();
-  std::cout << "Asd" << std::endl;
+  std::swap(l.vao_id, r.vao_id);
+  std::swap(l.vbo_id, r.vbo_id);
+  std::swap(l.index_buf_id, r.index_buf_id);
 }
