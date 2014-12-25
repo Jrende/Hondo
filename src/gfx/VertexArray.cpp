@@ -7,8 +7,8 @@
 
 #include "VertexArray.hpp"
 VertexArray::VertexArray(
-    std::vector<float> vertex_data,
-    std::vector<unsigned int> index_data,
+    const std::vector<float>& vertex_data,
+    const std::vector<unsigned int>& index_data,
     unsigned int size,
     std::vector<unsigned int> attribute_sizes
   ):
@@ -54,12 +54,11 @@ void VertexArray::create_buffers() {
   unsigned int attr_size_sum = 0;
   for(unsigned int& i: attribute_sizes)
     attr_size_sum += i;
-  int data_size = attr_size_sum * vertex_count * sizeof(float);
 
   glBindVertexArray(vao_id);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-  glBufferData(GL_ARRAY_BUFFER, data_size, vertex_data.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_data.size(), vertex_data.data(), GL_STATIC_DRAW);
 
   int pointer = 0;
   for(unsigned int i = 0; i < attribute_sizes.size(); i++) {
@@ -70,11 +69,12 @@ void VertexArray::create_buffers() {
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buf_id);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data.size() * sizeof(unsigned int), index_data.data(), GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  glBindVertexArray(0);
 }
 
 void VertexArray::bind() const {

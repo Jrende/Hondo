@@ -21,8 +21,8 @@ class VertexArray {
     bool operator<(const VertexArray& other) const;
     VertexArray() = default;
     VertexArray(
-	std::vector<float> vertex_data,
-	std::vector<unsigned int> index_data,
+	const std::vector<float>& vertex_data,
+	const std::vector<unsigned int>& index_data,
 	unsigned int size,
 	std::vector<unsigned int> attribute_sizes);
     ~VertexArray();
