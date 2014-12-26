@@ -185,24 +185,6 @@ int main(int argc, char ** argv) {
       renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
 
-  Input::on(GLFW_KEY_V, [&] {
-      VertexArray::val1 -= 1;
-      std::cout << "val1: " << VertexArray::val1 << "\n";
-  }, true);
-  Input::on(GLFW_KEY_B, [&] {
-      VertexArray::val1 += 1;
-      std::cout << "val1: " << VertexArray::val1 << "\n";
-  }, true);
-
-  Input::on(GLFW_KEY_N, [&] {
-      VertexArray::val2 -= 1;
-      std::cout << "val2: " << VertexArray::val2 << "\n";
-  }, true);
-  Input::on(GLFW_KEY_M, [&] {
-      VertexArray::val2 += 1;
-      std::cout << "val2: " << VertexArray::val2 << "\n";
-  }, true);
-
   Input::on(GLFW_KEY_U, [&] {
       renderer.get_shown_light()->translate({0,-0.01f, 0});
   }, true);

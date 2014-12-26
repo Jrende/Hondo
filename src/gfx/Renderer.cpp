@@ -21,7 +21,7 @@ Renderer::Renderer(int width, int height):
 
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-  //glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
   lights[point_light_shader];
@@ -57,7 +57,6 @@ void Renderer::render() {
     shader->use_shader();
     //foreach light instance
     for(auto& light: light_type.second) {
-      //std::cout << "light " << light_index << "==" << (light_list[light_index] != light) << "\n";
       if(shown_light_index != -1 && light_list[shown_light_index] != light) {
 	continue;
       }
@@ -79,7 +78,6 @@ void Renderer::render() {
 	  shader->set_eye_pos(camera.pos);
 	  shader->set_eye_dir(camera.dir);
 
-	  //HANDLE CASE WHERE SPEC/NORMAL/DIFFUSE DOESN'T EXIST
 	  shader->set_diffuse_sampler(0);
 	  render_object->bind_diffuse();
 
@@ -89,7 +87,6 @@ void Renderer::render() {
 	  shader->set_specular_sampler(2);
 	  render_object->bind_specular();
 
-	  //checkForGlError();
 	  shader->set_material(render_object->mesh.material);
 
 	  render_object->render();
@@ -99,7 +96,7 @@ void Renderer::render() {
       glEnable(GL_BLEND);
     }
   }
-  //draw_sky();
+  draw_sky();
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
