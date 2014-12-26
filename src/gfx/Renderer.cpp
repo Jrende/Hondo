@@ -8,8 +8,6 @@
 #include <stdlib.h>
 Renderer::Renderer(int width, int height):
   perspective_mat(glm::perspective<float>(45.0f, (float) width/ (float) height, 0.1f, 1000.0f)),
-  debug_renderer(),
-  camera(),
   point_light_shader(std::make_shared<PointLightShader>()),
   spot_light_shader(std::make_shared<SpotLightShader>()),
   dir_light_shader(std::make_shared<LightShader>())
