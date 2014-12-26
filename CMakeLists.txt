@@ -26,7 +26,7 @@ add_library(SOIL STATIC
 )
 
 set(BOOST_ROOT lib/boost_1_55_0)
-find_package(Boost 1.55.0 REQUIRED)
+find_package(Boost 1.55.0 COMPONENTS regex REQUIRED)
 
 MESSAGE("Boost information:") 
 MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 

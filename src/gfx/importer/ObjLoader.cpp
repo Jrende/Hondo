@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/regex.hpp>
 
 #include "ObjLoader.hpp"
 
@@ -47,7 +48,7 @@ void ObjLoader::preload_file(const std::string& path) {
     trim(line);
     if(line.size() == 0) continue;
     vector<string> tokens;
-    split(tokens, line, is_any_of(" "));
+    split_regex(tokens, line, regex("\\s+"));
 
     if(!strcmp(tokens[0].c_str(), "#")) {
       continue;

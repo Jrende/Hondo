@@ -3,7 +3,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/regex.hpp>
 #include <boost/range.hpp>
 #include <boost/tokenizer.hpp>
 #include <SOIL.h>
@@ -40,13 +40,10 @@ void MtlLoader::load_materials(const std::string& path) {
   char_separator<char> space_sep(" ");
   while(getline(file, line)) {
     boost::trim(line);
-    tokenizer<char_separator<char> > st(line, space_sep);
     std::vector<std::string> tokens;
+    boost::split_regex(tokens, line, regex("\\s+"));
     //Might make parsing faster.
     //tokens.reserve(4);
-    for(auto& token: st) {
-      tokens.push_back(token);
-    }
     if(tokens.size() > 0) {
       handle_tokens(tokens);
     }
