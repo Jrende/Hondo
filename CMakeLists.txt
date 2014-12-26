@@ -1,6 +1,6 @@
 #TODO: Create find_package for glfw, glew, glm
 cmake_minimum_required (VERSION 2.6)
-project (glHondo)
+project (Hondo)
 find_package(OpenGL REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -static-libgcc -static-libstdc++")
@@ -51,17 +51,17 @@ set(ALL_LIBS
   ${Boost_LIBRARIES}
 )
 
-file(GLOB_RECURSE GLHONDO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE GLHONDO_HEADERS "src/*.h")
+file(GLOB_RECURSE HONDO_SOURCES "src/*.cpp")
+file(GLOB_RECURSE HONDO_HEADERS "src/*.h")
 
-set (GLHONDO_INCLUDE_DIRS "")
-foreach (_headerFile ${GLHONDO_HEADERS})
+set (HONDO_INCLUDE_DIRS "")
+foreach (_headerFile ${HONDO_HEADERS})
   get_filename_component(_dir ${_headerFile} PATH)
-  list (APPEND GLHONDO_INCLUDE_DIRS ${_dir})
+  list (APPEND HONDO_INCLUDE_DIRS ${_dir})
 endforeach()
-list(REMOVE_DUPLICATES GLHONDO_INCLUDE_DIRS)
+list(REMOVE_DUPLICATES HONDO_INCLUDE_DIRS)
 
-include_directories(${GLHONDO_INCLUDE_DIRS})
-add_executable (glHondo ${GLHONDO_SOURCES})
-target_link_libraries(glHondo ${ALL_LIBS})
-set_property(TARGET glHondo APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
+include_directories(${HONDO_INCLUDE_DIRS})
+add_executable (Hondo ${HONDO_SOURCES})
+target_link_libraries(Hondo ${ALL_LIBS})
+set_property(TARGET Hondo APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
