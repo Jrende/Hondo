@@ -10,6 +10,7 @@ out vec4 FragColor;
 uniform struct DirectionalLight {
     vec3 color;
     vec3 position;
+    vec3 direction;
     float ambientIntensity;
     float diffuseIntensity;
 } dirLight;
@@ -33,7 +34,7 @@ vec3 getNormal() {
 }
 
 vec4 getDiffuse(vec3 normal) {
-  vec3 surfaceToLight = normalize(-dirLight.position);
+  vec3 surfaceToLight = normalize(-dirLight.direction);
 
   float brightness = clamp(dot(normal, normalize(surfaceToLight)), 0, 1);
 
@@ -44,7 +45,7 @@ vec4 getDiffuse(vec3 normal) {
 }
 
 vec4 getSpecular(vec3 normal) {
-  vec3 surfaceToLight = normalize(dirLight.position) - WorldPos0;
+  vec3 surfaceToLight = normalize(dirLight.direction) - WorldPos0;
 
   vec3 lightReflect = normalize(reflect(-surfaceToLight, normal));
   vec3 surfaceToEye = normalize(eyePos - WorldPos0);

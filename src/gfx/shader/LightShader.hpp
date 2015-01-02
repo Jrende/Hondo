@@ -23,6 +23,7 @@ class LightShader {
 	   light_color_id,
 	   light_ambientintensity_id,
 	   light_position_id,
+	   light_direction_id,
 	   light_diffuseintensity_id,
 	   diffuse_id,
 	   ambient_id,
@@ -46,6 +47,7 @@ class LightShader {
     void set_light_ambientintensity(float light_ambientintensity);
     void set_light_diffuseintensity(float light_diffuseintensity);
     void set_light_position(const glm::vec3& light_position);
+    void set_light_direction(const glm::vec3& light_direction);
     void set_material(const Material& mat);
     bool operator<(const LightShader& other) const;
     virtual void set_light(const Light& light);

@@ -14,6 +14,7 @@ class Renderer;
 #include "lights/Light.hpp"
 #include "lights/PointLight.hpp"
 #include "lights/SpotLight.hpp"
+#include "lights/DirLight.hpp"
 #include "shader/LightShader.hpp"
 #include "shader/PointLightShader.hpp"
 #include "shader/SkyShader.hpp"
@@ -44,7 +45,7 @@ class Renderer {
     void add_object(std::shared_ptr<RenderObject> rObj);
     void add_light(std::shared_ptr<PointLight> point_light);
     void add_light(std::shared_ptr<SpotLight> spot_light);
-    void add_light(std::shared_ptr<Light> light);
+    void add_light(std::shared_ptr<DirLight> light);
 
     void set_skybox(std::shared_ptr<SkyBox> skybox);
 

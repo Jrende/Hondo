@@ -5,6 +5,7 @@ class Camera;
 #include <glm/gtc/quaternion.hpp>
 class Camera {
   private:
+    void calc_view_mat();
   public:
     glm::vec3 up,pos,dir;
     glm::quat rot;
@@ -14,6 +15,8 @@ class Camera {
     void rotate(float angle, glm::vec3 axis);
     void move_forward(float dist);
     void move_right(float dist);
-    Camera();
+    Camera(
+	glm::vec3 pos = glm::vec3(0, 0, 0),
+	glm::vec3 dir = glm::vec3(0, 0, 1.0f));
 };
 #endif

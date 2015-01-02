@@ -49,7 +49,7 @@ void Renderer::render() {
     auto& shader = light_type.first;
 
     for(auto& light: light_type.second) {
-      draw_point(light->pos);
+      draw_point(light->get_pos());
     }
 
     shader->use_shader();
@@ -147,7 +147,7 @@ void Renderer::add_light(std::shared_ptr<SpotLight> spot_light) {
   light_list.push_back(spot_light);
 }
 
-void Renderer::add_light(std::shared_ptr<Light> dir_light) {
+void Renderer::add_light(std::shared_ptr<DirLight> dir_light) {
   lights[dir_light_shader].push_back(dir_light);
   light_list.push_back(dir_light);
 }

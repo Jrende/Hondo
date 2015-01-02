@@ -10,11 +10,12 @@ out vec4 FragColor;
 uniform struct PointLight {
   vec3 color;
   vec3 position;
+  vec3 direction;
   float ambientIntensity;
   float diffuseIntensity;
   float constant;
-  float exp;
   float linear;
+  float exp;
 } pointLight;
 
 uniform sampler2D diffuse_sampler;

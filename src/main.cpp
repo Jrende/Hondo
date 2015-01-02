@@ -14,6 +14,7 @@
 #include "gfx/importer/ObjLoader.hpp"
 #include "gfx/lights/Light.hpp"
 #include "gfx/lights/PointLight.hpp"
+#include "gfx/lights/DirLight.hpp"
 #include "gfx/shader/SimpleShader.hpp"
 
 #include "input/Actions.hpp"
@@ -145,7 +146,7 @@ int main(int argc, char ** argv) {
   Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
   std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
-  auto pl2 = std::make_shared<Light>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  auto pl2 = std::make_shared<DirLight>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
   pl2->ambient_intensity = 0.1f;
   renderer.add_light(pl2);
 

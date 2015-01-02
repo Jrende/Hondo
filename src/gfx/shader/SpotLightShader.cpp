@@ -8,8 +8,7 @@ SpotLightShader::SpotLightShader():
   light_constant_id(shader_program.get_uniform("spotLight.constant")),
   light_exp_id(shader_program.get_uniform("spotLight.exp")),
   light_linear_id(shader_program.get_uniform("spotLight.linear")),
-  light_concentration_id(shader_program.get_uniform("spotLight.concentration")),
-  light_direction_id(shader_program.get_uniform("spotLight.direction"))
+  light_concentration_id(shader_program.get_uniform("spotLight.concentration"))
 {
 }
 
@@ -29,10 +28,6 @@ void SpotLightShader::set_light_linear(float light_linear) {
   glUniform1f(light_linear_id, light_linear);
 }
 
-void SpotLightShader::set_light_direction(const glm::vec3& light_direction) {
-  glUniform3fv(light_direction_id, 1, glm::value_ptr(light_direction));
-}
-
 void SpotLightShader::set_light(const Light& light) {
   LightShader::set_light(light);
   const auto& pl = static_cast<const SpotLight&>(light);
@@ -40,5 +35,4 @@ void SpotLightShader::set_light(const Light& light) {
   set_light_exp(pl.exponential);
   set_light_linear(pl.linear);
   set_light_concentration(pl.concentration);
-  set_light_direction(pl.dir);
 }

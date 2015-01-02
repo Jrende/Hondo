@@ -16,6 +16,7 @@ LightShader::LightShader(std::string name, std::string light_name):
   light_color_id(shader_program.get_uniform(light_name + ".color")),
   light_ambientintensity_id(shader_program.get_uniform(light_name + ".ambientIntensity")),
   light_position_id(shader_program.get_uniform(light_name + ".position")),
+  light_direction_id(shader_program.get_uniform(light_name + ".direction")),
   light_diffuseintensity_id(shader_program.get_uniform(light_name + ".diffuseIntensity")),
   specular_intensity_id(shader_program.get_uniform("specular_intensity")),
   specular_exponent_id(shader_program.get_uniform("specular_exponent"))
@@ -86,8 +87,13 @@ void LightShader::set_material(const Material& mat) {
   glUniform1f(specular_exponent_id, mat.specular_exponent);
 }
 
+void LightShader::set_light_direction(const glm::vec3& light_direction) {
+  glUniform3fv(light_direction_id, 1, glm::value_ptr(light_direction));
+}
+
 void LightShader::set_light(const Light& light) {
-  set_light_position(light.pos);
+  set_light_position(light.get_pos());
+  set_light_direction(light.get_dir());
   set_light_color(light.color);
   set_light_ambientintensity(light.ambient_intensity);
   set_light_diffuseintensity(light.diffuse_intensity);

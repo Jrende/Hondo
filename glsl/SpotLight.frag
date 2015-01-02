@@ -73,4 +73,3 @@ void main() {
   color *= getDiffuse(normal);
   FragColor = color;
 }
-
