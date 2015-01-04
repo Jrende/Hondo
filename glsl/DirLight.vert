@@ -13,6 +13,7 @@ out vec3 Bitangent0;
 
 uniform mat4 mvpMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 depth_mvp_mat;
 
 uniform vec3 eyePos;
 uniform vec3 eyeDir;

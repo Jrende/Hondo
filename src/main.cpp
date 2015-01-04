@@ -21,6 +21,13 @@
 #include "input/Input.hpp"
 #include "DebugUtils.h"
 
+glm::vec3 get_random_color() {
+  auto r = ((rand() % 100)/100.0);
+  auto g = ((rand() % 100)/100.0);
+  auto b = ((rand() % 100)/100.0);
+  return glm::normalize(glm::vec3{r, g, b});
+}
+
 std::vector<std::pair<glm::vec3, glm::vec3>> rain;
 void draw_rain(Renderer* r) {
   static float speed = 0.5;
@@ -87,9 +94,8 @@ int main(int argc, char ** argv) {
   GLenum err = glewInit();
   //To discard error 1280 from glewInit().
   glGetError();
-  if(GLEW_OK != err) {
+  if(GLEW_OK != err)
     std::cout << glewGetErrorString(err) << std::endl;
-  }
 
   {
     const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -131,95 +137,121 @@ int main(int argc, char ** argv) {
   });
 
   Input::on(GLFW_KEY_Z, [&] {
-      renderer.toggle_wireframe();
+  renderer.toggle_wireframe();
   });
 
   Input::on(GLFW_KEY_G, []() {
-      Input::lock_mouse();
+    Input::lock_mouse();
   });
   ObjLoader loader;
-  loader.preload_file("assets/sponza.obj");
+  //loader.preload_file("assets/sponza.obj");
+  loader.preload_file("assets/Cube.obj");
+  loader.preload_file("assets/Floor.obj");
   loader.preload_file("assets/SkyDome16.obj");
   std::cout << "Load files\n";
   loader.load_files();
   std::cout << "Loading files done\n";
   Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
-  std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
+  Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
+  Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
+  //std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
-  auto pl2 = std::make_shared<DirLight>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
-  pl2->ambient_intensity = 0.1f;
+  auto pl2 = std::make_shared<DirLight>(glm::vec3{-0, -1, -0}, glm::vec3{1, 1, 1});
+  pl2->ambient_intensity = 0.2f;
+  pl2->set_casts_shadow(true);
+  pl2->diffuse_intensity = 0.0f;
   renderer.add_light(pl2);
+  
+  auto cube = std::make_shared<RenderObject>(cube_mesh);
+  renderer.add_object(cube);
 
+  /*
   for(auto& sponza_mesh: sponza_meshes) {
     auto mesh = std::make_shared<RenderObject>(sponza_mesh);
     mesh->scale({0.01, 0.01, 0.01});
     renderer.add_object(mesh);
   }
+  */
 
   for(int i = -5; i < 5; i++) {
     for(int j = -5; j < 5; j++) {
-      if((i % 3 == 0) && (j % 3 == 0)) {
-	auto r = ((rand() % 100)/100.0); auto g = ((rand() % 100)/100.0); auto b = ((rand() % 100)/100.0);
-	auto pl2 = std::make_shared<PointLight>(glm::vec3{i * 4, 2.1, j * 4}, glm::vec3{r, g, b});
-	pl2->ambient_intensity = 0;
-	renderer.add_light(pl2);
-      }
+      auto floor = std::make_shared<RenderObject>(floor_mesh);
+      floor->translate({i * 2,-1,j * 2});
+      renderer.add_object(floor);
     }
   }
 
   std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
+  sky->scale({2,2,2});
   renderer.set_skybox(sky);
 
   Input::on(GLFW_KEY_I, [&] {
-      renderer.get_shown_light()->translate({ 0.01f, 0, 0});
+    renderer.get_shown_light()->translate({ 0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_K, [&] {
-      renderer.get_shown_light()->translate({-0.01f, 0, 0});
+    renderer.get_shown_light()->translate({-0.01f, 0, 0});
   }, true);
   Input::on(GLFW_KEY_J, [&] {
-      renderer.get_shown_light()->translate({0, 0,  0.01f});
+    renderer.get_shown_light()->translate({0, 0,  0.01f});
   }, true);
   Input::on(GLFW_KEY_L, [&] {
-      renderer.get_shown_light()->translate({0, 0, -0.01f});
+    renderer.get_shown_light()->translate({0, 0, -0.01f});
   }, true);
   Input::on(GLFW_KEY_O, [&] {
-      renderer.get_shown_light()->translate({0,  0.01f, 0});
+    renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
 
   Input::on(GLFW_KEY_U, [&] {
-      renderer.get_shown_light()->translate({0,-0.01f, 0});
+    renderer.get_shown_light()->translate({0,-0.01f, 0});
   }, true);
 
   Input::on(GLFW_KEY_PAGE_UP, [&] {
-      if(selected_light < renderer.light_count()) {
-	renderer.show_single_light(++selected_light);
-      }
+    if(selected_light < renderer.light_count()) {
+      renderer.show_single_light(++selected_light);
+    }
   }, false);
   Input::on(GLFW_KEY_PAGE_DOWN, [&] {
-      if(selected_light > 0) {
-	renderer.show_single_light(--selected_light);
-      }
+    if(selected_light > 0) {
+      renderer.show_single_light(--selected_light);
+    }
+  }, false);
+  Input::on(GLFW_KEY_1, [&] {
+      renderer.toggle_shadow_map();
+  }, false);
+  Input::on(GLFW_KEY_P, [&] {
+      auto light = std::make_shared<SpotLight>(camera.pos, -camera.dir, glm::vec3{1,1,1});
+      light->ambient_intensity = 0.0f;
+      light->diffuse_intensity = 2.0f;
+      light->set_casts_shadow(true);
+      renderer.add_light(light);
+      std::cout << "Amount of lights: " << renderer.light_count() << "\n";
   }, false);
   Input::on(GLFW_KEY_RIGHT_CONTROL, [&] {
-	renderer.show_single_light(-1);
+      renderer.show_single_light(-1);
+  }, false);
+  bool draw_main = true;
+  Input::on(GLFW_KEY_T, [&] {
+      draw_main = !draw_main;
   }, false);
 
   float i = 0;
   camera.translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
-    Input::handle_input();
     glfwPollEvents();
+    Input::handle_input();
     rotate_camera(camera);
     renderer.pre_render();
 
-    renderer.render();
+    if(draw_main) {
+      renderer.render();
+    }
     draw_rain(&renderer);
 
     glfwSwapBuffers(window);
 
     Input::reset_delta();
     if(i > 360) {
-       i=0;
+      i=0;
     }
     i += 0.1f;
 

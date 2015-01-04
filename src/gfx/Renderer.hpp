@@ -8,6 +8,7 @@ class Renderer;
 
 #include "Camera.hpp"
 #include "DebugRenderer.hpp"
+#include "DepthBuffer.hpp"
 #include "RenderObject.hpp"
 #include "SkyBox.hpp"
 #include "VertexArray.hpp"
@@ -15,6 +16,7 @@ class Renderer;
 #include "lights/PointLight.hpp"
 #include "lights/SpotLight.hpp"
 #include "lights/DirLight.hpp"
+#include "shader/DepthShader.hpp"
 #include "shader/LightShader.hpp"
 #include "shader/PointLightShader.hpp"
 #include "shader/SkyShader.hpp"
@@ -22,13 +24,17 @@ class Renderer;
 
 class Renderer {
   private:
+    int width, height;
     glm::mat4 perspective_mat;
     DebugRenderer debug_renderer;
     Camera camera;
     std::shared_ptr<PointLightShader> point_light_shader;
     std::shared_ptr<SpotLightShader> spot_light_shader;
     std::shared_ptr<LightShader> dir_light_shader;
+    glm::mat4 ortho;
+    glm::mat4 depth_bias_mat;
     std::vector<std::shared_ptr<Light>> light_list;
+    DepthShader depth_shader;
     int shown_light_index = -1;
     int last_shown_light_index = 0;
     SkyShader sky_shader;
@@ -38,6 +44,8 @@ class Renderer {
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
     Renderer(const Renderer& other) = delete;
     void draw_sky();
+    void render_depth_test();
+    void render_scene(const glm::mat4& vp_mat);
   public:
     Renderer(int width, int height);
     Camera& get_camera();
@@ -50,6 +58,7 @@ class Renderer {
     void set_skybox(std::shared_ptr<SkyBox> skybox);
 
     void toggle_wireframe();
+    void toggle_shadow_map();
     void pre_render();
     void render();
     void show_single_light(int index);

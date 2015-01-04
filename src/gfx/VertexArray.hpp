@@ -28,6 +28,7 @@ class VertexArray {
     ~VertexArray();
     void render(const Mesh& mesh) const;
     void render_array(GLuint mode);
+    void render_elements(GLuint mode, unsigned int size);
     void bind() const;
     void unbind() const;
     void swap(VertexArray& l, VertexArray& r);

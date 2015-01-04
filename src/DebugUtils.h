@@ -7,20 +7,15 @@
 inline int checkForGlError() {
   GLenum error; 
   if((error = glGetError()) > 0) {
-    std::cout << "GL error " << error << "!" << std::endl;
+    std::cout << "GL error " << error << ": " << gluErrorString(error) << "!" << std::endl;
     exit (EXIT_FAILURE);
   }
   return error;
 }
 
 inline int checkForGlErrorNoShut() {
-  GLenum error; 
-  if((error = glGetError()) > 0) {
-    std::cout << "GL error " << error << "!\n";
-  } else {
-    std::cout << "No error\n";
-  }
-
+  GLenum error = glGetError();
+  std::cout << "GL error " << error << ": " << gluErrorString(error) << "!" << std::endl;
   return error;
 }
 

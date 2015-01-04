@@ -10,9 +10,11 @@ out vec3 Normal0;
 out vec3 WorldPos0;
 out vec3 Tangent0;
 out vec3 Bitangent0;
+out vec3 ShadowCoord0;
 
 uniform mat4 mvpMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 depth_mvp_mat;
 
 uniform vec3 eyePos;
 uniform vec3 eyeDir;
@@ -24,4 +26,6 @@ void main(void) {
 	WorldPos0 = (modelMatrix * vec4(Position, 1)).xyz;
 	Tangent0 = (modelMatrix * vec4(Tangent, 0.0)).xyz;
 	Bitangent0 = (modelMatrix * vec4(Bitangent, 0.0)).xyz;
+	vec4 shadow_pos = (depth_mvp_mat * vec4(Position, 1.0));
+	ShadowCoord0 = vec3(shadow_pos.xyz) / shadow_pos.w;
 }

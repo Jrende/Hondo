@@ -50,18 +50,9 @@ void MtlLoader::load_materials(const std::string& path) {
   }
   for(auto& str_mat_pair: materials) {
     auto& mat = str_mat_pair.second;
-    if(mat.diffuse_map == 0) {
-      mat.diffuse_map = create_texture(1, 1, 1);
-      std::cout << mat.name << " lacks diffuse\n";
-    }
-    if(mat.specular_map == 0) {
-      mat.specular_map = create_texture(0, 0, 0);
-      std::cout << mat.name << " lacks specular\n";
-    }
-    if(mat.normal_map == 0) {
-      mat.normal_map = create_texture(0.5, 0.5, 1);
-      std::cout << mat.name << " lacks normal\n";
-    }
+    if(!mat.diffuse_map) mat.diffuse_map = create_texture(1, 1, 1);
+    if(!mat.specular_map) mat.specular_map = create_texture(0, 0, 0);
+    if(!mat.normal_map) mat.normal_map = create_texture(0.5, 0.5, 1);
   }
 }
 

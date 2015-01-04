@@ -4,6 +4,7 @@ in vec3 Normal0;
 in vec3 WorldPos0;
 in vec3 Tangent0;
 in vec3 Bitangent0;
+in vec3 ShadowCoord0;
 
 out vec4 FragColor;
 
@@ -23,6 +24,7 @@ uniform struct SpotLight {
 uniform sampler2D diffuse_sampler;
 uniform sampler2D normal_sampler;
 uniform sampler2D specular_sampler;
+uniform sampler2D shadow_sampler;
 
 uniform float specular_intensity;
 uniform float specular_exponent;
@@ -69,7 +71,13 @@ vec4 getSpecular(vec3 normal) {
 void main() {
   vec3 normal = getNormal();
   vec4 color = texture2D(diffuse_sampler, TexCoord0.st);
+  float bias = 0.005;
+  float visibility = 1.0;
+  if (texture(shadow_sampler, ShadowCoord0.xy).x < (ShadowCoord0.z - bias)) {
+    visibility = 0.0;
+  }
   color += getSpecular(normal);
   color *= getDiffuse(normal);
+  color *= visibility;
   FragColor = color;
 }

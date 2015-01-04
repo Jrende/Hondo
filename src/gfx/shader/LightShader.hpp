@@ -14,12 +14,14 @@ class LightShader {
   private:
     std::string light_name;
     GLuint mvp_mat_id,
+	   depth_mvp_mat_id,
 	   model_mat_id,
 	   eye_pos_id,
 	   eye_dir_id,
 	   diffuse_sampler_id,
 	   specular_sampler_id,
 	   normal_sampler_id,
+	   shadow_sampler_id,
 	   light_color_id,
 	   light_ambientintensity_id,
 	   light_position_id,
@@ -38,8 +40,10 @@ class LightShader {
     void set_diffuse_sampler(int sampler);
     void set_specular_sampler(int sampler);
     void set_normal_sampler(int sampler);
+    void set_shadow_sampler(int sampler);
 
     void set_mvp_mat(const glm::mat4& mvp_mat);
+    void set_depth_mvp_mat(const glm::mat4& depth_mvp_mat);
     void set_model_mat(const glm::mat4& mvp_mat);
     void set_eye_pos(const glm::vec3& eye_pos);
     void set_eye_dir(const glm::vec3& eye_dir);

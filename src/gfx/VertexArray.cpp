@@ -88,6 +88,10 @@ void VertexArray::render(const Mesh& mesh) const {
   glDrawElementsBaseVertex(GL_TRIANGLES, mesh.index_count, GL_UNSIGNED_INT, (void*) (0 * 4L), 0);
 }
 
+void VertexArray::render_elements(GLuint mode, unsigned int size) {
+  glDrawElements(mode, size, GL_UNSIGNED_INT, (void*) 0);
+}
+
 void VertexArray::render_array(GLuint mode) {
   glDrawArrays(mode, 0, vertex_count);
 }

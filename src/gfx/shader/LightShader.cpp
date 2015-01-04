@@ -7,12 +7,14 @@ LightShader::LightShader(std::string name, std::string light_name):
   light_name(light_name),
 
   mvp_mat_id(shader_program.get_uniform("mvpMatrix")),
+  depth_mvp_mat_id(shader_program.get_uniform("depth_mvp_mat")),
   model_mat_id(shader_program.get_uniform("modelMatrix")),
   eye_pos_id(shader_program.get_uniform("eyePos")),
   eye_dir_id(shader_program.get_uniform("eyeDir")),
   diffuse_sampler_id(shader_program.get_uniform("diffuse_sampler")),
   specular_sampler_id(shader_program.get_uniform("specular_sampler")),
   normal_sampler_id(shader_program.get_uniform("normal_sampler")),
+  shadow_sampler_id(shader_program.get_uniform("shadow_sampler")),
   light_color_id(shader_program.get_uniform(light_name + ".color")),
   light_ambientintensity_id(shader_program.get_uniform(light_name + ".ambientIntensity")),
   light_position_id(shader_program.get_uniform(light_name + ".position")),
@@ -50,12 +52,20 @@ void LightShader::set_normal_sampler(int sampler) {
   glUniform1i(normal_sampler_id, sampler);
 }
 
+void LightShader::set_shadow_sampler(int sampler) {
+  glUniform1i(shadow_sampler_id, sampler);
+}
+
 void LightShader::set_model_mat(const glm::mat4& model_mat) {
   glUniformMatrix4fv(model_mat_id, 1, GL_FALSE, glm::value_ptr(model_mat));
 }
 
 void LightShader::set_mvp_mat(const glm::mat4& mvp_mat) {
   glUniformMatrix4fv(mvp_mat_id, 1, GL_FALSE, glm::value_ptr(mvp_mat));
+}
+
+void LightShader::set_depth_mvp_mat(const glm::mat4& depth_mvp_mat) {
+  glUniformMatrix4fv(depth_mvp_mat_id, 1, GL_FALSE, glm::value_ptr(depth_mvp_mat));
 }
 
 void LightShader::set_eye_pos(const glm::vec3& eye_pos) {
