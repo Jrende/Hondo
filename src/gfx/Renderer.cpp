@@ -64,10 +64,11 @@ void Renderer::render_depth_test() {
   }
 
   if(render_depth) {
+    glCullFace(GL_FRONT);
     depth_shader.use_shader();
     for(auto& light: light_list) {
-      if(light->casts_shadow()) {
-	//glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
+      if(light->casts_shadow() && light->has_moved()) {
+	glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
 	glm::mat4 vp_mat;
 	vp_mat *= light->get_projection();
 	vp_mat *= light->get_view_mat();
@@ -81,7 +82,8 @@ void Renderer::render_depth_test() {
       }
     }
     depth_shader.stop();
-    //glViewport(0.0f, 0.0f, width, height);
+    glCullFace(GL_BACK);
+    glViewport(0.0f, 0.0f, width, height);
   }
 }
 
