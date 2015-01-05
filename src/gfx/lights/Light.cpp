@@ -32,7 +32,7 @@ void Light::set_casts_shadow(bool casts_shadow) {
 }
 
 const glm::mat4& Light::get_view_mat() const {
-  return camera.view_mat;
+  return camera.get_view_mat();
 }
 
 bool Light::casts_shadow(){

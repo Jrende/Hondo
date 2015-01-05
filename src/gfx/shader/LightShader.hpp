@@ -27,9 +27,6 @@ class LightShader {
 	   light_position_id,
 	   light_direction_id,
 	   light_diffuseintensity_id,
-	   diffuse_id,
-	   ambient_id,
-	   specular_id,
 	   specular_intensity_id,
 	   specular_exponent_id;
   public:
