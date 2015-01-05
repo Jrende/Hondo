@@ -39,7 +39,6 @@ class Renderer {
     int last_shown_light_index = 0;
     SkyShader sky_shader;
     std::shared_ptr<SkyBox> skybox;
-
     std::map<VertexArray, std::vector<std::shared_ptr<RenderObject>>> render_map;
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
     Renderer(const Renderer& other) = delete;
@@ -67,5 +66,6 @@ class Renderer {
     void draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color);
     void draw_line(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color);
     void draw_point(const glm::vec3& pos);
+    void clear_lights();
 };
 #endif

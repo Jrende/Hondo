@@ -267,3 +267,8 @@ void Renderer::draw_sky() {
 void Renderer::toggle_shadow_map() {
   draw_shadow_map = !draw_shadow_map;
 }
+
+void Renderer::clear_lights() {
+  lights.clear();
+  light_list.clear();
+}
