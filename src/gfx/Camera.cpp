@@ -24,17 +24,15 @@ void Camera::rotate(float angle, glm::vec3 axis) {
 }
 
 void Camera::calc_view_mat() {
-  view_mat = glm::mat4{};
-  view_mat = view_mat * glm::mat4_cast(rot);
-  view_mat = glm::translate(view_mat, -pos);
+  view_mat = glm::lookAt(pos, pos+dir, up);
 }
 
-const glm::mat4& Camera::get_view_mat() {
+const glm::mat4& Camera::get_view_mat() const {
   return view_mat;
 }
 
 void Camera::move_forward(float dist) {
-  glm::vec3 temp = -dir;
+  glm::vec3 temp = dir;
   temp.y = 0;
   temp = glm::normalize(temp);
   this->translate(dist*temp);
@@ -42,7 +40,7 @@ void Camera::move_forward(float dist) {
 }
 
 void Camera::move_right(float dist) {
-  glm::vec3 left = glm::cross(up, dir); 
+  glm::vec3 left = glm::cross(up, -dir);
   this->translate(dist*left);
   calc_view_mat();
 }
