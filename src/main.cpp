@@ -70,7 +70,7 @@ static void scroll_callback(GLFWwindow* window, double x_offset, double y_offset
 
 void rotate_camera(Camera& camera) {
   camera.rotate(-Input::get_mouse_dx() / 100.0f, camera.up);
-  camera.rotate(-Input::get_mouse_dy() / 100.0f, glm::cross(camera.up, camera.dir));
+  camera.rotate(Input::get_mouse_dy() / 100.0f, glm::cross(camera.up, camera.dir));
 }
 
 const int width = 1024;
@@ -147,12 +147,14 @@ int main(int argc, char ** argv) {
   //loader.preload_file("assets/sponza.obj");
   loader.preload_file("assets/Cube.obj");
   loader.preload_file("assets/Floor.obj");
+  loader.preload_file("assets/sphere.obj");
   loader.preload_file("assets/SkyDome16.obj");
   std::cout << "Load files\n";
   loader.load_files();
   std::cout << "Loading files done\n";
   Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
   Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
+  Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
   Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
   //std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
 
@@ -162,6 +164,10 @@ int main(int argc, char ** argv) {
   pl2->diffuse_intensity = 0.0f;
   renderer.add_light(pl2);
   
+  auto sphere = std::make_shared<RenderObject>(sphere_mesh);
+  sphere->translate({0, 1, 2});
+  sphere->scale({0.5, 0.5, 0.5});
+  renderer.add_object(sphere);
   auto cube = std::make_shared<RenderObject>(cube_mesh);
   renderer.add_object(cube);
 
@@ -200,15 +206,18 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_O, [&] {
     renderer.get_shown_light()->translate({0,  0.01f, 0});
   }, true);
-
   Input::on(GLFW_KEY_U, [&] {
-    renderer.get_shown_light()->translate({0,-0.01f, 0});
+    renderer.get_shown_light()->translate({0, -0.01f, 0});
   }, true);
 
   Input::on(GLFW_KEY_PAGE_UP, [&] {
     if(selected_light < renderer.light_count()) {
       renderer.show_single_light(++selected_light);
     }
+  }, false);
+
+  Input::on(GLFW_KEY_DELETE, [&] {
+    renderer.clear_lights();
   }, false);
   Input::on(GLFW_KEY_PAGE_DOWN, [&] {
     if(selected_light > 0) {
@@ -219,7 +228,7 @@ int main(int argc, char ** argv) {
       renderer.toggle_shadow_map();
   }, false);
   Input::on(GLFW_KEY_P, [&] {
-      auto light = std::make_shared<SpotLight>(camera.pos, -camera.dir, glm::vec3{1,1,1});
+      auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
       light->ambient_intensity = 0.0f;
       light->diffuse_intensity = 2.0f;
       light->set_casts_shadow(true);
