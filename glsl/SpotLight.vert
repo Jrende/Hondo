@@ -23,7 +23,7 @@ void main(void) {
 	gl_Position = mvpMatrix * vec4(Position, 1.0);
 	TexCoord0 = TexCoord;
 	Normal0 = (modelMatrix * vec4(Normal, 0.0)).xyz;
-	WorldPos0 = (modelMatrix * vec4(Position, 1)).xyz;
+	WorldPos0 = (modelMatrix * vec4(Position, 1.0)).xyz;
 	Tangent0 = (modelMatrix * vec4(Tangent, 0.0)).xyz;
 	Bitangent0 = (modelMatrix * vec4(Bitangent, 0.0)).xyz;
 	vec4 shadow_pos = (depth_mvp_mat * vec4(Position, 1.0));
