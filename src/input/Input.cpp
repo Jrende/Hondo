@@ -20,6 +20,7 @@ namespace Input {
   }
 
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    Input::mods = mods;
     if(action == GLFW_PRESS) {
       if (key == GLFW_KEY_ESCAPE) {
 	glfwSetWindowShouldClose(window, GL_TRUE);
@@ -91,4 +92,21 @@ namespace Input {
   void set_active_window(GLFWwindow* window) {
     Input::window = window;
   }
+
+  bool is_shift_down() {
+    return (mods & 0x0001) > 0;
+  }
+
+  bool is_control_down() {
+    return (mods & 0x0002) > 0;
+  }
+
+  bool is_alt_down() {
+    return (mods & 0x0004) > 0;
+  }
+
+  bool is_super_down() {
+    return (mods & 0x0008) > 0;
+  }
+
 }

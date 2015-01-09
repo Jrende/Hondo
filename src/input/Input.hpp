@@ -19,7 +19,10 @@ namespace Input {
   double get_mouse_dx();
   double get_mouse_dy();
   bool is_key_down(int key);
-  //bool is_shift_down();
+  bool is_shift_down();
+  bool is_control_down();
+  bool is_alt_down();
+  bool is_super_down();
   void lock_mouse();
   void set_active_window(GLFWwindow* window);
 }
