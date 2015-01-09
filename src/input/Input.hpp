@@ -8,16 +8,6 @@
 #include "Actions.hpp"
 namespace Input {
   typedef std::function<void()> ActionHandler;
-  namespace {
-    std::map<int, ActionHandler> handlers;
-    std::set<int> currentKeys;
-    double mouseX;
-    double mouseY;
-    double deltaX;
-    double deltaY;
-    bool mouseLocked;
-    GLFWwindow* window;
-  }
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
   void cursor_pos_callback(GLFWwindow* window, double x, double y);
   void reset_delta();
@@ -29,6 +19,7 @@ namespace Input {
   double get_mouse_dx();
   double get_mouse_dy();
   bool is_key_down(int key);
+  //bool is_shift_down();
   void lock_mouse();
   void set_active_window(GLFWwindow* window);
 }

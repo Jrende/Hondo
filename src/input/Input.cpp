@@ -3,6 +3,15 @@
 
 namespace Input {
   namespace {
+    std::map<int, ActionHandler> handlers;
+    std::set<int> currentKeys;
+    double mouseX;
+    double mouseY;
+    double deltaX;
+    double deltaY;
+    int mods;
+    bool mouseLocked;
+    GLFWwindow* window;
     void handle_key(int key) {
       if(handlers.count(key) > 0) {
 	handlers[key]();
