@@ -135,8 +135,6 @@ void ObjLoader::add_face(Face& face) {
       vertex_buffer.push_back(val);
     for(const auto& val: vert.tangent)
       vertex_buffer.push_back(val);
-    for(const auto& val: vert.bitangent)
-      vertex_buffer.push_back(val);
   }
 }
 
@@ -145,13 +143,13 @@ void ObjLoader::load_files() {
     for(auto& mesh: filename_mesh_pair.second) {
       auto vertex_array = std::make_shared<VertexArray>(
 	std::vector<float>(
-	    vertex_buffer.begin() + mesh.vertex_start * 14,
-	    vertex_buffer.begin() + ((mesh.vertex_start + mesh.vertex_count) * 14)),
+	    vertex_buffer.begin() + mesh.vertex_start * 11,
+	    vertex_buffer.begin() + ((mesh.vertex_start + mesh.vertex_count) * 11)),
 	std::vector<unsigned int>(
 	    index_buffer.begin() + mesh.index_start,
 	    index_buffer.begin() + (mesh.index_start + mesh.index_count)),
 	mesh.index_count,
-	std::vector<unsigned int>({3, 2, 3, 3, 3})
+	std::vector<unsigned int>({3, 2, 3, 3})
       );
       vertex_array_store.push_back(vertex_array);
       mesh.vertex_array = (*vertex_array_store.back());

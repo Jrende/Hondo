@@ -79,10 +79,6 @@ namespace ObjLoaderUtils {
       v.tangent[0] = bt.x;
       v.tangent[1] = bt.y;
       v.tangent[2] = bt.z;
-      const auto& bt2 = glm::normalize(glm::cross(n, bt));
-      v.bitangent[0] = bt2.x;
-      v.bitangent[1] = bt2.y;
-      v.bitangent[2] = bt2.z;
     }
   }
 }
