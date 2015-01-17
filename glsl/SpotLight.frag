@@ -4,7 +4,7 @@ in vec3 Normal0;
 in vec3 WorldPos0;
 in vec3 Tangent0;
 in vec3 Bitangent0;
-in vec3 ShadowCoord0;
+in vec4 ShadowCoord0;
 
 out vec4 FragColor;
 
@@ -71,15 +71,16 @@ vec2 poissonDisk[4] = vec2[](
   vec2( 0.34495938, 0.29387760 )
 );
 float getShadow(vec3 normal, vec3 surfaceToLight) {
+  vec3 ProjCoords = ShadowCoord0.xyz / ShadowCoord0.w;
+
   float cosTheta = clamp(dot(normal, surfaceToLight), 0, 1);
   float visibility = 1.0;
 
-  float bias = clamp(tan(acos(cosTheta)), 0.0, 0.01);
-  for (int i=0;i<4;i++){
-    float shadow_distance = texture2D(shadow_sampler, ShadowCoord0.xy + poissonDisk[i]/700.0).x;
-    if(shadow_distance < ShadowCoord0.z - bias) {
-      visibility-=0.2;
-    }
+  float bias = clamp(tan(acos(cosTheta)), 0.0, 0.01) + 0.005;
+  //float bias = 0.000;
+  float shadow_distance = texture2D(shadow_sampler, ProjCoords.xy).x;
+  if(shadow_distance < ProjCoords.z - bias) {
+    visibility = 0;
   }
   return visibility;
 }
@@ -91,5 +92,6 @@ void main() {
   float shadow = getShadow(normal, surfaceToLight);
   color += getSpecular(normal, surfaceToLight, shadow);
   color *= getDiffuse(normal, surfaceToLight, shadow);
+  //ShadowCoord0 = vec3(shadow_pos.xyz) / shadow_pos.w;
   FragColor = color;
 }

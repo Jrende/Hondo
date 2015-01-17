@@ -11,7 +11,7 @@ out vec3 WorldPos0;
 out vec3 Tangent0;
 out vec3 Bitangent0;
 
-out vec3 ShadowCoord0;
+out vec4 ShadowCoord0;
 
 uniform mat4 mvpMatrix;
 uniform mat4 modelMatrix;
@@ -29,6 +29,5 @@ void main(void) {
   Tangent0 = (modelMatrix * vec4(Tangent, 0.0)).xyz;
   vec3 Bitangent = normalize(cross(Normal, Tangent));
   Bitangent0 = (modelMatrix * vec4(Bitangent, 0.0)).xyz;
-  vec4 shadow_pos = (depth_mvp_mat * vec4(Position, 1.0));
-  ShadowCoord0 = vec3(shadow_pos.xyz) / shadow_pos.w;
+  ShadowCoord0 = (depth_mvp_mat * vec4(Position, 1.0));
 }
