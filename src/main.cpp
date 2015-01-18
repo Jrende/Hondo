@@ -228,11 +228,19 @@ int main(int argc, char ** argv) {
       renderer.toggle_shadow_map();
   }, false);
   Input::on(GLFW_KEY_P, [&] {
-      auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
-      light->ambient_intensity = 0.0f;
-      light->diffuse_intensity = 2.0f;
-      light->set_casts_shadow(true);
-      renderer.add_light(light);
+      if(Input::is_alt_down()) {
+	auto light = std::make_shared<PointLight>(camera.pos, get_random_color());
+	light->set_casts_shadow(false);
+	light->ambient_intensity = 0.0f;
+	light->diffuse_intensity = 0.2f;
+	renderer.add_light(light);
+      } else {
+	auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
+	light->set_casts_shadow(true);
+	light->ambient_intensity = 0.0f;
+	light->diffuse_intensity = 2.0f;
+	renderer.add_light(light);
+      }
       std::cout << "Amount of lights: " << renderer.light_count() << "\n";
   }, false);
   Input::on(GLFW_KEY_RIGHT_CONTROL, [&] {
