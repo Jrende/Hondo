@@ -77,10 +77,10 @@ float getShadow(vec3 normal, vec3 surfaceToLight) {
   float visibility = 1.0;
 
   float bias = clamp(tan(acos(cosTheta)), 0.0, 0.01) + 0.005;
-  //float bias = 0.000;
-  float shadow_distance = texture2D(shadow_sampler, ProjCoords.xy).x;
-  if(shadow_distance < ProjCoords.z - bias) {
-    visibility = 0;
+  for (int i=0;i<4;i++){
+    if(texture2D(shadow_sampler, ProjCoords.xy + poissonDisk[i]/700.0 ).x  <  ProjCoords.z-bias ){
+      visibility-=0.2;
+    }
   }
   return visibility;
 }
