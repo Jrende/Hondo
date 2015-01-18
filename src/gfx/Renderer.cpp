@@ -9,7 +9,7 @@
 Renderer::Renderer(int width, int height):
   width(width),
   height(height),
-  perspective_mat(glm::perspective<float>(45.0f, (float) width/height, 0.1f, 100.0f)),
+  perspective_mat(glm::perspective<float>(45.0f, (float) width/height, 0.5f, 50.0f)),
   point_light_shader(std::make_shared<PointLightShader>()),
   spot_light_shader(std::make_shared<SpotLightShader>()),
   dir_light_shader(std::make_shared<LightShader>()),
@@ -64,7 +64,6 @@ void Renderer::render_depth_test() {
   }
 
   if(render_depth) {
-    glCullFace(GL_FRONT);
     depth_shader.use_shader();
     for(auto& light: light_list) {
       if(light->casts_shadow() && light->has_moved()) {
@@ -82,7 +81,6 @@ void Renderer::render_depth_test() {
       }
     }
     depth_shader.stop();
-    glCullFace(GL_BACK);
     glViewport(0.0f, 0.0f, width, height);
   }
 }
