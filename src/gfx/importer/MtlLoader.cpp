@@ -3,7 +3,6 @@
 #include <sstream>
 #include <stdio.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/regex.hpp>
 #include <boost/range.hpp>
 #include <boost/tokenizer.hpp>
 #include <SOIL.h>
@@ -41,7 +40,7 @@ void MtlLoader::load_materials(const std::string& path) {
   while(getline(file, line)) {
     boost::trim(line);
     std::vector<std::string> tokens;
-    boost::split_regex(tokens, line, regex("\\s+"));
+    boost::split(tokens, line, boost::is_any_of(" "));
     //Might make parsing faster.
     //tokens.reserve(4);
     if(tokens.size() > 0) {
@@ -65,7 +64,6 @@ GLuint MtlLoader::load_texture(const std::string& path) {
       ("assets/" + fixed_path).c_str(),
       SOIL_LOAD_AUTO,
       SOIL_CREATE_NEW_ID,
-      SOIL_FLAG_MIPMAPS |
       SOIL_FLAG_INVERT_Y |
       SOIL_FLAG_TEXTURE_REPEATS
       );
