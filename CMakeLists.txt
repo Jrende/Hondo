@@ -9,33 +9,38 @@ SET(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
 SET(GLFW_BUILD_TESTS OFF CACHE STRING "" FORCE)
 add_subdirectory(lib/glfw-3.0.4)
 
-add_definitions(-DGLEW_STATIC)
+#add_definitions(-DGLEW_STATIC)
 set(GLEW_SOURCE lib/glew-1.10.0/src/glew.c)
 set(GLEW_INCLUDE lib/glew-1.10.0/include)
-add_library(GLEW_1100 STATIC
+MESSAGE("GLEW_HEADERS: ${GLEW_HEADERS}")
+add_library(GLEW_1100 SHARED
   ${GLEW_SOURCE}
-  ${GLEW_INCLUDE}
+)
+target_link_libraries(GLEW_1100
+  ${OPENGL_LIBRARY}
 )
 
-set(SOIL_SOURCE lib/SOIL)
-file(GLOB SOIL_SOURCES "${SOIL_SOURCE}/*.c")
-file(GLOB SOIL_HEADERS "${SOIL_SOURCE}/*.h")
-add_library(SOIL STATIC
+set(SOIL_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/SOIL)
+file(GLOB SOIL_SOURCES "${SOIL_SOURCE_DIR}/*.c")
+add_library(SOIL SHARED
   ${SOIL_SOURCES}
-  ${SOIL_HEADERS}
+)
+target_link_libraries(SOIL
+  GLEW_1100
+  ${OPENGL_LIBRARY}
 )
 
 set(BOOST_ROOT lib/boost_1_55_0)
-find_package(Boost 1.55.0 COMPONENTS regex REQUIRED)
+find_package(Boost 1.55.0 REQUIRED)
 
-MESSAGE("Boost information:") 
-MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
-MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
-MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
+MESSAGE("Boost information:")
+MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}")
+MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
 
 include_directories (SYSTEM
   ${GLEW_INCLUDE}
-  ${SOIL_SOURCE}
+  ${SOIL_SOURCE_DIR}
   lib/glm
   lib/glfw-3.0.4/include/GLFW/
   ${Boost_INCLUDE_DIRS}
@@ -46,7 +51,8 @@ set(ALL_LIBS
   glfw
   GLEW_1100
   SOIL
-  ${OPENGL_LIBRARY}
+  ${OPENGL_gl_LIBRARY}
+  ${OPENGL_glu_LIBRARY}
   ${GLFW_LIBRARIES}
   ${Boost_LIBRARIES}
 )
