@@ -22,6 +22,7 @@ class LightShader {
 	   specular_sampler_id,
 	   normal_sampler_id,
 	   shadow_sampler_id,
+	   mask_sampler_id,
 	   light_color_id,
 	   light_ambientintensity_id,
 	   light_position_id,
@@ -38,6 +39,7 @@ class LightShader {
     void set_specular_sampler(int sampler);
     void set_normal_sampler(int sampler);
     void set_shadow_sampler(int sampler);
+    void set_mask_sampler(int sampler);
 
     void set_mvp_mat(const glm::mat4& mvp_mat);
     void set_depth_mvp_mat(const glm::mat4& depth_mvp_mat);

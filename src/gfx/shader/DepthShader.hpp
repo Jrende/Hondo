@@ -7,11 +7,12 @@ class DepthShader;
 class DepthShader {
   private:
     ShaderProgram shader_program;
-    const GLuint mvpMatID;
+    const GLuint mask_sampler_id, mvpMatID;
   public:
     DepthShader(); 
     void use_shader();
     void stop();
     void set_mvp_mat(const glm::mat4& mvpMat);
+    void set_mask_sampler(int sampler);
 };
 #endif

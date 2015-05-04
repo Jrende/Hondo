@@ -38,6 +38,14 @@ void RenderObject::bind_specular() const {
   glBindTexture(GL_TEXTURE_2D, mesh.material.specular_map);
 }
 
+void RenderObject::bind_mask() const {
+  if(mesh.material.mask == 0) {
+    std::cout << mesh.material.name << " mask not loaded\n";
+  }
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_2D, mesh.material.mask);
+}
+
 void RenderObject::translate(const glm::vec3& pos) {
   this->pos += pos;
 }

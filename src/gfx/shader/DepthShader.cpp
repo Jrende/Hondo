@@ -5,6 +5,7 @@
 #include <glm/gtx/string_cast.hpp>
 DepthShader::DepthShader(): 
   shader_program("depth"),
+  mask_sampler_id(shader_program.get_uniform("mask_sampler")),
   mvpMatID(shader_program.get_uniform("mvp_mat"))
 {
 }
@@ -15,6 +16,10 @@ void DepthShader::use_shader() {
 
 void DepthShader::stop() {
   shader_program.stop();
+}
+
+void DepthShader::set_mask_sampler(int sampler) {
+  glUniform1i(mask_sampler_id, sampler);
 }
 
 void DepthShader::set_mvp_mat(const glm::mat4& mvpMat) {

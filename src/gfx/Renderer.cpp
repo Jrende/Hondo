@@ -91,6 +91,10 @@ void Renderer::render_scene(const glm::mat4& vp_mat) {
     for(auto& render_object: vertex_format.second) {
       const glm::mat4& obj_model_mat = render_object->get_model_matrix();
       depth_shader.set_mvp_mat(vp_mat * obj_model_mat);
+
+      depth_shader.set_mask_sampler(3);
+      render_object->bind_mask();
+
       render_object->render();
     }
     vertex_format.first.unbind();
@@ -142,6 +146,9 @@ void Renderer::render() {
           shader->set_specular_sampler(2);
           render_object->bind_specular();
 
+          shader->set_mask_sampler(3);
+          render_object->bind_mask();
+
           if(light->casts_shadow()) {
             glm::mat4 depth_mvp_mat = glm::mat4();
             depth_mvp_mat *= light->get_projection();
@@ -150,8 +157,8 @@ void Renderer::render() {
             depth_mvp_mat = depth_bias_mat * depth_mvp_mat;
             shader->set_depth_mvp_mat(depth_mvp_mat);
 
-            light->shadow_map.bind_shadowmap(GL_TEXTURE3);
-            shader->set_shadow_sampler(3);
+            light->shadow_map.bind_shadowmap(GL_TEXTURE4);
+            shader->set_shadow_sampler(4);
           }
 
           shader->set_material(render_object->mesh.material);

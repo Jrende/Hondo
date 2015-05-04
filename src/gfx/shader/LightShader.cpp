@@ -15,6 +15,7 @@ LightShader::LightShader(std::string name, std::string light_name):
   specular_sampler_id(shader_program.get_uniform("specular_sampler")),
   normal_sampler_id(shader_program.get_uniform("normal_sampler")),
   shadow_sampler_id(shader_program.get_uniform("shadow_sampler")),
+  mask_sampler_id(shader_program.get_uniform("mask_sampler")),
   light_color_id(shader_program.get_uniform(light_name + ".color")),
   light_ambientintensity_id(shader_program.get_uniform(light_name + ".ambientIntensity")),
   light_position_id(shader_program.get_uniform(light_name + ".position")),
@@ -54,6 +55,10 @@ void LightShader::set_normal_sampler(int sampler) {
 
 void LightShader::set_shadow_sampler(int sampler) {
   glUniform1i(shadow_sampler_id, sampler);
+}
+
+void LightShader::set_mask_sampler(int sampler) {
+  glUniform1i(mask_sampler_id, sampler);
 }
 
 void LightShader::set_model_mat(const glm::mat4& model_mat) {

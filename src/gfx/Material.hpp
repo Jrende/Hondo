@@ -13,6 +13,7 @@ class Material {
     GLuint diffuse_map = 0;
     GLuint specular_map = 0;
     GLuint normal_map = 0;
+    GLuint mask = 0;
 
     float specular_intensity = 5;
     float specular_exponent = 100;

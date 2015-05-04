@@ -31,5 +31,6 @@ class RenderObject {
     void bind_diffuse() const;
     void bind_normal() const;
     void bind_specular() const;
+    void bind_mask() const;
 };
 #endif

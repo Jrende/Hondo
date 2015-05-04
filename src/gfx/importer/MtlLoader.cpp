@@ -52,6 +52,7 @@ void MtlLoader::load_materials(const std::string& path) {
     if(!mat.diffuse_map) mat.diffuse_map = create_texture(1, 1, 1);
     if(!mat.specular_map) mat.specular_map = create_texture(0, 0, 0);
     if(!mat.normal_map) mat.normal_map = create_texture(0.5, 0.5, 1);
+    if(!mat.mask) mat.mask = create_texture(1, 1, 1);
   }
 }
 
@@ -92,6 +93,8 @@ void MtlLoader::handle_tokens(std::vector<std::string> tokens) {
     current_material.specular_map = load_texture(tokens[0]);
   } else if(!strcmp(type, "map_bump")) {
     current_material.normal_map = load_texture(tokens[0]);
+  } else if(!strcmp(type, "map_d")) {
+    current_material.mask = load_texture(tokens[0]);
   }
   materials[last_material_name] = current_material;
 }

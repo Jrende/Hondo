@@ -18,6 +18,7 @@ uniform struct DirectionalLight {
 uniform sampler2D diffuse_sampler;
 uniform sampler2D normal_sampler;
 uniform sampler2D specular_sampler;
+uniform sampler2D mask_sampler;
 
 uniform float specular_intensity;
 uniform float specular_exponent;
@@ -57,6 +58,9 @@ vec4 getSpecular(vec3 normal) {
 }
 
 void main() {
+  if(texture2D(mask_sampler, TexCoord0.st).x < 0.5f) {
+    discard;
+  }
   vec3 normal = getNormal();
   vec4 color = texture2D(diffuse_sampler, TexCoord0.st);
   color += getSpecular(normal);
