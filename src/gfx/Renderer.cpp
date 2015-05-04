@@ -245,6 +245,7 @@ void Renderer::set_skybox(std::shared_ptr<SkyBox> skybox) {
 }
 
 void Renderer::draw_sky() {
+  if(skybox) {
     glDepthFunc(GL_EQUAL);
     glDepthRange(1, 1);
     skybox->update_pos();
@@ -260,6 +261,7 @@ void Renderer::draw_sky() {
     sky_shader.stop();
     glDepthRange(0, 1);
     glDepthFunc(GL_LEQUAL);
+  }
 }
 
 void Renderer::toggle_shadow_map() {
