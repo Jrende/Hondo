@@ -6,7 +6,7 @@
 DebugRenderer::DebugRenderer():
   debug_shader(),
   line_shader(),
-  line({0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, {0}, 2, {3}),
+  line({0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, {0}, {3}),
   quad(
       {
       -0.5, -0.5, 0.0,
@@ -18,7 +18,7 @@ DebugRenderer::DebugRenderer():
        0.5,  0.5, 0.0,
        1.0,  1.0,
       },
-      {0, 3, 1, 0, 2, 3}, 2, {3, 2})
+      {0, 3, 1, 0, 2, 3}, {3, 2})
 {
   
 }
