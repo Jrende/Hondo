@@ -138,20 +138,15 @@ void ObjLoader::add_face(Face& face) {
 }
 
 void ObjLoader::load_files() {
+  auto vertex_array = std::make_shared<VertexArray>(
+      vertex_buffer,
+      index_buffer,
+      std::vector<unsigned int>({3, 2, 3, 3}));
+  vertex_array_store.push_back(vertex_array);
+
   for(auto& filename_mesh_pair: meshes_per_file) {
     for(auto& mesh: filename_mesh_pair.second) {
-      auto vertex_array = std::make_shared<VertexArray>(
-	std::vector<float>(
-	    vertex_buffer.begin() + mesh.vertex_start * 11,
-	    vertex_buffer.begin() + ((mesh.vertex_start + mesh.vertex_count) * 11)),
-	std::vector<unsigned int>(
-	    index_buffer.begin() + mesh.index_start,
-	    index_buffer.begin() + (mesh.index_start + mesh.index_count)),
-	mesh.index_count,
-	std::vector<unsigned int>({3, 2, 3, 3})
-      );
-      vertex_array_store.push_back(vertex_array);
-      mesh.vertex_array = (*vertex_array_store.back());
+      mesh.vertex_array = *vertex_array;
     }
     std::cout << "file " << filename_mesh_pair.first << " loaded.\n";
   }

@@ -9,10 +9,8 @@
 VertexArray::VertexArray(
     const std::vector<float>& vertex_data,
     const std::vector<unsigned int>& index_data,
-    unsigned int size,
     std::vector<unsigned int> attribute_sizes
   ):
-  vertex_count(size),
   attribute_sizes(attribute_sizes),
   vertex_data(vertex_data),
   index_data(index_data)
@@ -22,7 +20,6 @@ VertexArray::VertexArray(
 }
 
 VertexArray::VertexArray(const VertexArray& other):
-  vertex_count(other.vertex_count),
   attribute_sizes(other.attribute_sizes),
   vertex_data(other.vertex_data),
   index_data(other.index_data),
@@ -85,15 +82,17 @@ void VertexArray::bind() const {
 }
 
 void VertexArray::render(const Mesh& mesh) const {
-  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.index_count, GL_UNSIGNED_INT, (void*) (0 * 4L), 0);
+  glDrawElementsBaseVertex(
+      GL_TRIANGLES,
+      mesh.index_count,
+      GL_UNSIGNED_INT,
+      (void*) (mesh.index_start * sizeof(unsigned int)),
+      mesh.vertex_start
+  );
 }
 
 void VertexArray::render_elements(GLuint mode, unsigned int size) {
   glDrawElements(mode, size, GL_UNSIGNED_INT, (void*) 0);
-}
-
-void VertexArray::render_array(GLuint mode) {
-  glDrawArrays(mode, 0, vertex_count);
 }
 
 void VertexArray::unbind() const {
@@ -110,7 +109,6 @@ bool VertexArray::operator<(const VertexArray& other) const {
 void VertexArray::swap(VertexArray& l, VertexArray& r) {
   std::swap(l.vertex_data, r.vertex_data);
   std::swap(l.index_data, r.index_data);
-  std::swap(l.vertex_count, r.vertex_count);
   std::swap(l.attribute_sizes, r.attribute_sizes);
   std::swap(l.vao_id, r.vao_id);
   std::swap(l.vbo_id, r.vbo_id);

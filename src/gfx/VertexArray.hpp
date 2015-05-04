@@ -8,8 +8,6 @@ class VertexArray;
 #include "Mesh.hpp"
 class VertexArray {
   private:
-    unsigned int vertex_count;
-    unsigned int size;
     std::vector<unsigned int> attribute_sizes;
     std::vector<float> vertex_data;
     std::vector<unsigned int> index_data;
@@ -23,11 +21,9 @@ class VertexArray {
     VertexArray(
 	const std::vector<float>& vertex_data,
 	const std::vector<unsigned int>& index_data,
-	unsigned int size,
 	std::vector<unsigned int> attribute_sizes);
     ~VertexArray();
     void render(const Mesh& mesh) const;
-    void render_array(GLuint mode);
     void render_elements(GLuint mode, unsigned int size);
     void bind() const;
     void unbind() const;

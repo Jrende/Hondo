@@ -14,7 +14,6 @@ class Mesh {
     uint index_start;
     uint vertex_count;
     uint vertex_start;
-    uint base_vertex;
     std::string name;
     Material material;
     boost::optional<VertexArray&> vertex_array;
