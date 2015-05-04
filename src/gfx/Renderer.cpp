@@ -15,11 +15,11 @@ Renderer::Renderer(int width, int height):
   dir_light_shader(std::make_shared<LightShader>()),
   ortho(glm::ortho<float>(-10,10,-10,10,-0,10)),
   depth_bias_mat(
-    0.5, 0.0, 0.0, 0.0,
-    0.0, 0.5, 0.0, 0.0,
-    0.0, 0.0, 0.5, 0.0,
-    0.5, 0.5, 0.5, 1.0
-  )
+      0.5, 0.0, 0.0, 0.0,
+      0.0, 0.5, 0.0, 0.0,
+      0.0, 0.0, 0.5, 0.0,
+      0.5, 0.5, 0.5, 1.0
+      )
 {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glEnable(GL_DEPTH_TEST);
@@ -67,17 +67,17 @@ void Renderer::render_depth_test() {
     depth_shader.use_shader();
     for(auto& light: light_list) {
       if(light->casts_shadow() && light->has_moved()) {
-	glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
-	glm::mat4 vp_mat;
-	vp_mat *= light->get_projection();
-	vp_mat *= light->get_view_mat();
+        glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
+        glm::mat4 vp_mat;
+        vp_mat *= light->get_projection();
+        vp_mat *= light->get_view_mat();
 
-	light->shadow_map.bind();
-	glClear(GL_DEPTH_BUFFER_BIT);
-	render_scene(vp_mat);
-	light->shadow_map.unbind();
+        light->shadow_map.bind();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        render_scene(vp_mat);
+        light->shadow_map.unbind();
 
-	light->set_has_moved(false);
+        light->set_has_moved(false);
       }
     }
     depth_shader.stop();
@@ -112,53 +112,53 @@ void Renderer::render() {
     //foreach light instance
     for(auto& light: light_type.second) {
       if(shown_light_index != -1 && light_list[shown_light_index] != light) {
-	continue;
+        continue;
       }
       //Might need static_cast
       shader->set_light(*light);
       //foreach vertex format
       for(auto& vertex_format: render_map) {
-	vertex_format.first.bind();
-	for(auto& render_object: vertex_format.second) {
-	  const glm::mat4& obj_model_mat = render_object->get_model_matrix();
+        vertex_format.first.bind();
+        for(auto& render_object: vertex_format.second) {
+          const glm::mat4& obj_model_mat = render_object->get_model_matrix();
 
 
-	  glm::mat4 mvp_mat = glm::mat4();
-	  mvp_mat *= perspective_mat;
-	  mvp_mat *= camera.get_view_mat();
-	  mvp_mat *= obj_model_mat;
-	  shader->set_mvp_mat(mvp_mat);
-	  shader->set_model_mat(obj_model_mat);
-	  
-	  shader->set_eye_pos(camera.pos);
-	  shader->set_eye_dir(camera.dir);
+          glm::mat4 mvp_mat = glm::mat4();
+          mvp_mat *= perspective_mat;
+          mvp_mat *= camera.get_view_mat();
+          mvp_mat *= obj_model_mat;
+          shader->set_mvp_mat(mvp_mat);
+          shader->set_model_mat(obj_model_mat);
 
-	  shader->set_diffuse_sampler(0);
-	  render_object->bind_diffuse();
+          shader->set_eye_pos(camera.pos);
+          shader->set_eye_dir(camera.dir);
 
-	  shader->set_normal_sampler(1);
-	  render_object->bind_normal();
+          shader->set_diffuse_sampler(0);
+          render_object->bind_diffuse();
 
-	  shader->set_specular_sampler(2);
-	  render_object->bind_specular();
+          shader->set_normal_sampler(1);
+          render_object->bind_normal();
 
-	  if(light->casts_shadow()) {
-	    glm::mat4 depth_mvp_mat = glm::mat4();
-	    depth_mvp_mat *= light->get_projection();
-	    depth_mvp_mat *= light->get_view_mat();
-	    depth_mvp_mat *= obj_model_mat;
-	    depth_mvp_mat = depth_bias_mat * depth_mvp_mat;
-	    shader->set_depth_mvp_mat(depth_mvp_mat);
+          shader->set_specular_sampler(2);
+          render_object->bind_specular();
 
-	    light->shadow_map.bind_shadowmap(GL_TEXTURE3);
-	    shader->set_shadow_sampler(3);
-	  }
+          if(light->casts_shadow()) {
+            glm::mat4 depth_mvp_mat = glm::mat4();
+            depth_mvp_mat *= light->get_projection();
+            depth_mvp_mat *= light->get_view_mat();
+            depth_mvp_mat *= obj_model_mat;
+            depth_mvp_mat = depth_bias_mat * depth_mvp_mat;
+            shader->set_depth_mvp_mat(depth_mvp_mat);
 
-	  shader->set_material(render_object->mesh.material);
+            light->shadow_map.bind_shadowmap(GL_TEXTURE3);
+            shader->set_shadow_sampler(3);
+          }
 
-	  render_object->render();
-	}
-	vertex_format.first.unbind();
+          shader->set_material(render_object->mesh.material);
+
+          render_object->render();
+        }
+        vertex_format.first.unbind();
       }
       glEnable(GL_BLEND);
     }
@@ -245,21 +245,21 @@ void Renderer::set_skybox(std::shared_ptr<SkyBox> skybox) {
 }
 
 void Renderer::draw_sky() {
-  glDepthFunc(GL_EQUAL);
-  glDepthRange(1, 1);
-  skybox->update_pos();
-  sky_shader();
-  glm::mat4 mvp_mat = glm::mat4();
-  mvp_mat *= perspective_mat;
-  mvp_mat *= camera.get_view_mat();
-  sky_shader.set_mvp_mat(mvp_mat);
-  sky_shader.set_model_mat(skybox->get_model_matrix());
-  skybox->mesh.vertex_array->bind();
-  skybox->render();
-  skybox->mesh.vertex_array->unbind();
-  sky_shader.stop();
-  glDepthRange(0, 1);
-  glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_EQUAL);
+    glDepthRange(1, 1);
+    skybox->update_pos();
+    sky_shader();
+    glm::mat4 mvp_mat = glm::mat4();
+    mvp_mat *= perspective_mat;
+    mvp_mat *= camera.get_view_mat();
+    sky_shader.set_mvp_mat(mvp_mat);
+    sky_shader.set_model_mat(skybox->get_model_matrix());
+    skybox->mesh.vertex_array->bind();
+    skybox->render();
+    skybox->mesh.vertex_array->unbind();
+    sky_shader.stop();
+    glDepthRange(0, 1);
+    glDepthFunc(GL_LEQUAL);
 }
 
 void Renderer::toggle_shadow_map() {
