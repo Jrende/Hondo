@@ -68,9 +68,31 @@ static void scroll_callback(GLFWwindow* window, double x_offset, double y_offset
   step = fmax(0.01f, fmin(step * pow(1.5, y_offset), 5));
 }
 
+double target_x = 0;
+double target_y = 0;
+double current_x = 0;
+double current_y = 0;
+double MOUSE_X_SENSITIVITY = 20;
+double MOUSE_Y_SENSITIVITY = 20;
+double PANNING_SPEED = 15;
 void rotate_camera(Camera& camera) {
-  camera.rotate(-Input::get_mouse_dx() / 100.0f, camera.up);
-  camera.rotate(Input::get_mouse_dy() / 100.0f, glm::cross(camera.up, camera.dir));
+  const auto x = Input::get_mouse_dx() / MOUSE_X_SENSITIVITY;
+  const auto y = Input::get_mouse_dy() / MOUSE_Y_SENSITIVITY;
+  std::cout << "x: " << x << ", y: " << y << "\n";
+  target_x += x;
+  target_y += y;
+  auto dx = (target_x - current_x) / PANNING_SPEED;
+  auto dy = (target_y - current_y) / PANNING_SPEED;
+  std::cout << "curx: " << current_x << ", cury: " << current_y << "\n";
+  std::cout << "dx: " << dx << ", dy: " << dy << "\n";
+  std::cout << std::endl;
+  if(fabs(dx) < 0.001 && fabs(dy) < 0.001) {
+    return;
+  }
+  current_x += dx + copysign(0.01, dx);
+  current_y += dy + copysign(0.01, dy);
+  camera.rotate(-dx, camera.up);
+  camera.rotate(dy, glm::cross(camera.up, camera.dir));
 }
 
 const int width = 1024;
