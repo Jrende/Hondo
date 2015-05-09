@@ -7,7 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -static-libgcc -static-libstd
 
 SET(GLFW_BUILD_EXAMPLES OFF CACHE STRING "" FORCE)
 SET(GLFW_BUILD_TESTS OFF CACHE STRING "" FORCE)
-add_subdirectory(lib/glfw-3.0.4)
+
+add_subdirectory(lib/glfw)
 
 #add_definitions(-DGLEW_STATIC)
 set(GLEW_SOURCE lib/glew-1.10.0/src/glew.c)
@@ -38,12 +39,17 @@ MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
 MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}")
 MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
 
+add_library(nanovg
+  lib/nanovg/src/nanovg.c
+)
+
 include_directories (SYSTEM
   ${GLEW_INCLUDE}
   ${SOIL_SOURCE_DIR}
   lib/glm
-  lib/glfw-3.0.4/include/GLFW/
+  lib/glfw/include
   ${Boost_INCLUDE_DIRS}
+  lib/nanovg/src
 )
 
 #The order is important!
@@ -54,7 +60,10 @@ set(ALL_LIBS
   ${OPENGL_gl_LIBRARY}
   ${OPENGL_glu_LIBRARY}
   ${GLFW_LIBRARIES}
+  Xcursor
+  Xinerama
   ${Boost_LIBRARIES}
+  nanovg
 )
 
 file(GLOB_RECURSE HONDO_SOURCES "src/*.cpp")
