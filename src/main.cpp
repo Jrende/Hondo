@@ -1,7 +1,6 @@
-#define GLM_FORCE_RADIANS
-#define PI 3.14159265358979
 #include <GL/glew.h>
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <iostream>
 #include <math.h>

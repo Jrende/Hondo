@@ -1,6 +1,6 @@
 #include <set>
 #include <iostream>
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 #include "Actions.hpp"
 
 namespace Actions {

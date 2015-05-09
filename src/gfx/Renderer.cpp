@@ -22,13 +22,7 @@ Renderer::Renderer(int width, int height):
       )
 {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LEQUAL);
-  glDepthMask(GL_TRUE);
 
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-  glFrontFace(GL_CCW);
   lights[point_light_shader];
   lights[spot_light_shader];
   lights[dir_light_shader];
@@ -46,7 +40,14 @@ Camera& Renderer::get_camera() {
 
 bool draw_shadow_map = false;
 void Renderer::pre_render() {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);
+  glDepthMask(GL_TRUE);
+
+  glFrontFace(GL_CCW);
   render_depth_test();
 
   if(shown_light_index != -1 && draw_shadow_map) {

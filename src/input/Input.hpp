@@ -1,6 +1,6 @@
 #ifndef HONDO_INPUT_HPP
 #define HONDO_INPUT_HPP
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 #include <functional>
 #include <map>
 #include <set>
