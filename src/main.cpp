@@ -6,6 +6,9 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <nanovg.h>
+#define NANOVG_GL3_IMPLEMENTATION
+#include <nanovg_gl.h>
 
 #include "gfx/Renderer.hpp"
 #include "gfx/VertexArray.hpp"
