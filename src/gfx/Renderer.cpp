@@ -90,7 +90,7 @@ void Renderer::render_scene(const glm::mat4& vp_mat) {
   for(auto& vertex_format: render_map) {
     vertex_format.first.bind();
     for(auto& render_object: vertex_format.second) {
-      const glm::mat4& obj_model_mat = render_object->get_model_matrix();
+      const glm::mat4& obj_model_mat = render_object->transform.get_model_matrix();
       depth_shader.set_mvp_mat(vp_mat * obj_model_mat);
 
       depth_shader.set_mask_sampler(3);
@@ -125,7 +125,7 @@ void Renderer::render() {
       for(auto& vertex_format: render_map) {
         vertex_format.first.bind();
         for(auto& render_object: vertex_format.second) {
-          const glm::mat4& obj_model_mat = render_object->get_model_matrix();
+          const glm::mat4& obj_model_mat = render_object->transform.get_model_matrix();
 
 
           glm::mat4 mvp_mat = glm::mat4();
@@ -262,7 +262,7 @@ void Renderer::draw_sky() {
     mvp_mat *= perspective_mat;
     mvp_mat *= camera.get_view_mat();
     sky_shader.set_mvp_mat(mvp_mat);
-    sky_shader.set_model_mat(skybox->get_model_matrix());
+    sky_shader.set_model_mat(skybox->transform.get_model_matrix());
     skybox->mesh.vertex_array->bind();
     skybox->render();
     skybox->mesh.vertex_array->unbind();

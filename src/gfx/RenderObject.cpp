@@ -6,11 +6,8 @@
 #include <GL/glew.h>
 
 RenderObject::RenderObject(Mesh& mesh) :
-  mesh(mesh),
-  pos(0, 0, 0),
-  scale_val(1, 1, 1),
-  rot(),
-  model_matrix()
+  transform(),
+  mesh(mesh)
 {
 }
 
@@ -44,30 +41,6 @@ void RenderObject::bind_mask() const {
   }
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_2D, mesh.material.mask);
-}
-
-void RenderObject::translate(const glm::vec3& pos) {
-  this->pos += pos;
-}
-
-void RenderObject::scale(const glm::vec3& scale) {
-  this->scale_val *= scale;
-}
-
-void RenderObject::rotate(float angle, const glm::vec3& axis) {
-  rot = glm::rotate(rot, angle, axis);
-}
-
-const glm::mat4& RenderObject::get_model_matrix() {
-  model_matrix = glm::mat4();
-  model_matrix = glm::translate(model_matrix, pos);
-  model_matrix = glm::scale(model_matrix, scale_val);
-  model_matrix = model_matrix * glm::mat4_cast(rot);
-  return model_matrix;
-}
-
-void RenderObject::set_position(const glm::vec3& pos) {
-  this->pos = pos;
 }
 
 void RenderObject::render() {

@@ -80,14 +80,10 @@ double PANNING_SPEED = 15;
 void rotate_camera(Camera& camera) {
   const auto x = Input::get_mouse_dx() / MOUSE_X_SENSITIVITY;
   const auto y = Input::get_mouse_dy() / MOUSE_Y_SENSITIVITY;
-  std::cout << "x: " << x << ", y: " << y << "\n";
   target_x += x;
   target_y += y;
   auto dx = (target_x - current_x) / PANNING_SPEED;
   auto dy = (target_y - current_y) / PANNING_SPEED;
-  std::cout << "curx: " << current_x << ", cury: " << current_y << "\n";
-  std::cout << "dx: " << dx << ", dy: " << dy << "\n";
-  std::cout << std::endl;
   if(fabs(dx) < 0.001 && fabs(dy) < 0.001) {
     return;
   }
@@ -193,12 +189,13 @@ int main(int argc, char ** argv) {
   sphere->scale({0.5, 0.5, 0.5});
   renderer.add_object(sphere);
   auto cube = std::make_shared<RenderObject>(cube_mesh);
+  cube->translate({0, -0.5, 0});
   renderer.add_object(cube);
 
   /*
   for(auto& sponza_mesh: sponza_meshes) {
     auto mesh = std::make_shared<RenderObject>(sponza_mesh);
-    mesh->scale({0.01, 0.01, 0.01});
+    mesh->transform.scale({0.05, 0.05, 0.05});
     renderer.add_object(mesh);
   }
   */
@@ -212,7 +209,7 @@ int main(int argc, char ** argv) {
   }
 
   std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
-  sky->scale({2,2,2});
+  sky->transform.scale({2,2,2});
   renderer.set_skybox(sky);
 
   Input::on(GLFW_KEY_I, [&] {

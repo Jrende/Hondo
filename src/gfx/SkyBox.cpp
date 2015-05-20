@@ -9,5 +9,5 @@ SkyBox::SkyBox(Camera const& camera, Mesh& mesh):
 
 
 void SkyBox::update_pos() {
-  this->set_position(camera.pos);
+  this->transform.set_position(camera.pos);
 }
