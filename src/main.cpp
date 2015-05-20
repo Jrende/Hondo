@@ -23,6 +23,10 @@
 #include "input/Input.hpp"
 #include "DebugUtils.h"
 
+void myCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, void *data) {
+  std::cout <<  "debug call: " << msg << std::endl;
+}
+
 glm::vec3 get_random_color() {
   auto r = ((rand() % 100)/100.0);
   auto g = ((rand() % 100)/100.0);
@@ -30,15 +34,17 @@ glm::vec3 get_random_color() {
   return glm::normalize(glm::vec3{r, g, b});
 }
 
+glm::vec3 pos;
+glm::vec3 scale;
 std::vector<std::pair<glm::vec3, glm::vec3>> rain;
 void draw_rain(Renderer* r) {
-  static float speed = 0.5;
+  static float speed = 0.75;
   //if((rand() % 100)/100.0 < 0.5) {
   //for(int i = 0; i < 5; i++) {
   {
-    auto x = ((rand() % 100)/100.0) * 10.0f;
-    auto y = 20;
-    auto z = ((rand() % 100)/100.0) * 10.0f;
+    auto x = ((rand() % 100)/100.0) * -34 + 14;
+    auto y = 22 + pos.y;
+    auto z = ((rand() % 100)/100.0) * -10 + 3.1;
     glm::vec3 from = glm::vec3(x,y,z);
     glm::vec3 to = from + glm::vec3{5, -16, 5};
     rain.push_back(std::make_pair(from, to));
@@ -103,6 +109,7 @@ int main(int argc, char ** argv) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, true );
   GLFWwindow* window = glfwCreateWindow(width, height, "Hondo", NULL, NULL);
   if (!window) {
     glfwTerminate();
@@ -129,7 +136,8 @@ int main(int argc, char ** argv) {
   }
   Renderer renderer(width, height);
 
-
+  struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_DEBUG);
+  //glDebugMessageCallback( myCallback, NULL );
   auto& camera = renderer.get_camera();
 
   Input::on(Actions::Forward, [&]() {
@@ -164,48 +172,65 @@ int main(int argc, char ** argv) {
     Input::lock_mouse();
   });
   ObjLoader loader;
-  //loader.preload_file("assets/sponza.obj");
-  loader.preload_file("assets/Cube.obj");
-  loader.preload_file("assets/Floor.obj");
-  loader.preload_file("assets/sphere.obj");
+  loader.preload_file("assets/sponza-minus.obj");
+  //loader.preload_file("assets/SmoothCube.obj");
+  //loader.preload_file("assets/sphere.obj");
+  //loader.preload_file("assets/Floor.obj");
   loader.preload_file("assets/SkyDome16.obj");
   std::cout << "Load files\n";
   loader.load_files();
   std::cout << "Loading files done\n";
   Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
-  Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
-  Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
-  Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
-  //std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza.obj");
+  //Mesh cube_mesh = loader.get_meshes("assets/SmoothCube.obj")[0];
+  //Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
+  //Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
+  std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza-minus.obj");
 
-  auto pl2 = std::make_shared<DirLight>(glm::vec3{-0, -1, -0}, glm::vec3{1, 1, 1});
-  pl2->ambient_intensity = 0.2f;
-  pl2->set_casts_shadow(true);
-  pl2->diffuse_intensity = 0.0f;
+  auto pl2 = std::make_shared<DirLight>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  pl2->ambient_intensity = 0.15f;
+  //pl2->set_casts_shadow(true);
+  pl2->diffuse_intensity = 0.2f;
   renderer.add_light(pl2);
   
+  /*
   auto sphere = std::make_shared<RenderObject>(sphere_mesh);
   sphere->translate({0, 1, 2});
   sphere->scale({0.5, 0.5, 0.5});
   renderer.add_object(sphere);
+
+  int from = -5;
+  int to = 5;
+  for(int i = from; i < to; i++) {
+    for(int j = from; j < to; j++) {
+      auto floor = std::make_shared<RenderObject>(floor_mesh);
+      floor->translate({i * 4,-1,j * 4});
+      floor->scale({2, 1, 2});
+      renderer.add_object(floor);
+      if(((i % 2 == 0) || (j % 2 == 0)) && 0) {
+	auto cube = std::make_shared<RenderObject>(cube_mesh);
+	cube->translate({i * 4, 0, j * 4});
+	renderer.add_object(cube);
+      }
+    }
+  }
+  */
+
+  /*
+  auto floor = std::make_shared<RenderObject>(floor_mesh);
+  floor->translate({0, -0.5, 0});
+  floor->scale({2, 2, 2});
+  renderer.add_object(floor);
+
+
   auto cube = std::make_shared<RenderObject>(cube_mesh);
   cube->translate({0, -0.5, 0});
   renderer.add_object(cube);
 
-  /*
+  */
   for(auto& sponza_mesh: sponza_meshes) {
     auto mesh = std::make_shared<RenderObject>(sponza_mesh);
     mesh->transform.scale({0.05, 0.05, 0.05});
     renderer.add_object(mesh);
-  }
-  */
-
-  for(int i = -5; i < 5; i++) {
-    for(int j = -5; j < 5; j++) {
-      auto floor = std::make_shared<RenderObject>(floor_mesh);
-      floor->translate({i * 2,-1,j * 2});
-      renderer.add_object(floor);
-    }
   }
 
   std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
@@ -230,7 +255,6 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_U, [&] {
     renderer.get_shown_light()->translate({0, -0.01f, 0});
   }, true);
-
   Input::on(GLFW_KEY_PAGE_UP, [&] {
     if(selected_light < renderer.light_count()) {
       renderer.show_single_light(++selected_light);
@@ -250,17 +274,17 @@ int main(int argc, char ** argv) {
   }, false);
   Input::on(GLFW_KEY_P, [&] {
       if(Input::is_alt_down()) {
-	auto light = std::make_shared<PointLight>(camera.pos, get_random_color());
-	light->set_casts_shadow(false);
-	light->ambient_intensity = 0.0f;
-	light->diffuse_intensity = 0.2f;
-	renderer.add_light(light);
+        auto light = std::make_shared<PointLight>(camera.pos, get_random_color());
+        light->set_casts_shadow(false);
+        light->ambient_intensity = 0.0f;
+        light->diffuse_intensity = 0.2f;
+        renderer.add_light(light);
       } else {
-	auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
-	light->set_casts_shadow(true);
-	light->ambient_intensity = 0.0f;
-	light->diffuse_intensity = 2.0f;
-	renderer.add_light(light);
+        auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
+        light->set_casts_shadow(true);
+        light->ambient_intensity = 0.0f;
+        light->diffuse_intensity = 2.0f;
+        renderer.add_light(light);
       }
       std::cout << "Amount of lights: " << renderer.light_count() << "\n";
   }, false);
@@ -272,7 +296,7 @@ int main(int argc, char ** argv) {
       draw_main = !draw_main;
   }, false);
 
-  float i = 0;
+  nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
   camera.translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
@@ -288,11 +312,6 @@ int main(int argc, char ** argv) {
     glfwSwapBuffers(window);
 
     Input::reset_delta();
-    if(i > 360) {
-      i=0;
-    }
-    i += 0.1f;
-
     calcFPS(window, 1.0, "Current FPS: ");
     checkForGlError();
   }
