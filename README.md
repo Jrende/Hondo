@@ -1,10 +1,9 @@
 Hondo
 =======
 
-Project to learn C++ by creating a 3D engine.
+Open source 3D engine using OpenGL and C++.
 =======
 
-The future plan is to add all of the functionality of https://bitbucket.org/jrende/3de2 into this.
 To build on linux:
   * Install dependencies
   * run cmake, followed by make.
@@ -12,7 +11,7 @@ To build on linux:
 
 Dependencies:
   * cmake
-  * glfw-3.0.4
+  * glfw
   * glew-1.10.0
   * glm
   * Boost_1_55_0
