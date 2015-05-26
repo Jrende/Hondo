@@ -323,6 +323,12 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_T, [&] {
       draw_main = !draw_main;
   }, false);
+  Input::on(GLFW_KEY_Q, [&] {
+      step = fmax(0.01f, fmin(step * pow(1.5, -1), 5));
+  }, false);
+  Input::on(GLFW_KEY_E, [&] {
+      step = fmax(0.01f, fmin(step * pow(1.5, 1), 5));
+  }, false);
 
   nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
   camera.translate({0, 2, 0});
