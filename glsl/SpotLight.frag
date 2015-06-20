@@ -49,9 +49,9 @@ vec4 getDiffuse(vec3 normal, vec3 surfaceToLight, float shadow) {
   brightness /= spotLight.constant + spotLight.linear*distance + spotLight.exp*distance*distance;
 
   vec4 lightColor =  vec4(spotLight.color, 1.0f);
-  vec4 diffuseColor = lightColor * spotLight.diffuseIntensity * shadow;
-  vec4 ambientColor = lightColor * spotLight.ambientIntensity * shadow;
-  return diffuseColor * brightness + ambientColor;
+  vec4 diffuseColor = lightColor * spotLight.diffuseIntensity;
+  vec4 ambientColor = lightColor * spotLight.ambientIntensity;
+  return diffuseColor * brightness * shadow + ambientColor;
 }
 
 
