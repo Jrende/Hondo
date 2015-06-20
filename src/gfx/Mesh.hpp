@@ -14,14 +14,13 @@ class Mesh {
     uint index_start;
     uint vertex_count;
     uint vertex_start;
+    //Make into pointers?
     std::string name;
     Material material;
     boost::optional<VertexArray&> vertex_array;
 
     Mesh();
     Mesh(uint index_start, uint vertex_start, std::string name);
-    Mesh(const Mesh& other) = default;
-    Mesh& operator=(Mesh&& other);
 
     void render();
 };
