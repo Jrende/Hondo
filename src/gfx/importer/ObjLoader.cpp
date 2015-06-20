@@ -138,6 +138,7 @@ void ObjLoader::add_face(Face& face) {
 }
 
 void ObjLoader::load_files() {
+  std::cout << "Loading files";
   auto vertex_array = std::make_shared<VertexArray>(
       vertex_buffer,
       index_buffer,
@@ -150,4 +151,5 @@ void ObjLoader::load_files() {
     }
     std::cout << "file " << filename_mesh_pair.first << " loaded.\n";
   }
+  std::cout << "<--- Done!\n";
 }
