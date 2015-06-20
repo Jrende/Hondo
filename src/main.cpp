@@ -101,18 +101,46 @@ void rotate_camera(Camera& camera) {
   camera.rotate(dy, glm::cross(camera.up, camera.dir));
 }
 
-const int width = 1024;
-const int height = 768;
+int width = 1920;
+int height = 1080;
 int main(int argc, char ** argv) {
   glfwSetErrorCallback(error_callback);
   if (!glfwInit())
     exit(EXIT_FAILURE);
 
+  bool fullscreen = false;
+  for(int i = 0; i < argc; i++) {
+    //std::cout << argv[i] << "\n";
+    if(!strcmp(argv[i], "-w")) {
+      width = atoi(argv[i+1]);
+    }
+    if(!strcmp(argv[i], "-h")) {
+      height = atoi(argv[i+1]);
+    }
+    if(!strcmp(argv[i], "-f")) {
+      fullscreen = true;
+    }
+
+  }
+  std::cout << "w: " << width << "\nheight: " << height << "\n";
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, true );
-  GLFWwindow* window = glfwCreateWindow(width, height, "Hondo", NULL, NULL);
+
+  GLFWwindow* window = nullptr; 
+  if(fullscreen) {
+    const auto& monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    window = glfwCreateWindow(mode->width, mode->height, "Hondo", monitor, NULL);
+  } else {
+    window = glfwCreateWindow(width, height, "Hondo", NULL, NULL);
+  }
+
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -278,6 +306,12 @@ int main(int argc, char ** argv) {
   bool draw_main = true;
   Input::on(GLFW_KEY_T, [&] {
       draw_main = !draw_main;
+  }, false);
+  Input::on(GLFW_KEY_Q, [&] {
+      step = fmax(0.01f, fmin(step * pow(1.5, -1), 5));
+  }, false);
+  Input::on(GLFW_KEY_E, [&] {
+      step = fmax(0.01f, fmin(step * pow(1.5, 1), 5));
   }, false);
 
   nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
