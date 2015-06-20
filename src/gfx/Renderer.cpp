@@ -281,3 +281,11 @@ void Renderer::clear_lights() {
   lights.clear();
   light_list.clear();
 }
+
+bool vertex_array_sort(const RenderObject& left, const RenderObject& right) {
+  return (*left.mesh.vertex_array) == (*right.mesh.vertex_array);
+}
+
+void Renderer::render(SceneGraph& scene_graph) {
+  render(scene_graph.render_list);
+}

@@ -11,6 +11,8 @@
 #include <nanovg_gl.h>
 
 #include "gfx/Renderer.hpp"
+#include "gfx/SceneGraph.hpp"
+#include "gfx/Entity.hpp"
 #include "gfx/VertexArray.hpp"
 #include "gfx/SkyBox.hpp"
 #include "gfx/importer/ObjLoader.hpp"
@@ -173,17 +175,13 @@ int main(int argc, char ** argv) {
   });
   ObjLoader loader;
   loader.preload_file("assets/sponza-minus.obj");
-  //loader.preload_file("assets/SmoothCube.obj");
-  //loader.preload_file("assets/sphere.obj");
-  //loader.preload_file("assets/Floor.obj");
+  loader.preload_file("assets/Cube.obj");
+  loader.preload_file("assets/sphere.obj");
   loader.preload_file("assets/SkyDome16.obj");
-  std::cout << "Load files\n";
   loader.load_files();
-  std::cout << "Loading files done\n";
   Mesh skydome_mesh = loader.get_meshes("assets/SkyDome16.obj")[0];
-  //Mesh cube_mesh = loader.get_meshes("assets/SmoothCube.obj")[0];
-  //Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
-  //Mesh floor_mesh = loader.get_meshes("assets/Floor.obj")[0];
+  Mesh cube_mesh = loader.get_meshes("assets/Cube.obj")[0];
+  Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
   std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza-minus.obj");
 
   auto pl2 = std::make_shared<DirLight>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
@@ -191,50 +189,36 @@ int main(int argc, char ** argv) {
   //pl2->set_casts_shadow(true);
   pl2->diffuse_intensity = 0.2f;
   renderer.add_light(pl2);
-  
-  /*
-  auto sphere = std::make_shared<RenderObject>(sphere_mesh);
-  sphere->translate({0, 1, 2});
-  sphere->scale({0.5, 0.5, 0.5});
-  renderer.add_object(sphere);
 
-  int from = -5;
-  int to = 5;
-  for(int i = from; i < to; i++) {
-    for(int j = from; j < to; j++) {
-      auto floor = std::make_shared<RenderObject>(floor_mesh);
-      floor->translate({i * 4,-1,j * 4});
-      floor->scale({2, 1, 2});
-      renderer.add_object(floor);
-      if(((i % 2 == 0) || (j % 2 == 0)) && 0) {
-	auto cube = std::make_shared<RenderObject>(cube_mesh);
-	cube->translate({i * 4, 0, j * 4});
-	renderer.add_object(cube);
-      }
-    }
-  }
-  */
-
-  /*
-  auto floor = std::make_shared<RenderObject>(floor_mesh);
-  floor->translate({0, -0.5, 0});
-  floor->scale({2, 2, 2});
-  renderer.add_object(floor);
-
-
-  auto cube = std::make_shared<RenderObject>(cube_mesh);
-  cube->translate({0, -0.5, 0});
-  renderer.add_object(cube);
-
-  */
+  SceneGraph scene;
+  Entity sponza = scene.create_entity();
   for(auto& sponza_mesh: sponza_meshes) {
-    auto mesh = std::make_shared<RenderObject>(sponza_mesh);
-    mesh->transform.scale({0.05, 0.05, 0.05});
-    renderer.add_object(mesh);
+    scene.create_entity(sponza, RenderObject(sponza_mesh));
   }
+  scene.scale(sponza, {0.05, 0.05, 0.05});
+
+  Entity cube = scene.create_entity(RenderObject(cube_mesh));
+  scene.scale(cube, glm::vec3{0.5, 0.5, 0.5});
+  scene.translate(cube, glm::vec3{0, 2, 0});
+  Entity sphere1 = scene.create_entity(cube, RenderObject(sphere_mesh));
+  scene.translate(sphere1, glm::vec3{2, 0, 0});
+
+  Entity sphere2 = scene.create_entity(cube, RenderObject(sphere_mesh));
+  scene.translate(sphere2, glm::vec3{-2, 0, 0});
+  Entity sphere3 = scene.create_entity(cube, RenderObject(sphere_mesh));
+  scene.translate(sphere3, glm::vec3{0, 0, 2});
+  Entity sphere6 = scene.create_entity(sphere3, RenderObject(sphere_mesh));
+  scene.translate(sphere6, glm::vec3{0, 2, 0});
+  scene.scale(sphere6, glm::vec3{0.5, 0.5, 0.5});
+
+  Entity sphere4 = scene.create_entity(cube, RenderObject(sphere_mesh));
+  scene.translate(sphere4, glm::vec3{0, 0, -2});
+  Entity sphere5 = scene.create_entity(sphere4, RenderObject(sphere_mesh));
+  scene.translate(sphere5, glm::vec3{0, 2, 0});
+  scene.scale(sphere5, glm::vec3{0.5, 0.5, 0.5});
 
   std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
-  sky->transform.scale({2,2,2});
+  //sky->transform.scale({2,2,2});
   renderer.set_skybox(sky);
 
   Input::on(GLFW_KEY_I, [&] {
@@ -302,10 +286,13 @@ int main(int argc, char ** argv) {
     glfwPollEvents();
     Input::handle_input();
     rotate_camera(camera);
-    renderer.pre_render();
-
     if(draw_main) {
-      renderer.render();
+      renderer.render(scene);
+      scene.rotate(cube, 0.01, glm::vec3{1, 1, 0});
+      scene.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
+      scene.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
+      scene.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
+      scene.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
     }
     draw_rain(&renderer);
 

@@ -1,6 +1,5 @@
 #ifndef HONDO_RENDEROBJECT_HPP
 #define HONDO_RENDEROBJECT_HPP
-class RenderObject;
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -8,17 +7,20 @@ class RenderObject;
 #include <string>
 
 #include "Mesh.hpp"
-#include "RenderObject.hpp"
 #include "Transform.hpp"
 #include "VertexArray.hpp"
+#include "Entity.hpp"
 #include "shader/SimpleShader.hpp"
 class RenderObject {
+  friend class SceneGraph;
+  friend class Renderer;
   private:
     void swap(RenderObject& first, RenderObject& second);
-  public:
     Transform transform;
+  public:
     RenderObject(Mesh& mesh);
 
+    Entity entity;
     Mesh& mesh;
 
     void render();

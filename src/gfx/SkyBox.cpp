@@ -1,4 +1,3 @@
-
 #include "SkyBox.hpp"
 SkyBox::SkyBox(Camera const& camera, Mesh& mesh):
   RenderObject(mesh),
@@ -9,5 +8,5 @@ SkyBox::SkyBox(Camera const& camera, Mesh& mesh):
 
 
 void SkyBox::update_pos() {
-  this->transform.set_position(camera.pos);
+  //this->transform.set_position(camera.pos);
 }
