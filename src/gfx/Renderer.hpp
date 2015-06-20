@@ -1,10 +1,10 @@
-#ifndef HONDO_RENDERER_HPP
-#define HONDO_RENDERER_HPP
+#pragma once
 class Renderer;
 #include <map>
 #include <memory>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include <unordered_map>
 
 #include "Camera.hpp"
 #include "DebugRenderer.hpp"
@@ -39,17 +39,15 @@ class Renderer {
     int last_shown_light_index = 0;
     SkyShader sky_shader;
     std::shared_ptr<SkyBox> skybox;
-    std::map<VertexArray, std::vector<std::shared_ptr<RenderObject>>> render_map;
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
     Renderer(const Renderer& other) = delete;
     void draw_sky();
-    void render_depth_test();
-    void render_scene(const glm::mat4& vp_mat);
+    void render_depth_test(std::vector<RenderObject>& render_list);
+    void render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& render_list);
   public:
     Renderer(int width, int height);
     Camera& get_camera();
 
-    void add_object(std::shared_ptr<RenderObject> rObj);
     void add_light(std::shared_ptr<PointLight> point_light);
     void add_light(std::shared_ptr<SpotLight> spot_light);
     void add_light(std::shared_ptr<DirLight> light);
@@ -59,7 +57,8 @@ class Renderer {
     void toggle_wireframe();
     void toggle_shadow_map();
     void pre_render();
-    void render();
+
+    void render(std::vector<RenderObject>& render_list);
     void show_single_light(int index);
     std::shared_ptr<Light> get_shown_light();
     int light_count();
@@ -68,4 +67,3 @@ class Renderer {
     void draw_point(const glm::vec3& pos);
     void clear_lights();
 };
-#endif

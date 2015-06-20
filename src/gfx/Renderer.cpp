@@ -28,12 +28,6 @@ Renderer::Renderer(int width, int height):
   lights[dir_light_shader];
 }
 
-void Renderer::add_object(std::shared_ptr<RenderObject> rObj) {
-  if(rObj->mesh.vertex_array) {
-    render_map[*rObj->mesh.vertex_array].push_back(rObj);
-  }
-}
-
 Camera& Renderer::get_camera() {
   return camera;
 }
@@ -48,14 +42,13 @@ void Renderer::pre_render() {
   glDepthMask(GL_TRUE);
 
   glFrontFace(GL_CCW);
-  render_depth_test();
 
   if(shown_light_index != -1 && draw_shadow_map) {
     debug_renderer.render_fbo(light_list[shown_light_index]->shadow_map.depth_tex);
   }
 }
 
-void Renderer::render_depth_test() {
+void Renderer::render_depth_test(std::vector<RenderObject>& render_list) {
   bool render_depth = false;
   for(auto& light: light_list) {
     if(light->casts_shadow() && light->has_moved()) {
@@ -75,7 +68,7 @@ void Renderer::render_depth_test() {
 
         light->shadow_map.bind();
         glClear(GL_DEPTH_BUFFER_BIT);
-        render_scene(vp_mat);
+        render_scene(vp_mat, render_list);
         light->shadow_map.unbind();
 
         light->set_has_moved(false);
@@ -86,35 +79,42 @@ void Renderer::render_depth_test() {
   }
 }
 
-void Renderer::render_scene(const glm::mat4& vp_mat) {
-  for(auto& vertex_format: render_map) {
-    vertex_format.first.bind();
-    for(auto& render_object: vertex_format.second) {
-      const glm::mat4& obj_model_mat = render_object->transform.get_model_matrix();
-      depth_shader.set_mvp_mat(vp_mat * obj_model_mat);
-
-      depth_shader.set_mask_sampler(3);
-      render_object->bind_mask();
-
-      render_object->render();
+void Renderer::render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& render_list) {
+  VertexArray& vertex_format = (*render_list[0].mesh.vertex_array);
+  vertex_format.bind();
+  for(auto& render_object: render_list) {
+    if((*render_object.mesh.vertex_array) != vertex_format) {
+      vertex_format.unbind();
+      vertex_format = (*render_object.mesh.vertex_array);
+      vertex_format.bind();
     }
-    vertex_format.first.unbind();
+    const glm::mat4& obj_model_mat = render_object.transform.get_model_matrix();
+    depth_shader.set_mvp_mat(vp_mat * obj_model_mat);
+
+    depth_shader.set_mask_sampler(3);
+    render_object.bind_mask();
+
+    render_object.render();
   }
 }
 
-void Renderer::render() {
+void Renderer::render(std::vector<RenderObject>& render_list) {
+  pre_render();
+  render_depth_test(render_list);
+
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
   //foreach type of light
   for(auto& light_type: lights) {
-    auto& shader = light_type.first;
-
+    if(light_type.second.size() == 0) {
+      continue;
+    }
+    std::shared_ptr<LightShader> shader = light_type.first;
+    //foreach light instance
     for(auto& light: light_type.second) {
       draw_point(light->get_pos());
     }
-
     shader->use_shader();
-    //foreach light instance
     for(auto& light: light_type.second) {
       if(shown_light_index != -1 && light_list[shown_light_index] != light) {
         continue;
@@ -122,56 +122,57 @@ void Renderer::render() {
       //Might need static_cast
       shader->set_light(*light);
       //foreach vertex format
-      for(auto& vertex_format: render_map) {
-        vertex_format.first.bind();
-        for(auto& render_object: vertex_format.second) {
-          const glm::mat4& obj_model_mat = render_object->transform.get_model_matrix();
-
-
-          glm::mat4 mvp_mat = glm::mat4();
-          mvp_mat *= perspective_mat;
-          mvp_mat *= camera.get_view_mat();
-          mvp_mat *= obj_model_mat;
-          shader->set_mvp_mat(mvp_mat);
-          shader->set_model_mat(obj_model_mat);
-
-          shader->set_eye_pos(camera.pos);
-          shader->set_eye_dir(camera.dir);
-
-          shader->set_diffuse_sampler(0);
-          render_object->bind_diffuse();
-
-          shader->set_normal_sampler(1);
-          render_object->bind_normal();
-
-          shader->set_specular_sampler(2);
-          render_object->bind_specular();
-
-          shader->set_mask_sampler(3);
-          render_object->bind_mask();
-
-          if(light->casts_shadow()) {
-            glm::mat4 depth_mvp_mat = glm::mat4();
-            depth_mvp_mat *= light->get_projection();
-            depth_mvp_mat *= light->get_view_mat();
-            depth_mvp_mat *= obj_model_mat;
-            depth_mvp_mat = depth_bias_mat * depth_mvp_mat;
-            shader->set_depth_mvp_mat(depth_mvp_mat);
-
-            light->shadow_map.bind_shadowmap(GL_TEXTURE4);
-            shader->set_shadow_sampler(4);
-          }
-
-          shader->set_material(render_object->mesh.material);
-
-          render_object->render();
+      VertexArray& vertex_format = (*render_list[0].mesh.vertex_array);
+      vertex_format.bind();
+      for(auto& render_object: render_list) {
+        if((*render_object.mesh.vertex_array) != vertex_format) {
+          vertex_format.unbind();
+          vertex_format = (*render_object.mesh.vertex_array);
+          vertex_format.bind();
         }
-        vertex_format.first.unbind();
+        const glm::mat4& obj_model_mat = render_object.transform.get_model_matrix();
+
+        glm::mat4 mvp_mat = glm::mat4();
+        mvp_mat *= perspective_mat;
+        mvp_mat *= camera.get_view_mat();
+        mvp_mat *= obj_model_mat;
+        shader->set_mvp_mat(mvp_mat);
+        shader->set_model_mat(obj_model_mat);
+
+        shader->set_eye_pos(camera.pos);
+        shader->set_eye_dir(camera.dir);
+
+        shader->set_diffuse_sampler(0);
+        render_object.bind_diffuse();
+
+        shader->set_normal_sampler(1);
+        render_object.bind_normal();
+
+        shader->set_specular_sampler(2);
+        render_object.bind_specular();
+
+        shader->set_mask_sampler(3);
+        render_object.bind_mask();
+
+        if(light->casts_shadow()) {
+          glm::mat4 depth_mvp_mat = glm::mat4();
+          depth_mvp_mat *= light->get_projection();
+          depth_mvp_mat *= light->get_view_mat();
+          depth_mvp_mat *= obj_model_mat;
+          depth_mvp_mat = depth_bias_mat * depth_mvp_mat;
+          shader->set_depth_mvp_mat(depth_mvp_mat);
+
+          light->shadow_map.bind_shadowmap(GL_TEXTURE4);
+          shader->set_shadow_sampler(4);
+        }
+
+        shader->set_material(render_object.mesh.material);
+        render_object.render();
       }
       glEnable(GL_BLEND);
     }
   }
-  draw_sky();
+  //draw_sky();
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
