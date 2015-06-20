@@ -49,34 +49,22 @@ void Renderer::pre_render() {
 }
 
 void Renderer::render_depth_test(std::vector<RenderObject>& render_list) {
-  bool render_depth = false;
+  depth_shader.use_shader();
   for(auto& light: light_list) {
-    if(light->casts_shadow() && light->has_moved()) {
-      render_depth = true;
-      break;
+    if(light->casts_shadow()) {
+      glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
+      glm::mat4 vp_mat;
+      vp_mat *= light->get_projection();
+      vp_mat *= light->get_view_mat();
+
+      light->shadow_map.bind();
+      glClear(GL_DEPTH_BUFFER_BIT);
+      render_scene(vp_mat, render_list);
+      light->shadow_map.unbind();
     }
   }
-
-  if(render_depth) {
-    depth_shader.use_shader();
-    for(auto& light: light_list) {
-      if(light->casts_shadow() && light->has_moved()) {
-        glViewport(0.0f, 0.0f, (float) light->shadow_map.width, (float) light->shadow_map.height);
-        glm::mat4 vp_mat;
-        vp_mat *= light->get_projection();
-        vp_mat *= light->get_view_mat();
-
-        light->shadow_map.bind();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        render_scene(vp_mat, render_list);
-        light->shadow_map.unbind();
-
-        light->set_has_moved(false);
-      }
-    }
-    depth_shader.stop();
-    glViewport(0.0f, 0.0f, width, height);
-  }
+  depth_shader.stop();
+  glViewport(0.0f, 0.0f, width, height);
 }
 
 void Renderer::render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& render_list) {
