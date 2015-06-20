@@ -1,7 +1,7 @@
 #ifndef HONDO_CAMERA_HPP
 #define HONDO_CAMERA_HPP
 class Camera;
-#include "RenderObject.hpp"
+#define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
 class Camera {
   private:
