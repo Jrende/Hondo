@@ -2,6 +2,7 @@
 #define HONDO_SKYBOX_HPP
 class SkyBox;
 #include "Camera.hpp"
+#include "RenderObject.hpp"
 
 class SkyBox: public RenderObject {
   private:
