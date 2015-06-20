@@ -17,6 +17,8 @@ class VertexArray {
     VertexArray(const VertexArray& other);
     GLuint vao_id, vbo_id, index_buf_id;
     bool operator<(const VertexArray& other) const;
+    bool operator==(const VertexArray& other) const;
+    bool operator!=(const VertexArray& other) const;
     VertexArray() = default;
     VertexArray(
 	const std::vector<float>& vertex_data,

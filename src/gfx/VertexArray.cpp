@@ -106,6 +106,14 @@ bool VertexArray::operator<(const VertexArray& other) const {
   return this->vao_id < other.vao_id;
 }
 
+bool VertexArray::operator==(const VertexArray& other) const {
+  return this->vao_id == other.vao_id;
+}
+
+bool VertexArray::operator!=(const VertexArray& other) const {
+  return this->vao_id != other.vao_id;
+}
+
 void VertexArray::swap(VertexArray& l, VertexArray& r) {
   std::swap(l.vertex_data, r.vertex_data);
   std::swap(l.index_data, r.index_data);
