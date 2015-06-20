@@ -25,7 +25,7 @@
 #include "input/Input.hpp"
 #include "DebugUtils.h"
 
-void myCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, void *data) {
+void glDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, void *data) {
   std::cout <<  "debug call: " << msg << std::endl;
 }
 
@@ -139,7 +139,7 @@ int main(int argc, char ** argv) {
   Renderer renderer(width, height);
 
   struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_DEBUG);
-  //glDebugMessageCallback( myCallback, NULL );
+  glDebugMessageCallback(glDebugCallback, NULL );
   auto& camera = renderer.get_camera();
 
   Input::on(Actions::Forward, [&]() {
