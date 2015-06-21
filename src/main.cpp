@@ -86,19 +86,24 @@ double MOUSE_X_SENSITIVITY = 20;
 double MOUSE_Y_SENSITIVITY = 20;
 double PANNING_SPEED = 15;
 void rotate_camera(Camera& camera) {
-  const auto x = Input::get_mouse_dx() / MOUSE_X_SENSITIVITY;
-  const auto y = Input::get_mouse_dy() / MOUSE_Y_SENSITIVITY;
-  target_x += x;
-  target_y += y;
-  auto dx = (target_x - current_x) / PANNING_SPEED;
-  auto dy = (target_y - current_y) / PANNING_SPEED;
-  if(fabs(dx) < 0.001 && fabs(dy) < 0.001) {
-    return;
+  if(Input::is_mouse_locked()) {
+    const auto x = Input::get_mouse_dx() / MOUSE_X_SENSITIVITY;
+    const auto y = Input::get_mouse_dy() / MOUSE_Y_SENSITIVITY;
+    target_x += x;
+    target_y += y;
+    auto dx = (target_x - current_x) / PANNING_SPEED;
+    auto dy = (target_y - current_y) / PANNING_SPEED;
+    if(fabs(dx) < 0.001 && fabs(dy) < 0.001) {
+      return;
+    }
+    current_x += dx + copysign(0.01, dx);
+    current_y += dy + copysign(0.01, dy);
+    camera.rotate(-dx, camera.up);
+    camera.rotate(dy, glm::cross(camera.up, camera.dir));
+  } else {
+    target_x = current_x;
+    target_y = current_y;
   }
-  current_x += dx + copysign(0.01, dx);
-  current_y += dy + copysign(0.01, dy);
-  camera.rotate(-dx, camera.up);
-  camera.rotate(dy, glm::cross(camera.up, camera.dir));
 }
 
 int width = 1920;

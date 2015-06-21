@@ -23,6 +23,7 @@ namespace Input {
   bool is_control_down();
   bool is_alt_down();
   bool is_super_down();
+  bool is_mouse_locked();
   void lock_mouse();
   void set_active_window(GLFWwindow* window);
 }

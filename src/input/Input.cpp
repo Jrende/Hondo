@@ -80,6 +80,10 @@ namespace Input {
       return currentKeys.count(key) != 0;
   }
 
+  bool is_mouse_locked() {
+    return mouseLocked;
+  }
+
   void lock_mouse() {
     if(mouseLocked) {
       glfwSetInputMode(Input::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
