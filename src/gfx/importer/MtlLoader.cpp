@@ -91,10 +91,19 @@ void MtlLoader::handle_tokens(std::vector<std::string> tokens) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
   } else if(!strcmp(type, "map_Ns")) {
     current_material.specular_map = load_texture(tokens[0]);
+    GLfloat fLargest;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
   } else if(!strcmp(type, "map_bump")) {
     current_material.normal_map = load_texture(tokens[0]);
+    GLfloat fLargest;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
   } else if(!strcmp(type, "map_d")) {
     current_material.mask = load_texture(tokens[0]);
+    GLfloat fLargest;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
   }
   materials[last_material_name] = current_material;
 }
