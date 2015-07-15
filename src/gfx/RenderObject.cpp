@@ -5,6 +5,11 @@
 #include <iostream>
 #include <GL/glew.h>
 
+RenderObject::RenderObject():
+  transform(),
+  mesh()
+{
+}
 RenderObject::RenderObject(Mesh& mesh) :
   transform(),
   mesh(mesh)

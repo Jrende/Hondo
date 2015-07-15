@@ -18,10 +18,11 @@ class RenderObject {
     void swap(RenderObject& first, RenderObject& second);
     Transform transform;
   public:
+    RenderObject();
     RenderObject(Mesh& mesh);
 
     Entity entity;
-    Mesh& mesh;
+    Mesh mesh;
 
     void render();
     void bind_diffuse() const;
