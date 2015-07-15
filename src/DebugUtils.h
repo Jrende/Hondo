@@ -26,7 +26,7 @@ char* toChar(T t) {
   return oss.str().c_str();
 }
 
-inline double calcFPS(GLFWwindow* window, double theTimeInterval = 1.0, std::string theWindowTitle = "NONE") {
+inline double calcFPS(double theTimeInterval = 1.0) {
   static double t0Value       = glfwGetTime(); // Set the initial time to now
   static int    fpsFrameCount = 0;             // Set the initial FPS frame count to 0
   static double fps           = 0.0;           // Set the initial FPS value to 0.0
@@ -47,24 +47,6 @@ inline double calcFPS(GLFWwindow* window, double theTimeInterval = 1.0, std::str
   if ((currentTime - t0Value) > theTimeInterval) {
     // Calculate the FPS as the number of frames divided by the interval in seconds
     fps = (double)fpsFrameCount / (currentTime - t0Value);
-
-    // If the user specified a window title to append the FPS value to...
-    if (theWindowTitle != "NONE") {
-      // Convert the fps value into a string using an output stringstream
-      std::ostringstream stream;
-      stream << fps;
-      std::string fpsString = stream.str();
-
-      // Append the FPS value to the window title details
-      theWindowTitle += " | FPS: " + fpsString;
-
-      // Convert the new window title to a c_str and set it
-      const char* pszConstString = theWindowTitle.c_str();
-      glfwSetWindowTitle(window, pszConstString);
-    } else {
-      // If the user didn't specify a window to append the FPS to then output the FPS to the console
-      std::cout << "FPS: " << fps << std::endl;
-    }
 
     // Reset the FPS frame counter and set the initial time to be now
     fpsFrameCount = 0;
