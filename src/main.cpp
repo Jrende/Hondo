@@ -178,7 +178,7 @@ int main(int argc, char ** argv) {
   Renderer renderer(width, height);
 
   struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_DEBUG);
-  glDebugMessageCallback(glDebugCallback, NULL );
+  //glDebugMessageCallback(glDebugCallback, NULL );
   auto& camera = renderer.get_camera();
 
   Input::on(Actions::Forward, [&]() {
