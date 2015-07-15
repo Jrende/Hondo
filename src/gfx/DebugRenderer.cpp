@@ -32,6 +32,9 @@ void DebugRenderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>
     line_shader.set_from(std::get<0>(line));
     line_shader.set_to(std::get<1>(line));
     glDrawArrays(GL_POINTS, 0, 1);
+    line_shader.set_from(std::get<1>(line));
+    line_shader.set_to(std::get<0>(line));
+    glDrawArrays(GL_POINTS, 0, 1);
   }
   line.unbind();
   line_shader.stop();
@@ -46,6 +49,9 @@ void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const 
   line_shader.set_from(from);
   line_shader.set_to(to);
   line.bind();
+  glDrawArrays(GL_POINTS, 0, 1);
+  line_shader.set_from(to);
+  line_shader.set_to(from);
   glDrawArrays(GL_POINTS, 0, 1);
   line.unbind();
   line_shader.stop();
