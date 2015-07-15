@@ -39,7 +39,7 @@ class Renderer {
     int shown_light_index = -1;
     int last_shown_light_index = 0;
     SkyShader sky_shader;
-    std::shared_ptr<SkyBox> skybox;
+    std::unique_ptr<RenderObject> skybox;
     std::map<std::shared_ptr<LightShader>, std::vector<std::shared_ptr<Light>>> lights;
     Renderer(const Renderer& other) = delete;
     void draw_sky();
@@ -53,7 +53,7 @@ class Renderer {
     void add_light(std::shared_ptr<SpotLight> spot_light);
     void add_light(std::shared_ptr<DirLight> light);
 
-    void set_skybox(std::shared_ptr<SkyBox> skybox);
+    void set_skybox(RenderObject&& skybox);
 
     void toggle_wireframe();
     void toggle_shadow_map();

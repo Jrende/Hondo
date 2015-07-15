@@ -252,9 +252,7 @@ int main(int argc, char ** argv) {
   scene.translate(sphere5, glm::vec3{0, 2, 0});
   scene.scale(sphere5, glm::vec3{0.5, 0.5, 0.5});
 
-  std::shared_ptr<SkyBox> sky = std::make_shared<SkyBox>(camera, skydome_mesh);
-  //sky->transform.scale({2,2,2});
-  renderer.set_skybox(sky);
+  renderer.set_skybox(RenderObject(skydome_mesh));
 
   Input::on(GLFW_KEY_I, [&] {
     renderer.get_shown_light()->translate({ 0.01f, 0, 0});
@@ -330,15 +328,14 @@ int main(int argc, char ** argv) {
     glfwPollEvents();
     Input::handle_input();
     rotate_camera(camera);
+    renderer.render(scene);
     if(draw_main) {
-      renderer.render(scene);
       scene.rotate(cube, 0.01, glm::vec3{1, 1, 0});
       scene.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
       scene.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
       scene.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
       scene.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
     }
-    draw_rain(&renderer);
 
     std::stringstream str;
     str << std::fixed << std::setprecision(1) << calcFPS(1.0);

@@ -162,7 +162,7 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
       glEnable(GL_BLEND);
     }
   }
-  //draw_sky();
+  draw_sky();
   DebugText::set_value("draw calls", draw_calls);
 }
 
@@ -240,15 +240,15 @@ int Renderer::light_count() {
   return light_list.size();
 }
 
-void Renderer::set_skybox(std::shared_ptr<SkyBox> skybox) {
-  this->skybox = skybox;
+void Renderer::set_skybox(RenderObject&& skybox) {
+  this->skybox = std::make_unique<RenderObject>(skybox);
 }
 
 void Renderer::draw_sky() {
   if(skybox) {
     glDepthFunc(GL_EQUAL);
     glDepthRange(1, 1);
-    skybox->update_pos();
+    skybox->transform.set_position(camera.pos);
     sky_shader();
     glm::mat4 mvp_mat = glm::mat4();
     mvp_mat *= perspective_mat;
