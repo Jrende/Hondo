@@ -3,6 +3,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <iostream>
+#include <iomanip>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -348,7 +349,6 @@ int main(int argc, char ** argv) {
     glfwSwapBuffers(window);
 
     Input::reset_delta();
-    calcFPS(window, 1.0, "Current FPS: ");
     checkForGlError();
   }
   glfwDestroyWindow(window);
