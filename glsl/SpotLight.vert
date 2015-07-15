@@ -27,7 +27,7 @@ void main(void) {
   Normal0 = (modelMatrix * vec4(Normal, 0.0)).xyz;
   WorldPos0 = (modelMatrix * vec4(Position, 1.0)).xyz;
   Tangent0 = (modelMatrix * vec4(Tangent, 0.0)).xyz;
-  vec3 Bitangent = normalize(cross(Normal, Tangent));
+  vec3 Bitangent = cross(Normal, Tangent);
   Bitangent0 = (modelMatrix * vec4(Bitangent, 0.0)).xyz;
   ShadowCoord0 = (depth_mvp_mat * vec4(Position, 1.0));
 }
