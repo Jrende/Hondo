@@ -109,8 +109,8 @@ void rotate_camera(Camera& camera) {
   }
 }
 
-int width = 1920;
-int height = 1080;
+int width = 1024;
+int height = 768;
 int main(int argc, char ** argv) {
   glfwSetErrorCallback(error_callback);
   if (!glfwInit())
@@ -144,7 +144,10 @@ int main(int argc, char ** argv) {
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    glfwWindowHint(GLFW_SAMPLES, 8);
     window = glfwCreateWindow(mode->width, mode->height, "Hondo", monitor, NULL);
+    width = mode->width;
+    height = mode->height;
   } else {
     window = glfwCreateWindow(width, height, "Hondo", NULL, NULL);
   }
