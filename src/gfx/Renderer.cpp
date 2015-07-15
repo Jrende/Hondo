@@ -1,11 +1,11 @@
 #include "Renderer.hpp"
 #include <GL/glew.h>
-#include "../DebugUtils.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <math.h>
 #include <memory>
 #include <stdlib.h>
+#include "../ui/DebugText.hpp"
 Renderer::Renderer(int width, int height):
   width(width),
   height(height),
@@ -87,6 +87,7 @@ void Renderer::render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& 
 }
 
 void Renderer::render(std::vector<RenderObject>& render_list) {
+  int draw_calls = 0;
   pre_render();
   render_depth_test(render_list);
 
@@ -155,12 +156,14 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
         }
 
         shader->set_material(render_object.mesh.material);
+        draw_calls++;
         render_object.render();
       }
       glEnable(GL_BLEND);
     }
   }
   //draw_sky();
+  DebugText::set_value("draw calls", draw_calls);
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
