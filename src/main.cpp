@@ -23,6 +23,8 @@
 
 #include "input/Actions.hpp"
 #include "input/Input.hpp"
+
+#include "ui/DebugText.hpp"
 #include "DebugUtils.h"
 
 void glDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, void *data) {
@@ -320,6 +322,9 @@ int main(int argc, char ** argv) {
   }, false);
 
   nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
+
+  DebugText::set_context(vg);
+
   camera.translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
@@ -334,6 +339,14 @@ int main(int argc, char ** argv) {
       scene.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
     }
     draw_rain(&renderer);
+
+    std::stringstream str;
+    str << std::fixed << std::setprecision(1) << calcFPS(1.0);
+    DebugText::set_value("fps", str.str().c_str());
+
+    nvgBeginFrame(vg, width, height, 1);
+    DebugText::draw();
+    nvgEndFrame(vg);
 
     glfwSwapBuffers(window);
 
