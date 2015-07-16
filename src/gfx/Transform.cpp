@@ -16,6 +16,9 @@ void Transform::translate(const glm::vec3& pos) {
 
 void Transform::set_position(const glm::vec3& pos) {
   this->pos = pos;
+  model_matrix[3][0] = pos.x;
+  model_matrix[3][1] = pos.y;
+  model_matrix[3][2] = pos.z;
 }
 
 void Transform::scale(const glm::vec3& scale) {
