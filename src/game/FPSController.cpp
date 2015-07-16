@@ -1,42 +1,45 @@
 #include "FPSController.hpp"
+#include <iostream>
+#include <math.h>
 
+float acc = 0.5;
 FPSController::FPSController():
   camera(std::make_shared<Camera>())
 {
+
   Input::on(Actions::Forward, [&]() {
-    camera->move_forward(step);
+      current_speed.z = fmax(current_speed.z + step/acc, step);
   });
 
   Input::on(Actions::Backward, [&]() {
-    camera->move_forward(-step);
+      current_speed.z = fmin(current_speed.z - step/acc, -step);
   });
 
   Input::on(Actions::Left, [&]() {
-    camera->move_right(-step);
+      current_speed.x = fmax(current_speed.x + step/acc, step);
   });
 
   Input::on(Actions::Right, [&]() {
-    camera->move_right(step);
+      current_speed.x = fmin(current_speed.x - step/acc, -step);
   });
 
   Input::on(Actions::Up, [&]() {
-    camera->translate({0, step, 0});
+    current_speed.y = fmax(current_speed.y + step/acc, step);
   });
-
   Input::on(Actions::Down, [&]() {
-    camera->translate({0, -step, 0});
+    current_speed.y = fmin(current_speed.y - step/acc, -step);
   });
 
   Input::on_scroll([&](double x_offset, double y_offset) {
-      step = fmax(0.01f, fmin(step * pow(1.5, y_offset), 5));
+      step = fmax(0.001f, fmin(step * pow(1.5, y_offset), 5));
   });
 
   Input::on(GLFW_KEY_Q, [&] {
-      step = fmax(0.01f, fmin(step * pow(1.5, -1), 5));
+      step = fmax(0.001f, fmin(step * pow(1.5, -1), 5));
   }, false);
 
   Input::on(GLFW_KEY_E, [&] {
-      step = fmax(0.01f, fmin(step * pow(1.5, 1), 5));
+      step = fmax(0.001f, fmin(step * pow(1.5, 1), 5));
   }, false);
 }
 
@@ -62,7 +65,12 @@ void FPSController::handle_mouse() {
 }
 
 void FPSController::handle_movement() {
-
+  camera->move_forward(current_speed.z);
+  camera->move_right(-current_speed.x);
+  camera->translate(glm::vec3({0, 1, 0}) * current_speed.y);
+  current_speed /= 1.2;
+  if(glm::length(current_speed) < 0.01)
+      current_speed = {0, 0, 0};
 }
 
 

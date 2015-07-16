@@ -10,6 +10,8 @@ class FPSController {
     double MOUSE_Y_SENSITIVITY = 20;
     double PANNING_SPEED = 15;
     float step = 0.01f;
+
+    glm::vec3 current_speed;
   public:
     FPSController();
     void handle_mouse();
