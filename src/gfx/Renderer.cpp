@@ -209,16 +209,19 @@ void Renderer::toggle_wireframe() {
 void Renderer::add_light(std::shared_ptr<PointLight> point_light) {
   lights[point_light_shader].push_back(point_light);
   light_list.push_back(point_light);
+  DebugText::set_value("Num lights", light_count());
 }
 
 void Renderer::add_light(std::shared_ptr<SpotLight> spot_light) {
   lights[spot_light_shader].push_back(spot_light);
   light_list.push_back(spot_light);
+  DebugText::set_value("Num lights", light_count());
 }
 
 void Renderer::add_light(std::shared_ptr<DirLight> dir_light) {
   lights[dir_light_shader].push_back(dir_light);
   light_list.push_back(dir_light);
+  DebugText::set_value("Num lights", light_count());
 }
 
 void Renderer::show_single_light(int index) {
@@ -271,6 +274,7 @@ void Renderer::toggle_shadow_map() {
 void Renderer::clear_lights() {
   lights.clear();
   light_list.clear();
+  DebugText::set_value("Num lights", 0);
 }
 
 bool vertex_array_sort(const RenderObject& left, const RenderObject& right) {
