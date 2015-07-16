@@ -172,7 +172,7 @@ int main(int argc, char ** argv) {
     printf("Version: %s\n", version);
     glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
     glfwSetKeyCallback(window, Input::key_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetScrollCallback(window, Input::scroll_callback);
     Input::set_active_window(window);
   }
   Renderer renderer(width, height);

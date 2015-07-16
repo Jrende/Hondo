@@ -10,10 +10,12 @@ namespace Input {
   typedef std::function<void()> ActionHandler;
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
   void cursor_pos_callback(GLFWwindow* window, double x, double y);
+  void scroll_callback(GLFWwindow* window, double x_offset, double y_offset);
   void reset_delta();
   void handle_input();
   void on(int key, const std::function<void()>& handler);
   void on(int key, const std::function<void()>& handler, bool repeat);
+  void on_scroll(std::function<void(double, double)> handler);
   double get_mouse_x();
   double get_mouse_y();
   double get_mouse_dx();

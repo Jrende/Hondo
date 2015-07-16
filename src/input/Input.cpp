@@ -3,6 +3,8 @@
 
 namespace Input {
   namespace {
+    std::vector<std::function<void(double, double)>> scroll_handlers;
+
     std::map<int, ActionHandler> handlers;
     std::set<int> currentKeys;
     double mouseX;
@@ -51,6 +53,16 @@ namespace Input {
     }
   }
   
+  void on_scroll(std::function<void(double, double)> handler) {
+    scroll_handlers.push_back(handler);
+  }
+
+  void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
+    for(const auto& handler: scroll_handlers) {
+      handler(x_offset, y_offset);
+    }
+  }
+
   void cursor_pos_callback(GLFWwindow* window, double x, double y) {
     Input::deltaX = mouseX - x;
     Input::deltaY = mouseY - y;
