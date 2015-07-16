@@ -26,6 +26,8 @@
 #include "input/Input.hpp"
 
 #include "ui/DebugText.hpp"
+
+#include "game/FPSController.hpp"
 #include "DebugUtils.h"
 
 void glDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg, void *data) {
@@ -74,40 +76,7 @@ static void error_callback(int error, const char* description)
   fputs(description, stderr);
 }
 
-float step = 0.01f;
 int selected_light = -1;
-
-static void scroll_callback(GLFWwindow* window, double x_offset, double y_offset) {
-  step = fmax(0.01f, fmin(step * pow(1.5, y_offset), 5));
-}
-
-double target_x = 0;
-double target_y = 0;
-double current_x = 0;
-double current_y = 0;
-double MOUSE_X_SENSITIVITY = 20;
-double MOUSE_Y_SENSITIVITY = 20;
-double PANNING_SPEED = 15;
-void rotate_camera(Camera& camera) {
-  if(Input::is_mouse_locked()) {
-    const auto x = Input::get_mouse_dx() / MOUSE_X_SENSITIVITY;
-    const auto y = Input::get_mouse_dy() / MOUSE_Y_SENSITIVITY;
-    target_x += x;
-    target_y += y;
-    auto dx = (target_x - current_x) / PANNING_SPEED;
-    auto dy = (target_y - current_y) / PANNING_SPEED;
-    if(fabs(dx) < 0.001 && fabs(dy) < 0.001) {
-      return;
-    }
-    current_x += dx + copysign(0.01, dx);
-    current_y += dy + copysign(0.01, dy);
-    camera.rotate(-dx, camera.up);
-    camera.rotate(dy, glm::cross(camera.up, camera.dir));
-  } else {
-    target_x = current_x;
-    target_y = current_y;
-  }
-}
 
 int width = 1024;
 int height = 768;
@@ -179,31 +148,10 @@ int main(int argc, char ** argv) {
 
   struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_DEBUG);
   //glDebugMessageCallback(glDebugCallback, NULL );
-  auto& camera = renderer.get_camera();
+  FPSController fpsController;
+  renderer.set_camera(fpsController.get_camera());
 
-  Input::on(Actions::Forward, [&]() {
-    camera.move_forward(step);
-  });
-
-  Input::on(Actions::Backward, [&]() {
-    camera.move_forward(-step);
-  });
-
-  Input::on(Actions::Left, [&]() {
-    camera.move_right(-step);
-  });
-
-  Input::on(Actions::Right, [&]() {
-    camera.move_right(step);
-  });
-
-  Input::on(Actions::Up, [&]() {
-    camera.translate({0, step, 0});
-  });
-
-  Input::on(Actions::Down, [&]() {
-    camera.translate({0, -step, 0});
-  });
+  const auto& camera = fpsController.get_camera();
 
   Input::on(GLFW_KEY_Z, [&] {
   renderer.toggle_wireframe();
@@ -295,19 +243,18 @@ int main(int argc, char ** argv) {
   }, false);
   Input::on(GLFW_KEY_P, [&] {
       if(Input::is_alt_down()) {
-        auto light = std::make_shared<PointLight>(camera.pos, get_random_color());
+        auto light = std::make_shared<PointLight>(camera->pos, get_random_color());
         light->set_casts_shadow(false);
         light->ambient_intensity = 0.0f;
         light->diffuse_intensity = 0.2f;
         renderer.add_light(light);
       } else {
-        auto light = std::make_shared<SpotLight>(camera.pos, camera.dir, glm::vec3{1,1,1});
+        auto light = std::make_shared<SpotLight>(camera->pos, camera->dir, glm::vec3{1,1,1});
         light->set_casts_shadow(true);
         light->ambient_intensity = 0.0f;
         light->diffuse_intensity = 2.0f;
         renderer.add_light(light);
       }
-      std::cout << "Amount of lights: " << renderer.light_count() << "\n";
   }, false);
   Input::on(GLFW_KEY_RIGHT_CONTROL, [&] {
       renderer.show_single_light(-1);
@@ -316,22 +263,16 @@ int main(int argc, char ** argv) {
   Input::on(GLFW_KEY_T, [&] {
       draw_main = !draw_main;
   }, false);
-  Input::on(GLFW_KEY_Q, [&] {
-      step = fmax(0.01f, fmin(step * pow(1.5, -1), 5));
-  }, false);
-  Input::on(GLFW_KEY_E, [&] {
-      step = fmax(0.01f, fmin(step * pow(1.5, 1), 5));
-  }, false);
 
   nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
 
   DebugText::set_context(vg);
 
-  camera.translate({0, 2, 0});
+  camera->translate({0, 2, 0});
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     Input::handle_input();
-    rotate_camera(camera);
+    fpsController.handle_mouse();
     renderer.render(scene);
     if(draw_main) {
       scene.rotate(cube, 0.01, glm::vec3{1, 1, 0});

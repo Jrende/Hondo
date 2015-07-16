@@ -28,7 +28,7 @@ class Renderer {
     int width, height;
     glm::mat4 perspective_mat;
     DebugRenderer debug_renderer;
-    Camera camera;
+    std::shared_ptr<Camera> camera;
     std::shared_ptr<PointLightShader> point_light_shader;
     std::shared_ptr<SpotLightShader> spot_light_shader;
     std::shared_ptr<LightShader> dir_light_shader;
@@ -47,7 +47,7 @@ class Renderer {
     void render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& render_list);
   public:
     Renderer(int width, int height);
-    Camera& get_camera();
+    void set_camera(std::shared_ptr<Camera> camera);
 
     void add_light(std::shared_ptr<PointLight> point_light);
     void add_light(std::shared_ptr<SpotLight> spot_light);

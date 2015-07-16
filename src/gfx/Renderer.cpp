@@ -28,8 +28,8 @@ Renderer::Renderer(int width, int height):
   lights[dir_light_shader];
 }
 
-Camera& Renderer::get_camera() {
-  return camera;
+void Renderer::set_camera(std::shared_ptr<Camera> camera) {
+  this->camera = camera;
 }
 
 bool draw_shadow_map = false;
@@ -123,13 +123,13 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
 
         glm::mat4 mvp_mat = glm::mat4();
         mvp_mat *= perspective_mat;
-        mvp_mat *= camera.get_view_mat();
+        mvp_mat *= camera->get_view_mat();
         mvp_mat *= obj_model_mat;
         shader->set_mvp_mat(mvp_mat);
         shader->set_model_mat(obj_model_mat);
 
-        shader->set_eye_pos(camera.pos);
-        shader->set_eye_dir(camera.dir);
+        shader->set_eye_pos(camera->pos);
+        shader->set_eye_dir(camera->dir);
 
         shader->set_diffuse_sampler(0);
         render_object.bind_diffuse();
@@ -170,7 +170,7 @@ void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& li
   glEnable(GL_BLEND);
   glm::mat4 mvp_mat = glm::mat4();
   mvp_mat *= perspective_mat;
-  mvp_mat *= camera.get_view_mat();
+  mvp_mat *= camera->get_view_mat();
   debug_renderer.draw_lines(lines, mvp_mat, color);
 }
 
@@ -178,14 +178,14 @@ void Renderer::draw_line(const glm::vec3& from, const glm::vec3& to, const glm::
   glEnable(GL_BLEND);
   glm::mat4 mvp_mat = glm::mat4();
   mvp_mat *= perspective_mat;
-  mvp_mat *= camera.get_view_mat();
+  mvp_mat *= camera->get_view_mat();
   debug_renderer.draw_line(from, to, mvp_mat, color);
 }
 
 void Renderer::draw_point(const glm::vec3& pos) {
   glm::mat4 mvp_mat = glm::mat4();
   mvp_mat *= perspective_mat;
-  mvp_mat *= camera.get_view_mat();
+  mvp_mat *= camera->get_view_mat();
   debug_renderer.draw_point(pos, mvp_mat);
 }
 
@@ -248,11 +248,11 @@ void Renderer::draw_sky() {
   if(skybox) {
     glDepthFunc(GL_EQUAL);
     glDepthRange(1, 1);
-    skybox->transform.set_position(camera.pos);
+    skybox->transform.set_position(camera->pos);
     sky_shader();
     glm::mat4 mvp_mat = glm::mat4();
     mvp_mat *= perspective_mat;
-    mvp_mat *= camera.get_view_mat();
+    mvp_mat *= camera->get_view_mat();
     sky_shader.set_mvp_mat(mvp_mat);
     sky_shader.set_model_mat(skybox->transform.get_model_matrix());
     skybox->mesh.vertex_array->bind();
