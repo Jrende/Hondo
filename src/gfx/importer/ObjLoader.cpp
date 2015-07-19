@@ -61,15 +61,17 @@ void ObjLoader::preload_file(const std::string& path) {
       for(int i = 0; i < 3; i++)
 	normals.push_back(strtof(tokens[i + 1].c_str(), NULL));
     } else if(!strcmp(tokens[0].c_str(), "o") || !strcmp(tokens[0].c_str(), "g")) {
-      if(current_mesh.vertex_count > 0) 
-	meshes_per_file[path].push_back(current_mesh);
+      if(current_mesh.vertex_count > 0) {
+        push_back_mesh(std::move(current_mesh), path);
+      }
       current_mesh = Mesh(indices_count, vertices_count, tokens[1]);
       last_index = 0;
     } else if(!strcmp(tokens[0].c_str(), "mtllib")) {
       mtl_loader.load_materials("assets/" + tokens[1]);
     } else if(!strcmp(tokens[0].c_str(), "usemtl")) {
-      if(current_mesh.vertex_count > 0) 
-	meshes_per_file[path].push_back(current_mesh);
+      if(current_mesh.vertex_count > 0) {
+        push_back_mesh(std::move(current_mesh), path);
+      }
       current_mesh = Mesh(indices_count, vertices_count, tokens[1]);
       last_index = 0;
       current_mesh.material = mtl_loader.materials[tokens[1]];
@@ -83,7 +85,13 @@ void ObjLoader::preload_file(const std::string& path) {
       }
     }
   }
+  push_back_mesh(std::move(current_mesh), path);
+}
+
+void ObjLoader::push_back_mesh(const Mesh&& mesh, const std::string& path) {
+  current_mesh.aabb = make_unique<AABB>(AABB(current_mesh_boundary));
   meshes_per_file[path].push_back(current_mesh);
+  clear_boundary = true;
 }
 
 void ObjLoader::create_face(std::vector<std::string> tokens) {
@@ -98,6 +106,7 @@ void ObjLoader::create_face(std::vector<std::string> tokens) {
       vertex.is_indexed = true;
     }
     create_vertex(v, vertex);
+    update_boundary(vertex);
     face.verts.push_back(vertex);
     if(!vertex.is_indexed) {
       loaded_vertices[v] = last_index;
@@ -107,6 +116,38 @@ void ObjLoader::create_face(std::vector<std::string> tokens) {
   }
   calcTangent(face);
   add_face(face);
+}
+
+//Checks if the vertex is outside any of the current bounds,
+void ObjLoader::update_boundary(const Vertex& vertex) {
+  if(clear_boundary) {
+    current_mesh_boundary.fill(vertex.pos);
+    clear_boundary = false;
+  }
+  //+x
+  if(vertex.pos[0] > current_mesh_boundary[0][0]) {
+    current_mesh_boundary[0] = vertex.pos;
+  }
+  //-x
+  if(vertex.pos[0] < current_mesh_boundary[1][0]) {
+    current_mesh_boundary[1] = vertex.pos;
+  }
+  //+y
+  if(vertex.pos[1] > current_mesh_boundary[2][1]) {
+    current_mesh_boundary[2] = vertex.pos;
+  }
+  //-y
+  if(vertex.pos[1] < current_mesh_boundary[3][1]) {
+    current_mesh_boundary[3] = vertex.pos;
+  }
+  //+z
+  if(vertex.pos[2] > current_mesh_boundary[4][2]) {
+    current_mesh_boundary[4] = vertex.pos;
+  }
+  //-z
+  if(vertex.pos[2] < current_mesh_boundary[5][2]) {
+    current_mesh_boundary[5] = vertex.pos;
+  }
 }
 
 void ObjLoader::add_vertex_to_indices(int index) {

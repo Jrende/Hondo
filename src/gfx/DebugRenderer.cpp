@@ -78,3 +78,23 @@ void DebugRenderer::render_fbo(const GLuint fbo_tex) {
   quad.unbind();
   fbo_shader.stop();
 }
+
+// Eeeugh
+void DebugRenderer::draw_aabb(const AABB& aabb, const glm::mat4& vp_mat) {
+  glm::vec3 white = glm::vec3({1, 1, 1});
+  std::vector<std::pair<glm::vec3, glm::vec3>> cube = {
+    std::make_pair(aabb.cube[0], aabb.cube[1]),
+    std::make_pair(aabb.cube[0], aabb.cube[2]),
+    std::make_pair(aabb.cube[0], aabb.cube[4]),
+    std::make_pair(aabb.cube[1], aabb.cube[3]),
+    std::make_pair(aabb.cube[1], aabb.cube[5]),
+    std::make_pair(aabb.cube[2], aabb.cube[3]),
+    std::make_pair(aabb.cube[2], aabb.cube[6]),
+    std::make_pair(aabb.cube[3], aabb.cube[7]),
+    std::make_pair(aabb.cube[4], aabb.cube[5]),
+    std::make_pair(aabb.cube[4], aabb.cube[6]),
+    std::make_pair(aabb.cube[5], aabb.cube[7]),
+    std::make_pair(aabb.cube[6], aabb.cube[7])
+  };
+  draw_lines(cube, vp_mat, white);
+}

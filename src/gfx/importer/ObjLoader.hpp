@@ -9,6 +9,7 @@ class ObjLoader;
 #include "MtlLoader.hpp"
 #include "../Mesh.hpp"
 #include "../VertexArray.hpp"
+#include "../AABB.hpp"
 #include "ObjLoaderUtils.hpp"
 
 class ObjLoader {
@@ -28,6 +29,8 @@ class ObjLoader {
     unsigned int indices_count = 0;
     unsigned int last_index = 0;
     Mesh current_mesh;
+    std::array<std::array<float, 3>, 6> current_mesh_boundary;
+    bool clear_boundary = true;
 
     std::map<std::string, int> loaded_vertices;
     std::vector<float> pos;
@@ -38,6 +41,8 @@ class ObjLoader {
     void add_face(Face& face);
     void add_vertex_to_indices(int index);
     void create_vertex(const std::string& vertex_string, Vertex& vertex);
+    void update_boundary(const Vertex& vertex);
+    void push_back_mesh(const Mesh&& mesh, const std::string& path);
   public:
     void load_files();
     void preload_file(const std::string& path);

@@ -44,6 +44,7 @@ class SceneGraph {
     boost::optional<SceneGraph::Node&> find_node(SceneGraph::Node& node, const Entity& entity);
   public:
     SceneGraph();
+    RenderObject& get_render_object(Entity entity);
     Transform& transform(Entity entity);
     void translate(Entity entity, const glm::vec3& pos);
     void scale(Entity entity, const glm::vec3& scale);

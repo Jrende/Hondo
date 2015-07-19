@@ -7,12 +7,15 @@
 
 RenderObject::RenderObject():
   transform(),
-  mesh()
+  mesh(),
+  aabb()
 {
 }
+
 RenderObject::RenderObject(Mesh& mesh) :
   transform(),
-  mesh(mesh)
+  mesh(mesh),
+  aabb(*mesh.aabb)
 {
 }
 
@@ -50,4 +53,8 @@ void RenderObject::bind_mask() const {
 
 void RenderObject::render() {
   mesh.render();
+}
+
+void RenderObject::update_aabb() {
+  aabb.transform(transform.model_matrix);
 }

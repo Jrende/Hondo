@@ -10,6 +10,7 @@
 #include "Transform.hpp"
 #include "VertexArray.hpp"
 #include "Entity.hpp"
+#include "AABB.hpp"
 #include "shader/SimpleShader.hpp"
 class RenderObject {
   friend class SceneGraph;
@@ -23,11 +24,13 @@ class RenderObject {
 
     Entity entity;
     Mesh mesh;
+    AABB aabb;
 
     void render();
     void bind_diffuse() const;
     void bind_normal() const;
     void bind_specular() const;
     void bind_mask() const;
+    void update_aabb();
 };
 #endif

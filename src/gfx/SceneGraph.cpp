@@ -30,8 +30,11 @@ void SceneGraph::Node::update(const Transform& parent_transform) {
   t.rotate(node_transform.get_rot());
 
   effective_transform = t;
-  if(has_render_object)
-    graph->transform(entity).model_matrix = t.model_matrix;
+  if(has_render_object) {
+    auto& render_object = graph->get_render_object(entity);
+    render_object.transform.model_matrix = t.model_matrix;
+    render_object.aabb.transform(render_object.transform.model_matrix);
+  }
   for(auto& child: children) {
     child.update(t);
   }
@@ -48,7 +51,11 @@ unsigned int SceneGraph::fetch_render_object_id(const Entity& entity) {
   return index;
 }
 
-//Also transform children
+
+RenderObject& SceneGraph::get_render_object(Entity entity) {
+  return render_list[fetch_render_object_id(entity)];
+}
+
 Transform& SceneGraph::transform(Entity entity) {
   return render_list[fetch_render_object_id(entity)].transform;
 }
