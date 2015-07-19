@@ -273,6 +273,7 @@ int main(int argc, char ** argv) {
     glfwPollEvents();
     Input::handle_input();
     fpsController.handle_mouse();
+    fpsController.handle_movement();
     renderer.render(scene);
     if(draw_main) {
       scene.rotate(cube, 0.01, glm::vec3{1, 1, 0});
