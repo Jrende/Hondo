@@ -21,7 +21,7 @@ class Renderer;
 #include "shader/PointLightShader.hpp"
 #include "shader/SkyShader.hpp"
 #include "shader/SpotLightShader.hpp"
-#include "SceneGraph.hpp"
+#include "World.hpp"
 
 class Renderer {
   private:
@@ -60,7 +60,7 @@ class Renderer {
     void pre_render();
 
     void render(std::vector<RenderObject>& render_list);
-    void render(SceneGraph& scene_graph);
+    void render(World& world);
 
     void show_single_light(int index);
     std::shared_ptr<Light> get_shown_light();
