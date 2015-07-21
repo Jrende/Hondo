@@ -15,10 +15,9 @@ namespace std {
         return k.id;
       }
     };
-}
+};
 
 class SceneGraph {
-  friend class Renderer;
   struct Node {
     Entity entity;
     Node* parent = nullptr;
@@ -35,15 +34,19 @@ class SceneGraph {
   };
 
   private:
+    std::vector<RenderObject>& render_list;
+    std::unordered_map<Entity, unsigned int>& id_to_list_index;
+
     SceneGraph::Node root;
     unsigned int fetch_render_object_id(const Entity& entity);
-    std::vector<RenderObject> render_list;
-    std::unordered_map<Entity, unsigned int> id_to_list_index;
     void update_transform(const RenderObject& render_object);
     boost::optional<SceneGraph::Node&> find_node(const Entity& entity);
     boost::optional<SceneGraph::Node&> find_node(SceneGraph::Node& node, const Entity& entity);
   public:
-    SceneGraph();
+    SceneGraph(
+      std::vector<RenderObject>& render_list,
+      std::unordered_map<Entity, unsigned int>& id_to_list_index
+    );
     RenderObject& get_render_object(Entity entity);
     Transform& transform(Entity entity);
     void translate(Entity entity, const glm::vec3& pos);

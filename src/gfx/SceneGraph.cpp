@@ -6,7 +6,13 @@ bool operator==(const RenderObject& render_object, const Entity& entity) {
   return render_object.entity == entity;
 }
 
-SceneGraph::SceneGraph() {
+SceneGraph::SceneGraph(
+    std::vector<RenderObject>& render_list,
+    std::unordered_map<Entity, unsigned int>& id_to_list_index
+    ):
+  render_list(render_list),
+  id_to_list_index(id_to_list_index)
+{
   root.has_render_object = false;
 }
 
@@ -42,7 +48,9 @@ void SceneGraph::Node::update(const Transform& parent_transform) {
 
 unsigned int SceneGraph::fetch_render_object_id(const Entity& entity) {
   if(id_to_list_index.count(entity) == 0 || render_list[id_to_list_index[entity]].entity != entity) {
-    unsigned int it = std::find(render_list.begin(), render_list.end(), entity) - render_list.begin();
+    unsigned int it = std::find_if(render_list.begin(), render_list.end(), [&](const RenderObject& r_obj)->bool {
+      return r_obj.entity == entity;
+    }) - render_list.begin();
     if(it != render_list.size()) {
       id_to_list_index[entity] = it;
     }
@@ -118,12 +126,9 @@ Entity SceneGraph::create_entity(RenderObject&& obj) {
 Entity SceneGraph::create_entity(Entity parent, RenderObject&& obj) {
   SceneGraph::Node node;
   node.graph = this;
-  obj.entity = node.entity;
-  render_list.push_back(obj);
-  id_to_list_index[node.entity] = render_list.size() - 1;
+  node.entity = obj.entity;
 
   if(boost::optional<SceneGraph::Node&> result = find_node(parent)) {
-    //transform(node.entity).model_matrix = transform(result->entity).model_matrix;
     node.parent = &(*result);
     result->children.push_back(node);
   }

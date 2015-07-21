@@ -12,7 +12,7 @@
 #include <nanovg_gl.h>
 
 #include "gfx/Renderer.hpp"
-#include "gfx/SceneGraph.hpp"
+#include "gfx/World.hpp"
 #include "gfx/Entity.hpp"
 #include "gfx/VertexArray.hpp"
 #include "gfx/SkyBox.hpp"
@@ -177,32 +177,32 @@ int main(int argc, char ** argv) {
   pl2->diffuse_intensity = 0.5f;
   renderer.add_light(pl2);
 
-  SceneGraph scene;
-  Entity sponza = scene.create_entity();
+  World world;
+  Entity sponza = world.create_entity();
   for(auto& sponza_mesh: sponza_meshes) {
-    scene.create_entity(sponza, RenderObject(sponza_mesh));
+    world.create_entity(sponza, RenderObject(sponza_mesh));
   }
-  scene.scale(sponza, {0.05, 0.05, 0.05});
+  world.scale(sponza, {0.05, 0.05, 0.05});
 
-  Entity cube = scene.create_entity(RenderObject(cube_mesh));
-  scene.scale(cube, glm::vec3{0.5, 0.5, 0.5});
-  scene.translate(cube, glm::vec3{0, 2, 0});
-  Entity sphere1 = scene.create_entity(cube, RenderObject(sphere_mesh));
-  scene.translate(sphere1, glm::vec3{2, 0, 0});
+  Entity cube = world.create_entity(RenderObject(cube_mesh));
+  world.scale(cube, glm::vec3{0.5, 0.5, 0.5});
+  world.translate(cube, glm::vec3{0, 2, 0});
+  Entity sphere1 = world.create_entity(cube, RenderObject(sphere_mesh));
+  world.translate(sphere1, glm::vec3{2, 0, 0});
 
-  Entity sphere2 = scene.create_entity(cube, RenderObject(sphere_mesh));
-  scene.translate(sphere2, glm::vec3{-2, 0, 0});
-  Entity sphere3 = scene.create_entity(cube, RenderObject(sphere_mesh));
-  scene.translate(sphere3, glm::vec3{0, 0, 2});
-  Entity sphere6 = scene.create_entity(sphere3, RenderObject(sphere_mesh));
-  scene.translate(sphere6, glm::vec3{0, 2, 0});
-  scene.scale(sphere6, glm::vec3{0.5, 0.5, 0.5});
+  Entity sphere2 = world.create_entity(cube, RenderObject(sphere_mesh));
+  world.translate(sphere2, glm::vec3{-2, 0, 0});
+  Entity sphere3 = world.create_entity(cube, RenderObject(sphere_mesh));
+  world.translate(sphere3, glm::vec3{0, 0, 2});
+  Entity sphere6 = world.create_entity(sphere3, RenderObject(sphere_mesh));
+  world.translate(sphere6, glm::vec3{0, 2, 0});
+  world.scale(sphere6, glm::vec3{0.5, 0.5, 0.5});
 
-  Entity sphere4 = scene.create_entity(cube, RenderObject(sphere_mesh));
-  scene.translate(sphere4, glm::vec3{0, 0, -2});
-  Entity sphere5 = scene.create_entity(sphere4, RenderObject(sphere_mesh));
-  scene.translate(sphere5, glm::vec3{0, 2, 0});
-  scene.scale(sphere5, glm::vec3{0.5, 0.5, 0.5});
+  Entity sphere4 = world.create_entity(cube, RenderObject(sphere_mesh));
+  world.translate(sphere4, glm::vec3{0, 0, -2});
+  Entity sphere5 = world.create_entity(sphere4, RenderObject(sphere_mesh));
+  world.translate(sphere5, glm::vec3{0, 2, 0});
+  world.scale(sphere5, glm::vec3{0.5, 0.5, 0.5});
 
   renderer.set_skybox(RenderObject(skydome_mesh));
 
@@ -274,13 +274,13 @@ int main(int argc, char ** argv) {
     Input::handle_input();
     fpsController.handle_mouse();
     fpsController.handle_movement();
-    renderer.render(scene);
+    renderer.render(world);
     if(draw_main) {
-      scene.rotate(cube, 0.01, glm::vec3{1, 1, 0});
-      scene.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
-      scene.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
-      scene.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
-      scene.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
+      world.rotate(cube, 0.01, glm::vec3{1, 1, 0});
+      world.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
+      world.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
+      world.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
+      world.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
     }
 
     std::stringstream str;
