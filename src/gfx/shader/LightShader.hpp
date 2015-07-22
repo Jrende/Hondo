@@ -5,8 +5,8 @@ class LightShader;
 #include <glm/glm.hpp>
 #include <string>
 
-#include "../Material.hpp"
-#include "../lights/Light.hpp"
+#include "gfx/Material.hpp"
+#include "gfx/lights/Light.hpp"
 #include "ShaderProgram.hpp"
 class LightShader {
   protected:

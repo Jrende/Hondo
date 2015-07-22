@@ -5,7 +5,7 @@
 #include <math.h>
 #include <memory>
 #include <stdlib.h>
-#include "../ui/DebugText.hpp"
+#include "ui/DebugText.hpp"
 Renderer::Renderer(int width, int height):
   width(width),
   height(height),

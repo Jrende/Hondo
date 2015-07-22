@@ -1,6 +1,6 @@
 #pragma once
-#include "../input/Input.hpp"
-#include "../gfx/Camera.hpp"
+#include "input/Input.hpp"
+#include "gfx/Camera.hpp"
 #include <memory>
 class FPSController {
   private:

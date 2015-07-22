@@ -7,9 +7,9 @@ class ObjLoader;
 #include <set>
 #include <memory>
 #include "MtlLoader.hpp"
-#include "../Mesh.hpp"
-#include "../VertexArray.hpp"
-#include "../AABB.hpp"
+#include "gfx/Mesh.hpp"
+#include "gfx/VertexArray.hpp"
+#include "gfx/AABB.hpp"
 #include "ObjLoaderUtils.hpp"
 
 class ObjLoader {

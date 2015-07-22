@@ -3,8 +3,8 @@
 class SpotLightShader;
 #include <glm/glm.hpp>
 
-#include "../lights/Light.hpp"
-#include "../lights/SpotLight.hpp"
+#include "gfx/lights/Light.hpp"
+#include "gfx/lights/SpotLight.hpp"
 #include "LightShader.hpp"
 #include "ShaderProgram.hpp"
 class SpotLightShader: public LightShader {

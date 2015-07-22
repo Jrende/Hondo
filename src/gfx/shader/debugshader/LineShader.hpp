@@ -1,7 +1,7 @@
 #ifndef HONDO_LINESHADER_HPP
 #define HONDO_LINESHADER_HPP
 class LineShader;
-#include "../ShaderProgram.hpp"
+#include "gfx/shader/ShaderProgram.hpp"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 class LineShader {

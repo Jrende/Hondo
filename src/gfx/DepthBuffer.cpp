@@ -1,6 +1,6 @@
 #include <iostream>
 #include "DepthBuffer.hpp"
-#include "../DebugUtils.h"
+#include "DebugUtils.h"
 DepthBuffer::DepthBuffer(): width(1024), height(1024) {
   glGenFramebuffers(1, &fb);
   glBindFramebuffer(GL_FRAMEBUFFER, fb);

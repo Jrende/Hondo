@@ -4,8 +4,8 @@ class Light;
 #define GLM_FORCE_RADIANS
 #include <boost/optional.hpp>
 #include <glm/glm.hpp>
-#include "../Camera.hpp"
-#include "../DepthBuffer.hpp"
+#include "gfx/Camera.hpp"
+#include "gfx/DepthBuffer.hpp"
 class Light {
   private:
     Camera camera;

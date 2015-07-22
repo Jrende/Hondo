@@ -3,8 +3,8 @@
 class PointLightShader;
 #include <glm/glm.hpp>
 
-#include "../lights/Light.hpp"
-#include "../lights/PointLight.hpp"
+#include "gfx/lights/Light.hpp"
+#include "gfx/lights/PointLight.hpp"
 #include "LightShader.hpp"
 #include "ShaderProgram.hpp"
 class PointLightShader: public LightShader {

@@ -5,8 +5,8 @@ class MtlLoader;
 #include <vector>
 #include <string>
 #include <GL/glew.h>
-#include "../Material.hpp"
-#include "../Mesh.hpp"
+#include "gfx/Material.hpp"
+#include "gfx/Mesh.hpp"
 class MtlLoader {
   private:
     std::string last_material_name;
