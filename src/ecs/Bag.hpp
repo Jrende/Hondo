@@ -98,13 +98,13 @@ class Bag {
         next_space = mem;
       }
 
-    template<class T>
-      T* allocate() {
+    template<typename T, typename... Rest>
+      T* allocate(Rest... parameters) {
         if(current_capacity < (current_size + 1) * type_size) {
           resize(next_cap());
         }
 
-        T* ret = new(next_space) T();
+        T* ret = new(next_space) T(parameters...);
         next_space += sizeof(T);
         current_size++;
 
