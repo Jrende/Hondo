@@ -88,7 +88,7 @@ class Bag {
 
   public:
     ~Bag() {
-      //free(mem);
+      free(mem);
     }
 
     template<class T>
