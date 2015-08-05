@@ -10,7 +10,7 @@
 class Bag {
   private:
     
-    template<class T>
+    template<typename T>
     struct my_iterator: std::iterator<std::bidirectional_iterator_tag, T> {
       const Bag& bag;
       void* current_loc;
@@ -62,8 +62,6 @@ class Bag {
 
     int current_size = 0;
 
-    std::vector<int> locations;
-
     void resize(int new_item_number) {
       std::cout << "Resize\n";
       size_t new_size = new_item_number * type_size;
@@ -91,7 +89,7 @@ class Bag {
       free(mem);
     }
 
-    template<class T>
+    template<typename T>
       void init() {
         type_size = sizeof(T);
         resize(1);
@@ -113,7 +111,7 @@ class Bag {
 
     //Remove item, and move last item in list to its position
     //Will mess up pointers, but maybe that is okay.
-    template<class T>
+    template<typename T>
       void free_obj(T* ptr) {
         ptr->~T();
         void* last_item = next_space - sizeof(T);
@@ -124,17 +122,17 @@ class Bag {
         current_size--;
       }
 
-    template<class T>
+    template<typename T>
     T* get(int i) {
       return static_cast<T*>(mem + i * sizeof(T));
     }
 
-    template<class T>
+    template<typename T>
     my_iterator<T> begin() {
       return my_iterator<T>(*this, mem);
     }
 
-    template<class T>
+    template<typename T>
     my_iterator<T> end() {
       std::cout << "End!!\n";
       return my_iterator<T>(*this, next_space);
