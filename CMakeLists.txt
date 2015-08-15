@@ -66,8 +66,8 @@ set(ALL_LIBS
   nanovg
 )
 
-file(GLOB_RECURSE HONDO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE HONDO_HEADERS "src/*.h")
+file(GLOB_RECURSE HONDO_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "src/*.cpp")
+file(GLOB_RECURSE HONDO_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "src/*.h")
 
 set (HONDO_INCLUDE_DIRS "")
 foreach (_headerFile ${HONDO_HEADERS})
@@ -76,7 +76,20 @@ foreach (_headerFile ${HONDO_HEADERS})
 endforeach()
 list(REMOVE_DUPLICATES HONDO_INCLUDE_DIRS)
 
+list(REMOVE_ITEM HONDO_SOURCES "src/EcsTest.cpp")
+list(REMOVE_ITEM HONDO_SOURCES "src/main.cpp")
+list(REMOVE_ITEM HONDO_SOURCES "src/BagTest.cpp")
+
 include_directories(${HONDO_INCLUDE_DIRS})
-add_executable (Hondo ${HONDO_SOURCES})
+
+add_executable (EcsTest ${HONDO_SOURCES} "src/EcsTest.cpp")
+target_link_libraries(EcsTest ${ALL_LIBS})
+set_property(TARGET EcsTest APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
+
+add_executable (BagTest ${HONDO_SOURCES} "src/BagTest.cpp")
+target_link_libraries(BagTest ${ALL_LIBS})
+set_property(TARGET BagTest APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
+
+add_executable (Hondo ${HONDO_SOURCES} "src/main.cpp")
 target_link_libraries(Hondo ${ALL_LIBS})
 set_property(TARGET Hondo APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
