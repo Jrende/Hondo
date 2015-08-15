@@ -1,11 +1,11 @@
 #pragma once
 #include <unordered_map>
+class Bag;
 class Entity {
+  friend Bag;
   private:
+    unsigned int id;
   public:
-    unsigned int id = -1;
-
-    Entity() { }
     Entity(int id): id(id) { }
 
     bool operator!=(const Entity& other) const {
@@ -16,9 +16,7 @@ class Entity {
       return other.id == this->id;
     }
 
-    template<class Component>
-    Entity& add_component(Component component)
-
-    template<class Component>
-    Ref<Component> get_component()
+    int get_id() const {
+      return id;
+    }
 };

@@ -3,7 +3,12 @@ World::World() {
 }
 
 Entity World::create_entity() {
-  Entity e = entity_manager.create_entity;
+  return entity_manager.create_entity();
 }
 
-void World::
+Entity World::create_entity(const Entity& parent) {
+  return entity_manager.create_entity(parent);
+}
+
+void World::process() {
+}

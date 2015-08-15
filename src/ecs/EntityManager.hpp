@@ -1,20 +1,23 @@
 #pragma once
-template<class T>
+#include <vector>
+#include <boost/optional.hpp>
+#include "Entity.hpp"
 class EntityManager {
   private:
     struct Node {
-      Entity entity;
+      const Entity& entity;
       Node* parent = nullptr;
       std::vector<Node> children;
-      Node();
+      Node(const Entity& entity): entity(entity) {};
     };
-    static int last_id = 0;
     EntityManager::Node root;
     std::vector<Entity> flat_list;
     unsigned int fetch_render_object_id(const Entity& entity);
-    boost::optional<EntityManager::Node&> find_node(const Entity& entity);
+    boost::optional<EntityManager::Node&> find_node(Entity& entity);
     boost::optional<EntityManager::Node&> find_node_from(EntityManager::Node& start_node, const Entity& entity);
+    Entity new_entity();
   public:
     Entity create_entity();
     Entity create_entity(const Entity& parent);
+    EntityManager();
 };
