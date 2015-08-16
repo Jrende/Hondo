@@ -153,4 +153,9 @@ class Bag {
     T* get_component_for_entity(const Entity& e) {
       return get<T>(entity_to_index[e.get_id()]);
     }
+
+    template<typename T>
+    bool will_resize() {
+      return current_capacity < (current_size + 1) * sizeof(T);
+    }
 };
