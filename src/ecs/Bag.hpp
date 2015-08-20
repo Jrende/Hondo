@@ -14,7 +14,7 @@ class Bag {
     template<typename T>
     struct my_iterator: std::iterator<std::bidirectional_iterator_tag, T> {
       const Bag& bag;
-      void* current_loc;
+      void* current_loc = nullptr;
       my_iterator(const Bag& bag, void* current_loc):
         bag(bag),
         current_loc(current_loc)
@@ -67,9 +67,10 @@ class Bag {
     std::unordered_map<int, int> entity_to_index;
 
     void resize(int new_item_number) {
-      std::cout << "Resize\n";
+      std::cout << "Growing to size " << new_item_number << '\n';
       size_t new_size = new_item_number * type_size;
       void* new_mem = malloc(new_size);
+      std::cout << "Move from " << mem << " to " << new_mem << '\n';
       if(new_mem == nullptr) {
         std::cout << "Failed to allocate memory for Bag!\n";
         return;
@@ -79,13 +80,13 @@ class Bag {
       free(mem);
 
       mem = new_mem;
-      next_space = mem + current_capacity;
+      next_space = static_cast<char*>(mem) + current_capacity;
       current_capacity = new_size;
     }
 
     int next_cap() {
       int current_item_cap = current_capacity / type_size;
-      return current_item_cap + pow(current_item_cap, growth);
+      return current_item_cap * 2;
     }
 
   public:
@@ -113,7 +114,7 @@ class Bag {
         entity_to_index[entity.get_id()] = current_size;
         T* ret = new(next_space) T(std::forward<Rest>(parameters)...);
         ret->entity_id = entity.get_id();
-        next_space += sizeof(T);
+        next_space = static_cast<T*>(next_space) + 1;
         current_size++;
 
         return ret;
@@ -125,7 +126,7 @@ class Bag {
       void free_obj(T* ptr) {
         int last_entity = ptr->get_entity_id();
         ptr->~T();
-        void* last_item = next_space - sizeof(T);
+        void* last_item = static_cast<T*>(next_space) - 1;
         if(ptr != last_item) {
           memcpy(ptr, last_item, sizeof(T));
         }
@@ -136,7 +137,7 @@ class Bag {
 
     template<typename T>
     T* get(int i) {
-      return static_cast<T*>(mem + i * sizeof(T));
+      return static_cast<T*>(mem) + i;
     }
 
     template<typename T>
@@ -157,5 +158,9 @@ class Bag {
     template<typename T>
     bool will_resize() {
       return current_capacity < (current_size + 1) * sizeof(T);
+    }
+
+    int size() {
+      return current_size;
     }
 };
