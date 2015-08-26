@@ -33,8 +33,8 @@ class ComponentManager {
 
   private:
     //Index of vector corresponds to component type id
-    std::vector<Bag> components;
-    std::vector<std::unordered_set<int>> changed_components;
+    std::array<Bag, ComponentId::max_component_id> components;
+    std::array<std::unordered_set<int>, ComponentId::max_component_id > changed_components;
     
     //ie entity_to_component_index[Transform::id][entity.id] will give the index of the entitys transform component
   public:

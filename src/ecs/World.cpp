@@ -11,5 +11,5 @@ Entity World::create_entity(const Entity& parent) {
 }
 
 void World::process() {
-  component_manager->clear();
+  component_manager.clear();
 }

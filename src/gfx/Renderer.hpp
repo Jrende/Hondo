@@ -21,7 +21,7 @@ class Renderer;
 #include "shader/PointLightShader.hpp"
 #include "shader/SkyShader.hpp"
 #include "shader/SpotLightShader.hpp"
-#include "World.hpp"
+#include "ecs/World.hpp"
 
 class Renderer {
   private:

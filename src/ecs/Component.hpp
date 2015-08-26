@@ -19,6 +19,9 @@ class Component {
     }
 };
 
-static int currentProbeCounter = 0;
+namespace ComponentId {
+  extern int max_component_id;
+}
+
 template <class T>
-const int Component<T>::type_id = ++currentProbeCounter;
+const int Component<T>::type_id = ComponentId::max_component_id++;

@@ -1,7 +1,7 @@
 #include "SceneGraph.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-
+/*
 bool operator==(const RenderObject& render_object, const Entity& entity) {
   return render_object.entity == entity;
 }
@@ -134,3 +134,4 @@ Entity SceneGraph::create_entity(Entity parent, RenderObject&& obj) {
   }
   return node.entity;
 }
+*/

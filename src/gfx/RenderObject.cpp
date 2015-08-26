@@ -5,6 +5,7 @@
 #include <iostream>
 #include <GL/glew.h>
 
+//Should remove this
 RenderObject::RenderObject():
   transform(),
   mesh(),

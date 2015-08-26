@@ -93,16 +93,25 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
 
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
+  for(auto& render_object: render_list) {
+    glm::mat4 mvp_mat = glm::mat4();
+    mvp_mat *= perspective_mat;
+    mvp_mat *= camera->get_view_mat();
+    debug_renderer.draw_aabb(render_object.aabb, mvp_mat);
+  }
+    
   //foreach type of light
   for(auto& light_type: lights) {
     if(light_type.second.size() == 0) {
       continue;
     }
     std::shared_ptr<LightShader> shader = light_type.first;
+    /*
     //foreach light instance
-    for(auto& light: light_type.second) {
-      draw_point(light->get_pos());
-    }
+    //for(auto& light: light_type.second) {
+      //draw_point(light->get_pos());
+    //}
+    */
     shader->use_shader();
     for(auto& light: light_type.second) {
       if(shown_light_index != -1 && light_list[shown_light_index] != light) {
@@ -282,5 +291,5 @@ bool vertex_array_sort(const RenderObject& left, const RenderObject& right) {
 }
 
 void Renderer::render(World& world) {
-  render(world.render_list);
+  //render(world.render_list);
 }

@@ -2,12 +2,13 @@
 #include <vector>
 #include <unordered_map>
 #include <boost/optional.hpp>
-#include "Entity.hpp"
+//#include "Entity.hpp"
 #include "RenderObject.hpp"
 #include "Transform.hpp"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
+    /*
 namespace std {
   template <>
     struct hash<Entity> {
@@ -35,13 +36,13 @@ class SceneGraph {
 
   private:
     std::vector<RenderObject>& render_list;
-    std::unordered_map<Entity, unsigned int>& id_to_list_index;
+    //std::unordered_map<Entity, unsigned int>& id_to_list_index;
 
     SceneGraph::Node root;
-    unsigned int fetch_render_object_id(const Entity& entity);
+    //unsigned int fetch_render_object_id(const Entity& entity);
     void update_transform(const RenderObject& render_object);
-    boost::optional<SceneGraph::Node&> find_node(const Entity& entity);
-    boost::optional<SceneGraph::Node&> find_node(SceneGraph::Node& node, const Entity& entity);
+    //boost::optional<SceneGraph::Node&> find_node(const Entity& entity);
+    //boost::optional<SceneGraph::Node&> find_node(SceneGraph::Node& node, const Entity& entity);
   public:
     SceneGraph(
       std::vector<RenderObject>& render_list,
@@ -57,4 +58,4 @@ class SceneGraph {
     Entity create_entity(RenderObject&& obj);
     Entity create_entity(Entity parent, RenderObject&& obj);
 };
-
+    */

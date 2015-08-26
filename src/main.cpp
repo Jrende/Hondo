@@ -11,9 +11,9 @@
 #define NANOVG_GL3_IMPLEMENTATION
 #include <nanovg_gl.h>
 
-#include "gfx/Renderer.hpp"
-#include "gfx/World.hpp"
-#include "gfx/Entity.hpp"
+//#include "gfx/Renderer.hpp"
+//#include "ecs/World.hpp"
+//#include "ecs/Entity.hpp"
 #include "gfx/VertexArray.hpp"
 #include "gfx/SkyBox.hpp"
 #include "gfx/importer/ObjLoader.hpp"
@@ -41,6 +41,7 @@ glm::vec3 get_random_color() {
   return glm::normalize(glm::vec3{r, g, b});
 }
 
+/*
 glm::vec3 pos;
 glm::vec3 scale;
 std::vector<std::pair<glm::vec3, glm::vec3>> rain;
@@ -70,6 +71,7 @@ void draw_rain(Renderer* r) {
   r->draw_lines(rain, {0.1, 0.1, 0.1});
   rain = new_rain;
 }
+*/
 
 static void error_callback(int error, const char* description)
 {
@@ -139,11 +141,13 @@ int main(int argc, char ** argv) {
     const GLubyte* version = glGetString(GL_VERSION);
     printf("Renderer: %s\n", renderer);
     printf("Version: %s\n", version);
-    glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
-    glfwSetKeyCallback(window, Input::key_callback);
-    glfwSetScrollCallback(window, Input::scroll_callback);
-    Input::set_active_window(window);
   }
+
+  glfwSetCursorPosCallback(window, Input::cursor_pos_callback);
+  glfwSetKeyCallback(window, Input::key_callback);
+  glfwSetScrollCallback(window, Input::scroll_callback);
+  Input::set_active_window(window);
+  /*
   Renderer renderer(width, height);
 
   struct NVGcontext* vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_DEBUG);
@@ -296,6 +300,7 @@ int main(int argc, char ** argv) {
     Input::reset_delta();
     checkForGlError();
   }
+  */
   glfwDestroyWindow(window);
   glfwTerminate();
   return 0;

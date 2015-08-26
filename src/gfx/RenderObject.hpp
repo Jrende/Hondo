@@ -9,7 +9,7 @@
 #include "Mesh.hpp"
 #include "Transform.hpp"
 #include "VertexArray.hpp"
-#include "Entity.hpp"
+//#include "ecs/Entity.hpp"
 #include "AABB.hpp"
 #include "shader/SimpleShader.hpp"
 class RenderObject {
@@ -22,7 +22,7 @@ class RenderObject {
     RenderObject();
     RenderObject(Mesh& mesh);
 
-    Entity entity;
+    //Entity entity;
     Mesh mesh;
     AABB aabb;
 

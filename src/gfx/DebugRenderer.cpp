@@ -59,6 +59,7 @@ void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const 
 
 void DebugRenderer::draw_point(const glm::vec3& pos, const glm::mat4& vp_mat) {
   debug_shader();
+  glPointSize(10);
   debug_shader.set_color({1,1,1});
   debug_shader.set_MVP(vp_mat);
   debug_shader.set_pos(pos);
