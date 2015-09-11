@@ -15,8 +15,8 @@ class World {
     void add_render_object(RenderObject&& obj);
   public:
     World();
-    Entity create_entity();
-    Entity create_entity(Entity parent);
+    Entity create_empty_entity();
+    Entity create_empty_entity(Entity parent);
     Entity create_entity(RenderObject&& obj);
     Entity create_entity(Entity parent, RenderObject&& obj);
     void translate(Entity entity, const glm::vec3& pos);

@@ -11,11 +11,11 @@ void World::add_render_object(RenderObject&& obj) {
   id_to_list_index[obj.entity] = render_list.size() - 1;
 }
 
-Entity World::create_entity() {
+Entity World::create_empty_entity() {
   return scene_graph.create_entity();
 }
 
-Entity World::create_entity(Entity parent) {
+Entity World::create_empty_entity(Entity parent) {
   return scene_graph.create_entity(parent);
 }
 

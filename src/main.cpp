@@ -178,7 +178,7 @@ int main(int argc, char ** argv) {
   renderer.add_light(pl2);
 
   World world;
-  Entity sponza = world.create_entity();
+  Entity sponza = world.create_empty_entity();
   for(auto& sponza_mesh: sponza_meshes) {
     world.create_entity(sponza, RenderObject(sponza_mesh));
   }
