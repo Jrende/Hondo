@@ -45,6 +45,8 @@ class Renderer {
     void draw_sky();
     void render_depth_test(std::vector<RenderObject>& render_list);
     void render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& render_list);
+    void draw_debug_info(std::vector<RenderObject>& render_list);
+    void draw_aabb(const AABB& aabb);
   public:
     Renderer(int width, int height);
     void set_camera(std::shared_ptr<Camera> camera);

@@ -22,5 +22,5 @@ class Transform {
     const glm::quat& get_rot();
     const glm::vec3& get_scale();
 
-    const glm::mat4& get_model_matrix();
+    const glm::mat4& get_model_matrix() const;
 };

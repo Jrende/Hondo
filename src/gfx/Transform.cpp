@@ -35,7 +35,7 @@ void Transform::rotate(float angle, const glm::vec3& axis) {
  this->rot = glm::rotate(rot, angle, axis);
 }
 
-const glm::mat4& Transform::get_model_matrix() {
+const glm::mat4& Transform::get_model_matrix() const {
   return model_matrix;
 }
 

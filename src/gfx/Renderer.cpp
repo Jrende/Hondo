@@ -86,9 +86,22 @@ void Renderer::render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& 
   }
 }
 
+void Renderer::draw_debug_info(std::vector<RenderObject>& render_list) {
+  for(const auto& render_object: render_list) {
+    draw_aabb(render_object.aabb);
+  }
+
+  for(auto& light_type: lights) {
+    for(auto& light: light_type.second) {
+      draw_point(light->get_pos());
+    }
+  }
+}
+
 void Renderer::render(std::vector<RenderObject>& render_list) {
   int draw_calls = 0;
   pre_render();
+  draw_debug_info(render_list);
   render_depth_test(render_list);
 
   glDisable(GL_BLEND);
@@ -100,9 +113,8 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
     }
     std::shared_ptr<LightShader> shader = light_type.first;
     //foreach light instance
-    for(auto& light: light_type.second) {
-      draw_point(light->get_pos());
-    }
+
+
     shader->use_shader();
     for(auto& light: light_type.second) {
       if(shown_light_index != -1 && light_list[shown_light_index] != light) {
@@ -164,6 +176,14 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
   }
   draw_sky();
   DebugText::set_value("draw calls", draw_calls);
+}
+
+void Renderer::draw_aabb(const AABB& aabb) {
+  glEnable(GL_BLEND);
+  glm::mat4 vp_mat = glm::mat4();
+  vp_mat *= perspective_mat;
+  vp_mat *= camera->get_view_mat();
+  debug_renderer.draw_aabb(aabb, vp_mat);
 }
 
 void Renderer::draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::vec3& color) {
