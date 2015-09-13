@@ -1,10 +1,10 @@
 #pragma once
 #include <unordered_map>
 class Entity {
-  private:
+  protected:
   public:
-    unsigned int id;
-    Entity();
+    int id;
+    Entity(int id): id(id) {};
 
     bool operator!=(const Entity& other) const {
       return !(*this == other);
