@@ -22,7 +22,7 @@ class RenderObject {
     RenderObject();
     RenderObject(Mesh& mesh);
 
-    Entity entity;
+    Entity entity = Entity(-1);
     Mesh mesh;
     AABB aabb;
 
