@@ -19,25 +19,25 @@ namespace std {
 
 class SceneGraph {
   struct Node {
-    Entity entity;
     Node* parent = nullptr;
     std::vector<Node> children;
     SceneGraph* graph;
     Transform effective_transform;
     Transform node_transform;
+    Entity entity;
     bool has_render_object = true;
 
     void update(const Transform& parent_matrix);
     void update();
 
-    Node();
+    Node(Entity entity);
   };
 
   private:
     std::vector<RenderObject>& render_list;
     std::unordered_map<Entity, unsigned int>& id_to_list_index;
 
-    SceneGraph::Node root;
+    SceneGraph::Node root = SceneGraph::Node(Entity(-1));
     unsigned int fetch_render_object_id(const Entity& entity);
     void update_transform(const RenderObject& render_object);
     boost::optional<SceneGraph::Node&> find_node(const Entity& entity);
@@ -52,9 +52,7 @@ class SceneGraph {
     void translate(Entity entity, const glm::vec3& pos);
     void scale(Entity entity, const glm::vec3& scale);
     void rotate(Entity entity, float angle, const glm::vec3& axis);
-    Entity create_entity();
-    Entity create_entity(Entity parent);
-    Entity create_entity(RenderObject&& obj);
-    Entity create_entity(Entity parent, RenderObject&& obj);
+    void add_entity(Entity entity);
+    void add_entity(Entity parent, Entity entity);
 };
 

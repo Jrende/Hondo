@@ -6,29 +6,40 @@ World::World():
 {
 }
 
+Entity create_new_entity() {
+  static int last_id = 0;
+  return Entity(last_id++);
+}
+
 void World::add_render_object(RenderObject&& obj) {
   render_list.push_back(obj);
   id_to_list_index[obj.entity] = render_list.size() - 1;
 }
 
 Entity World::create_empty_entity() {
-  return scene_graph.create_entity();
+  Entity e = create_new_entity();
+  scene_graph.add_entity(e);
+  return e;
 }
 
 Entity World::create_empty_entity(Entity parent) {
-  return scene_graph.create_entity(parent);
+  Entity e = create_new_entity();
+  scene_graph.add_entity(parent);
+  return e;
 }
 
 Entity World::create_entity(RenderObject&& obj) {
-  render_list.push_back(obj);
-  id_to_list_index[obj.entity] = render_list.size() - 1;
-  return scene_graph.create_entity(std::move(obj));
+  Entity e = create_empty_entity();
+  obj.entity = e;
+  add_render_object(std::move(obj));
+  return e;
 }
 
 Entity World::create_entity(Entity parent, RenderObject&& obj) {
-  render_list.push_back(obj);
-  id_to_list_index[obj.entity] = render_list.size() - 1;
-  return scene_graph.create_entity(parent, std::move(obj));
+  Entity e = create_empty_entity(parent);
+  obj.entity = e;
+  add_render_object(std::move(obj));
+  return e;
 }
 
 void World::translate(Entity entity, const glm::vec3& pos) {

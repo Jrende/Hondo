@@ -16,9 +16,10 @@ SceneGraph::SceneGraph(
   root.has_render_object = false;
 }
 
-SceneGraph::Node::Node():
+SceneGraph::Node::Node(Entity entity):
   effective_transform(),
-  node_transform() { }
+  node_transform(),
+  entity(entity) { }
 
 //RS
 void SceneGraph::Node::update() {
@@ -104,33 +105,15 @@ boost::optional<SceneGraph::Node&> SceneGraph::find_node(SceneGraph::Node& node,
   return boost::none;
 }
 
-Entity SceneGraph::create_entity() {
-  return create_entity(root.entity);
+void SceneGraph::add_entity(Entity entity) {
+  add_entity(root.entity, entity);
 }
 
-Entity SceneGraph::create_entity(Entity parent) {
-  SceneGraph::Node node;
+void SceneGraph::add_entity(Entity parent, Entity entity) {
+  SceneGraph::Node node(entity);
   node.graph = this;
-  node.parent = &root;
-  root.children.push_back(node);
-  if(boost::optional<SceneGraph::Node&> result = find_node(root, parent)) {
-    (*result).children.push_back(node);
-  }
-  return node.entity;
-}
-
-Entity SceneGraph::create_entity(RenderObject&& obj) {
-  return create_entity(root.entity, std::move(obj));
-}
-
-Entity SceneGraph::create_entity(Entity parent, RenderObject&& obj) {
-  SceneGraph::Node node;
-  node.graph = this;
-  node.entity = obj.entity;
-
   if(boost::optional<SceneGraph::Node&> result = find_node(parent)) {
     node.parent = &(*result);
-    result->children.push_back(node);
+    (*result).children.push_back(node);
   }
-  return node.entity;
 }
