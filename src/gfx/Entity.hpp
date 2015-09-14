@@ -2,9 +2,13 @@
 #include <unordered_map>
 class Entity {
   protected:
-  public:
     int id;
+  public:
     Entity(int id): id(id) {};
+
+    int get_id() const {
+      return id;
+    }
 
     bool operator!=(const Entity& other) const {
       return !(*this == other);

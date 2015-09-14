@@ -12,7 +12,7 @@ namespace std {
   template <>
     struct hash<Entity> {
       std::size_t operator()(const Entity& k) const {
-        return k.id;
+        return k.get_id();
       }
     };
 };
