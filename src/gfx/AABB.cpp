@@ -4,10 +4,12 @@
 AABB::AABB() {}
 AABB::AABB(std::array<glm::vec3, 6> points) {
   base_cube = create_aabb_from_points(points.begin(), points.end());
+  cube = base_cube;
 }
 
 AABB::AABB(std::array<std::array<float, 3>, 6> points) {
   base_cube = create_aabb_from_points(points.begin(), points.end());
+  cube = base_cube;
 }
 
 void AABB::transform(const glm::mat4& model_mat) {
