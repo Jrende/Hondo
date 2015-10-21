@@ -11,9 +11,13 @@ Entity create_new_entity() {
   return Entity(last_id++);
 }
 
-void World::add_render_object(RenderObject&& obj) {
+void World::add_render_object(RenderObject obj) {
   render_list.push_back(obj);
   id_to_list_index[obj.entity] = render_list.size() - 1;
+}
+
+RenderObject& World::get_render_object(Entity entity) {
+  return render_list[id_to_list_index[entity.get_id()]];
 }
 
 Entity World::create_empty_entity() {
@@ -28,14 +32,14 @@ Entity World::create_empty_entity(Entity parent) {
   return e;
 }
 
-Entity World::create_entity(RenderObject&& obj) {
+Entity World::create_entity(RenderObject obj) {
   Entity e = create_empty_entity();
   obj.entity = e;
   add_render_object(std::move(obj));
   return e;
 }
 
-Entity World::create_entity(Entity parent, RenderObject&& obj) {
+Entity World::create_entity(Entity parent, RenderObject obj) {
   Entity e = create_empty_entity(parent);
   obj.entity = e;
   add_render_object(std::move(obj));

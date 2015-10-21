@@ -12,13 +12,14 @@ class World {
     std::vector<RenderObject> render_list;
     std::unordered_map<Entity, unsigned int> id_to_list_index;
     SceneGraph scene_graph;
-    void add_render_object(RenderObject&& obj);
+    void add_render_object(RenderObject obj);
   public:
     World();
     Entity create_empty_entity();
     Entity create_empty_entity(Entity parent);
-    Entity create_entity(RenderObject&& obj);
-    Entity create_entity(Entity parent, RenderObject&& obj);
+    Entity create_entity(RenderObject obj);
+    Entity create_entity(Entity parent, RenderObject obj);
+    RenderObject& get_render_object(Entity entity);
     void translate(Entity entity, const glm::vec3& pos);
     void scale(Entity entity, const glm::vec3& scale);
     void rotate(Entity entity, float angle, const glm::vec3& axis);
