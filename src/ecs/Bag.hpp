@@ -7,7 +7,6 @@
 #include <list>
 #include <string.h>
 #include <iterator>
-#include "Entity.hpp"
 class Bag {
   private:
     
@@ -64,7 +63,7 @@ class Bag {
 
     int current_size = 0;
 
-    std::unordered_map<int, int> entity_to_index;
+    std::unordered_map<unsigned int, unsigned int> entity_to_index;
 
     void resize(int new_item_number) {
       std::cout << "Growing to size " << new_item_number << '\n';
@@ -76,11 +75,13 @@ class Bag {
         return;
       }
 
-      memcpy(new_mem, mem, current_capacity);
-      free(mem);
+      if(mem != NULL) {
+        memcpy(new_mem, mem, current_capacity);
+        free(mem);
+      }
 
       mem = new_mem;
-      next_space = static_cast<char*>(mem) + current_capacity;
+      next_space = static_cast<char*>(mem) + current_size * type_size;
       current_capacity = new_size;
     }
 
@@ -91,19 +92,80 @@ class Bag {
 
   public:
     ~Bag() {
+      std::cout << "Free " << mem << "\n";
       free(mem);
+      mem = nullptr;
+      next_space = nullptr;
+    }
+
+    Bag() {
+    }
+
+    Bag(Bag&& other) {  
+      std::cout << "Bag move constructor\n";
+      this->mem = other.mem;
+      this->next_space = other.next_space;
+      this->current_capacity = other.current_capacity;
+      this->type_size = other.type_size;
+      this->growth = other.growth;
+      this->has_inited = other.has_inited;
+      this->current_size = other.current_size;
+      this->entity_to_index = other.entity_to_index;
+      other.mem = nullptr;
+      other.next_space = nullptr;
+    }
+
+    Bag& operator=(Bag&& other) {  
+      std::cout << "Bag move assignment\n";
+      this->mem = other.mem;
+      this->next_space = other.next_space;
+      this->current_capacity = other.current_capacity;
+      this->type_size = other.type_size;
+      this->growth = other.growth;
+      this->has_inited = other.has_inited;
+      this->current_size = other.current_size;
+      this->entity_to_index = other.entity_to_index;
+      other.mem = nullptr;
+      other.next_space = nullptr;
+      return *this;
+    }
+
+    Bag(const Bag& other) {
+      std::cout << "Bag copy constructor\n";
+      this->current_capacity = other.current_capacity;
+      this->type_size = other.type_size;
+      this->growth = other.growth;
+      this->has_inited = other.has_inited;
+      this->current_size = other.current_size;
+      this->entity_to_index = other.entity_to_index;
+      mem = malloc(current_capacity);
+      memcpy(mem, other.mem, current_capacity);
+      next_space = static_cast<char*>(mem) + current_size * type_size;
+    }
+
+    Bag& operator=(const Bag& other) {
+      std::cout << "Bag copy assignment\n";
+      this->current_capacity = other.current_capacity;
+      this->type_size = other.type_size;
+      this->growth = other.growth;
+      this->has_inited = other.has_inited;
+      this->current_size = other.current_size;
+      this->entity_to_index = other.entity_to_index;
+      mem = malloc(current_capacity);
+      memcpy(mem, other.mem, current_capacity);
+      next_space = static_cast<char*>(mem) + current_size * type_size;
+      return *this;
     }
 
     template<typename T>
       void init() {
         type_size = sizeof(T);
-        resize(1);
-        next_space = mem;
+        resize(10);
         has_inited = true;
       }
 
-    template<typename T, typename Entity, typename... Rest>
-      T* allocate(const Entity& entity, Rest&&... parameters) {
+    template<typename T, typename... Rest>
+      T* allocate(unsigned int entity_id, Rest&&... parameters) {
         assert(sizeof(T) == type_size);
         assert(has_inited);
 
@@ -111,9 +173,9 @@ class Bag {
           resize(next_cap());
         }
 
-        entity_to_index[entity.get_id()] = current_size;
+        entity_to_index[entity_id] = current_size;
         T* ret = new(next_space) T(std::forward<Rest>(parameters)...);
-        ret->entity_id = entity.get_id();
+        ret->entity_id = entity_id;
         next_space = static_cast<T*>(next_space) + 1;
         current_size++;
 
@@ -151,8 +213,9 @@ class Bag {
     }
 
     template<typename T>
-    T* get_component_for_entity(const Entity& e) {
-      return get<T>(entity_to_index[e.get_id()]);
+    T* get_component_for_entity(unsigned int entity_id) {
+      int index = entity_to_index[entity_id];
+      return get<T>(index);
     }
 
     template<typename T>
@@ -162,5 +225,9 @@ class Bag {
 
     int size() {
       return current_size;
+    }
+
+    bool is_null() {
+      return mem == nullptr;
     }
 };

@@ -4,7 +4,6 @@
 #include <vector>
 #include <sstream>
 #include "ecs/Bag.hpp"
-#include "ecs/Entity.hpp"
 #include "ecs/Component.hpp"
 struct TestComp: Component<TestComp> {
   std::string s;
@@ -15,9 +14,9 @@ const int size = 4;
 int main(int argc, char** argv) {
   Bag bag;
   bag.init<TestComp>();
-  std::vector<Entity> ents;
+  std::vector<unsigned int> ents;
   for(int i = 0; i < size; i++) {
-    Entity e(i);
+    unsigned int e = i;
     ents.push_back(e);
     std::stringstream ss;
     ss << "TestComp for entity " << i << "!";
@@ -25,13 +24,12 @@ int main(int argc, char** argv) {
   }
 
   bag.free_obj(bag.get<TestComp>(1));
-  const auto& it = std::find(ents.begin(), ents.end(), Entity(1));
+  const auto& it = std::find(ents.begin(), ents.end(), 1);
   ents.erase(it);
-  TestComp* t = bag.allocate<TestComp>(Entity(4), "TestComp for entity 4!");
-  ents.push_back(Entity(4));
+  TestComp* t = bag.allocate<TestComp>(4, "TestComp for entity 4!");
+  ents.push_back(4);
 
-  for(const auto& e: ents) {
-    int i = e.get_id();
+  for(const auto& i: ents) {
     TestComp* c = bag.get_component_for_entity<TestComp>(i);
     if(i != c->get_entity_id()) {
       std::cerr << "Entity ID not same as component entity id!\n";

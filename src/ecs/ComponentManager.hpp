@@ -15,57 +15,62 @@ class ComponentManager {
     class Ref {
       friend ComponentManager;
       private:
-        Entity entity;
+        unsigned int entity_id;
         Bag* bag = nullptr;
+        ComponentManager* component_manager = nullptr;
       
       public:
-        Ref(Entity entity, Bag* bag): entity(entity), bag(bag) {
+        Ref(unsigned int entity_id, ComponentManager* component_manager): entity_id(entity_id), component_manager(component_manager) {
         };
 
         C* operator->() {
-          return bag->get_component_for_entity<C>(entity);
+          if(bag == nullptr || bag->is_null()) {
+            bag = &component_manager->components[C::type_id];
+          }
+          return bag->get_component_for_entity<C>(entity_id);
         }
 
         bool operator==(const Ref& other) {
-          return other.entity.id == this->entity.id && other.component.id == this->component.id;
+          return other.entity.id == this->entity_id;// && other->component.id == this->component.id;
         }
     };
 
   private:
     //Index of vector corresponds to component type id
-    std::array<Bag, ComponentId::max_component_id> components;
-    std::array<std::unordered_set<int>, ComponentId::max_component_id > changed_components;
+    std::vector<Bag> components;
+    std::vector<std::unordered_set<int>> changed_components;
     
     //ie entity_to_component_index[Transform::id][entity.id] will give the index of the entitys transform component
   public:
-    ComponentManager():
-      components(ComponentId::max_component_id),
-      changed_components(ComponentId::max_component_id)
+    ComponentManager(): components(1)
   {
     //init refs set
   }
 
     template<typename C, typename... Rest>
-    void add_component(const Entity& e, Rest&&... args) {
+    void add_component(unsigned int e, Rest&&... args) {
       //Try using bag.at & exceptions, benchmark
-      if(components[Component<C>::type_id].size() == 0) {
-        Bag& bag = components[Component<C>::type_id];
+      int id = Component<C>::type_id;
+      int prev = components.size();
+      if(id >= prev) {
+        std::cout << "Resize components\n";
+        components.resize(id + 1);
+      }
+      Bag& bag = components[Component<C>::type_id];
+      if(components[id].size() == 0) {
         bag.init<C>();
       }
-
-      Bag& bag = components[Component<C>::type_id];
 
       C* c = bag.allocate<C>(e, std::forward<Rest>(args)...);
       c->id = last_component_id++;
     }
 
     template<typename C>
-    ComponentManager::Ref<C> get_component_ref(const Entity& e) {
-      Bag* bag = &components[Component<C>::type_id];
-      return ComponentManager::Ref<C>(Entity(e), bag);
+    ComponentManager::Ref<C> get_component_ref(unsigned int e) {
+      return ComponentManager::Ref<C>(e, this);
     }
 
     void clear() {
-      changed_components.clear();
+      //changed_components.clear();
     }
 };
