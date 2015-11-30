@@ -9,7 +9,7 @@
 Renderer::Renderer(int width, int height):
   width(width),
   height(height),
-  perspective_mat(glm::perspective<float>(45.0f, (float) width/height, 0.5f, 50.0f)),
+  perspective_mat(glm::perspective<float>(45.0f, (float) width/height, 0.5f, 100.0f)),
   point_light_shader(std::make_shared<PointLightShader>()),
   spot_light_shader(std::make_shared<SpotLightShader>()),
   dir_light_shader(std::make_shared<LightShader>()),
