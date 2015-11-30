@@ -182,7 +182,7 @@ int main(int argc, char ** argv) {
   for(auto& sponza_mesh: sponza_meshes) {
     world.create_entity(sponza, RenderObject(sponza_mesh));
   }
-  world.scale(sponza, {0.05, 0.05, 0.05});
+  world.scale(sponza, {0.1, 0.1, 0.1});
 
   Entity cube = world.create_entity(RenderObject(cube_mesh));
   world.scale(cube, glm::vec3{0.5, 0.5, 0.5});
@@ -278,6 +278,7 @@ int main(int argc, char ** argv) {
     if(draw_main) {
       world.rotate(cube, 0.01, glm::vec3{1, 1, 0});
       world.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
+      world.get_render_object(cube).transform.rotate(0.01, glm::vec3(1, 1, 0));
       world.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
       world.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
       world.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});

@@ -28,7 +28,7 @@ Entity World::create_empty_entity() {
 
 Entity World::create_empty_entity(Entity parent) {
   Entity e = create_new_entity();
-  scene_graph.add_entity(parent);
+  scene_graph.add_entity(parent, e);
   return e;
 }
 
