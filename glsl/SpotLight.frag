@@ -44,7 +44,7 @@ vec3 getNormal() {
 
 vec4 getDiffuse(vec3 normal, vec3 surfaceToLight, float shadow) {
   float distance = length(surfaceToLight);
-  float brightness = pow(clamp(dot(-spotLight.direction, normalize(surfaceToLight)), 0, 1), spotLight.concentration) * spotLight.color;
+  float brightness = length(pow(clamp(dot(-spotLight.direction, normalize(surfaceToLight)), 0, 1), spotLight.concentration) * spotLight.color);
   brightness *= max(dot(normal, normalize(surfaceToLight)), 0);
   brightness /= spotLight.constant + spotLight.linear*distance + spotLight.exp*distance*distance;
 
