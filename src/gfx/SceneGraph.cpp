@@ -1,5 +1,6 @@
 #include "SceneGraph.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
 bool operator==(const RenderObject& render_object, const Entity& entity) {
@@ -21,7 +22,6 @@ SceneGraph::Node::Node(Entity entity):
   node_transform(),
   entity(entity) { }
 
-//RS
 void SceneGraph::Node::update() {
   Transform t;
   if(parent != nullptr) {

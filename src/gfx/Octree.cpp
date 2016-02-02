@@ -9,6 +9,10 @@ void Octree::add_point(int entity_id, const glm::vec3& point) {
   root.add_point(entity_id, point);
 }
 
+bool Octree::contains_point(const glm::vec3& point) {
+  return root.contains_point(point);
+}
+
 std::unordered_set<int> Octree::get_items_in_frustum() {
   return std::unordered_set<int>();
 }

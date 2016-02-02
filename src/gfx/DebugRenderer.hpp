@@ -9,6 +9,8 @@ class DebugRenderer;
 #include "shader/FramebufferShader.hpp"
 #include "Camera.hpp"
 #include "VertexArray.hpp"
+#include "Octree.hpp"
+#include "AABB.hpp"
 class DebugRenderer {
   private:
     DebugRenderer(const DebugRenderer& other);
@@ -17,12 +19,15 @@ class DebugRenderer {
     VertexArray line;
     VertexArray quad;
     FramebufferShader fbo_shader;
+    void draw_octree_node(const Octree::Node& node, const glm::mat4& vp_mat);
   public:
     DebugRenderer();
     void draw_point(const glm::vec3& pos, const glm::mat4& vp_mat);
+    void draw_points(const std::vector<glm::vec3>& points, const glm::mat4& vp_mat);
     void draw_lines(const std::vector<std::pair<glm::vec3, glm::vec3>>& lines, const glm::mat4& vp_mat, const glm::vec3& color);
     void draw_line(const glm::vec3& from, const glm::vec3& to, const glm::mat4& vp_mat, const glm::vec3& color);
     void render_fbo(const GLuint fbo);
     void draw_aabb(const AABB& aabb, const glm::mat4& vp_mat);
+    void draw_octree(const Octree& octree, const glm::mat4& vp_mat);
 };
 #endif

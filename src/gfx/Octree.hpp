@@ -8,8 +8,10 @@
 #include <unordered_set>
 
 class Octree {
+  friend class DebugRenderer;
   private:
     struct Node {
+      Octree* tree;
       std::unique_ptr<std::array<Node, 8>> children = nullptr;
       std::unique_ptr<glm::vec3> point = nullptr;
       int entity_id = -1;
@@ -24,10 +26,10 @@ class Octree {
       {}
 
       bool contains_point(const glm::vec3& p) {
-        return
-          p.x > pos.x + half_size.x && p.x < pos.x - half_size.x &&
-          p.y > pos.y + half_size.y && p.y < pos.y - half_size.y &&
-          p.z > pos.z + half_size.z && p.z < pos.z - half_size.z;
+        return 
+          p.x < (pos.x + half_size.x) && p.x > (pos.x - half_size.x) &&
+          p.y < (pos.y + half_size.y) && p.y > (pos.y - half_size.y) &&
+          p.z < (pos.z + half_size.z) && p.z > (pos.z - half_size.z);
       }
 
       int get_octant(const glm::vec3& point) const {
@@ -49,6 +51,7 @@ class Octree {
           newOrigin.y += half_size.y * (i&2 ? .5f : -.5f);
           newOrigin.z += half_size.z * (i&1 ? .5f : -.5f);
           (*children)[i] = Node(newOrigin, half_size / 2.0f);
+          (*children)[i].tree = tree;
         }
         auto old_entity_id = entity_id;
         entity_id = -1;
@@ -67,6 +70,9 @@ class Octree {
        *    Convert leaf to interior, add points to correct leafs
        */
       void add_point(int entity_id, const glm::vec3& point) {
+        if(!tree->contains_point(point)) {
+          return;
+        }
         if(children == nullptr) {
           if(this->entity_id == -1) {
             this->entity_id = entity_id;
@@ -81,11 +87,16 @@ class Octree {
       }
     };
 
-    Node root = Node(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1000.0f, 1000.0f, 1000.0f));
+    Node root;
 
     void add_point(int entity_id, const glm::vec3& point);
 
   public:
+    Octree(): root(Node(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1000.0f, 1000.0f, 1000.0f)))
+    {
+      root.tree = this;
+    }
+    bool contains_point(const glm::vec3& point);
     void add_aabb(Entity entity, const AABB& r_obj);
     std::unordered_set<int> get_items_in_frustum();
 };

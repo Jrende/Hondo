@@ -1,6 +1,7 @@
 #include <iostream>
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "DebugRenderer.hpp"
 
 DebugRenderer::DebugRenderer():
@@ -57,6 +58,19 @@ void DebugRenderer::draw_line(const glm::vec3& from, const glm::vec3& to, const 
   line_shader.stop();
 }
 
+void DebugRenderer::draw_points(const std::vector<glm::vec3>& points, const glm::mat4& vp_mat) {
+  debug_shader();
+  debug_shader.set_color({1,1,1});
+  debug_shader.set_MVP(vp_mat);
+  line.bind();
+  for(const auto& pos: points) {
+    debug_shader.set_pos(pos);
+    glDrawArrays(GL_POINTS, 0, 1);
+  }
+  line.unbind();
+  debug_shader.stop();
+}
+
 void DebugRenderer::draw_point(const glm::vec3& pos, const glm::mat4& vp_mat) {
   debug_shader();
   debug_shader.set_color({1,1,1});
@@ -98,3 +112,46 @@ void DebugRenderer::draw_aabb(const AABB& aabb, const glm::mat4& vp_mat) {
   };
   draw_lines(cube, vp_mat, white);
 }
+
+void DebugRenderer::draw_octree_node(const Octree::Node& node, const glm::mat4& vp_mat) {
+  using namespace std;
+  const auto& h = node.half_size;
+  std::vector<std::pair<glm::vec3, glm::vec3>> cube = {
+    make_pair(glm::vec3{h.x, h.y, h.z}, glm::vec3{-h.x,  h.y,  h.z}),
+    make_pair(glm::vec3{h.x, h.y, h.z}, glm::vec3{ h.x, -h.y,  h.z}),
+    make_pair(glm::vec3{h.x, h.y, h.z}, glm::vec3{ h.x,  h.y, -h.z}),
+    make_pair(glm::vec3{h.x, -h.y, h.z}, glm::vec3{-h.x, -h.y,  h.z}),
+
+    make_pair(glm::vec3{h.x, -h.y, h.z}, glm::vec3{ h.x, -h.y, -h.z}),
+    make_pair(glm::vec3{-h.x, -h.y, h.z}, glm::vec3{-h.x, h.y, h.z}),
+    make_pair(glm::vec3{-h.x, -h.y, h.z}, glm::vec3{-h.x, -h.y, -h.z}),
+    make_pair(glm::vec3{-h.x, h.y, h.z}, glm::vec3{-h.x, h.y, -h.z}),
+
+    make_pair(glm::vec3{-h.x, h.y, -h.z}, glm::vec3{h.x, h.y, -h.z}),
+    make_pair(glm::vec3{-h.x, h.y, -h.z}, glm::vec3{-h.x, -h.y, -h.z}),
+    make_pair(glm::vec3{h.x, -h.y, -h.z}, glm::vec3{-h.x, -h.y, -h.z}),
+    make_pair(glm::vec3{h.x, -h.y, -h.z}, glm::vec3{h.x, h.y, -h.z}),
+  };
+
+  glm::vec3 white = glm::vec3({1, 1, 1});
+
+  const auto& vp_mat2 = glm::translate(vp_mat, node.pos);
+  draw_lines(cube, vp_mat2, white);
+
+  if(node.point != nullptr) {
+    draw_point(*node.point, vp_mat);
+  }
+
+  if(node.children != nullptr) {
+    for(const auto& child: *node.children) {
+      if(child.entity_id != -1 || child.children != nullptr) {
+        draw_octree_node(child, vp_mat);
+      }
+    }
+  }
+}
+
+void DebugRenderer::draw_octree(const Octree& octree, const glm::mat4& vp_mat) {
+  draw_octree_node(octree.root, vp_mat);
+}
+

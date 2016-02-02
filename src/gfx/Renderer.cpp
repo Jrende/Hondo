@@ -101,7 +101,7 @@ void Renderer::draw_debug_info(std::vector<RenderObject>& render_list) {
 void Renderer::render(std::vector<RenderObject>& render_list) {
   int draw_calls = 0;
   pre_render();
-  draw_debug_info(render_list);
+  //draw_debug_info(render_list);
   render_depth_test(render_list);
 
   glDisable(GL_BLEND);
@@ -303,4 +303,9 @@ bool vertex_array_sort(const RenderObject& left, const RenderObject& right) {
 
 void Renderer::render(World& world) {
   render(world.render_list);
+
+  glm::mat4 mvp_mat = glm::mat4();
+  mvp_mat *= perspective_mat;
+  mvp_mat *= camera->get_view_mat();
+  debug_renderer.draw_octree(world.octree, mvp_mat);
 }
