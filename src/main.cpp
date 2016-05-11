@@ -154,7 +154,11 @@ int main(int argc, char ** argv) {
   const auto& camera = fpsController.get_camera();
 
   Input::on(GLFW_KEY_Z, [&] {
-  renderer.toggle_wireframe();
+      renderer.toggle_wireframe();
+  });
+
+  Input::on(GLFW_KEY_X, [&] {
+      renderer.toggle_debug();
   });
 
   Input::on(GLFW_KEY_G, []() {
@@ -178,11 +182,20 @@ int main(int argc, char ** argv) {
   renderer.add_light(pl2);
 
   World world;
+
+  //Entity cube = world.create_entity(RenderObject(cube_mesh));
+  //world.scale(cube, glm::vec3{0.5, 0.5, 0.5});
+  //world.translate(cube, glm::vec3{0, 2, 0});
   Entity sponza = world.create_empty_entity();
   for(auto& sponza_mesh: sponza_meshes) {
+    if(sponza_mesh.name == "bricks") {
+      static int count = 0;
+      std::cout << "Create " << sponza_mesh.name << " num " << count++ << '\n';
+    }
     world.create_entity(sponza, RenderObject(sponza_mesh));
   }
   world.scale(sponza, {0.1, 0.1, 0.1});
+  /*
 
   Entity cube = world.create_entity(RenderObject(cube_mesh));
   world.scale(cube, glm::vec3{0.5, 0.5, 0.5});
@@ -203,6 +216,7 @@ int main(int argc, char ** argv) {
   Entity sphere5 = world.create_entity(sphere4, RenderObject(sphere_mesh));
   world.translate(sphere5, glm::vec3{0, 2, 0});
   world.scale(sphere5, glm::vec3{0.5, 0.5, 0.5});
+  */
 
   renderer.set_skybox(RenderObject(skydome_mesh));
 
@@ -229,6 +243,36 @@ int main(int argc, char ** argv) {
       renderer.show_single_light(++selected_light);
     }
   }, false);
+
+      /*
+  Input::on(GLFW_KEY_COMMA, [&] {
+      world.translate(cube, glm::vec3{0, 0, -0.1});
+  }, true);
+  Input::on(GLFW_KEY_PERIOD, [&] {
+      world.translate(cube, glm::vec3{0, 0, 0.1});
+  }, true);
+
+  Input::on(GLFW_KEY_N, [&] {
+      world.translate(cube, glm::vec3{0, -0.1, 0});
+  }, true);
+  Input::on(GLFW_KEY_M, [&] {
+      world.translate(cube, glm::vec3{0, 0.1, 0});
+  }, true);
+
+  Input::on(GLFW_KEY_V, [&] {
+      world.translate(cube, glm::vec3{-0.1, 0, 0});
+  }, true);
+  Input::on(GLFW_KEY_B, [&] {
+      world.translate(cube, glm::vec3{0.1, 0, 0});
+  }, true);
+
+  Input::on(GLFW_KEY_V, [&] {
+      world.translate(cube, glm::vec3{-0.1, 0, 0});
+  }, true);
+  Input::on(GLFW_KEY_B, [&] {
+      world.translate(cube, glm::vec3{0.1, 0, 0});
+  }, true);
+  */
 
   Input::on(GLFW_KEY_DELETE, [&] {
     renderer.clear_lights();
@@ -276,12 +320,13 @@ int main(int argc, char ** argv) {
     fpsController.handle_movement();
     renderer.render(world);
     if(draw_main) {
+      /*
       world.rotate(cube, 0.01, glm::vec3{1, 1, 0});
       world.rotate(sphere1, -0.01, glm::vec3{0, 1, 0});
-      world.get_render_object(cube).transform.rotate(0.01, glm::vec3(1, 1, 0));
       world.rotate(sphere2, -0.01, glm::vec3{0, 1, 0});
       world.rotate(sphere3, -0.01, glm::vec3{0, 0, 1});
       world.rotate(sphere4,  0.01, glm::vec3{0, 0, 1});
+      */
     }
 
     std::stringstream str;

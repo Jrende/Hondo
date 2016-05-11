@@ -46,6 +46,7 @@ void Renderer::pre_render() {
   if(shown_light_index != -1 && draw_shadow_map) {
     debug_renderer.render_fbo(light_list[shown_light_index]->shadow_map.depth_tex);
   }
+  
 }
 
 void Renderer::render_depth_test(std::vector<RenderObject>& render_list) {
@@ -86,7 +87,8 @@ void Renderer::render_scene(const glm::mat4& vp_mat, std::vector<RenderObject>& 
   }
 }
 
-void Renderer::draw_debug_info(std::vector<RenderObject>& render_list) {
+void Renderer::draw_debug_info(World& world) {
+  std::vector<RenderObject>& render_list = world.render_list;
   for(const auto& render_object: render_list) {
     draw_aabb(render_object.aabb);
   }
@@ -96,16 +98,28 @@ void Renderer::draw_debug_info(std::vector<RenderObject>& render_list) {
       draw_point(light->get_pos());
     }
   }
+
+  glm::mat4 mvp_mat = glm::mat4();
+  mvp_mat *= perspective_mat;
+  mvp_mat *= camera->get_view_mat();
+
+  debug_renderer.draw_octree(world.octree, mvp_mat);
+}
+
+void Renderer::render(World& world) {
+  pre_render();
+  if(show_debug) {
+    draw_debug_info(world);
+  }
+  render_depth_test(world.render_list);
+  glDisable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE);
+  render(world.render_list);
+  draw_sky();
 }
 
 void Renderer::render(std::vector<RenderObject>& render_list) {
   int draw_calls = 0;
-  pre_render();
-  //draw_debug_info(render_list);
-  render_depth_test(render_list);
-
-  glDisable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ONE);
   //foreach type of light
   for(auto& light_type: lights) {
     if(light_type.second.size() == 0) {
@@ -174,7 +188,6 @@ void Renderer::render(std::vector<RenderObject>& render_list) {
       glEnable(GL_BLEND);
     }
   }
-  draw_sky();
   DebugText::set_value("draw calls", draw_calls);
 }
 
@@ -301,11 +314,6 @@ bool vertex_array_sort(const RenderObject& left, const RenderObject& right) {
   return (*left.mesh.vertex_array) == (*right.mesh.vertex_array);
 }
 
-void Renderer::render(World& world) {
-  render(world.render_list);
-
-  glm::mat4 mvp_mat = glm::mat4();
-  mvp_mat *= perspective_mat;
-  mvp_mat *= camera->get_view_mat();
-  debug_renderer.draw_octree(world.octree, mvp_mat);
+void Renderer::toggle_debug() {
+  show_debug = !show_debug;
 }

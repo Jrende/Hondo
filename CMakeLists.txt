@@ -31,8 +31,8 @@ target_link_libraries(SOIL
   ${OPENGL_LIBRARY}
 )
 
-set(BOOST_ROOT lib/boost_1_55_0)
-find_package(Boost 1.55.0 REQUIRED)
+set(BOOST_ROOT lib/boost_1_60_0)
+find_package(Boost 1.60.0 REQUIRED)
 
 MESSAGE("Boost information:")
 MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")

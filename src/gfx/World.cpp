@@ -19,7 +19,7 @@ void World::add_render_object(RenderObject obj) {
 void World::rebuild_octree() {
   octree = Octree{};
   for(auto render_object: render_list) {
-    //render_object.update_aabb();
+    render_object.update_aabb();
     octree.add_aabb(render_object.entity, render_object.aabb);
   }
 }
