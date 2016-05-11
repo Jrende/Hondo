@@ -9,7 +9,6 @@ out vec4 FragColor;
 
 uniform struct DirectionalLight {
     vec3 color;
-    vec3 position;
     vec3 direction;
     float ambientIntensity;
     float diffuseIntensity;
@@ -34,27 +33,27 @@ vec3 getNormal() {
   return normalize(mat3(tangent, bitangent, normal) * bumpmapNormal);
 }
 
-vec4 getDiffuse(vec3 normal) {
+vec3 getDiffuse(vec3 normal) {
   vec3 surfaceToLight = normalize(-dirLight.direction);
 
   float brightness = clamp(dot(normal, normalize(surfaceToLight)), 0, 1);
 
-  vec4 lightColor =  vec4(dirLight.color, 1.0f);
-  vec4 diffuseColor = lightColor * dirLight.diffuseIntensity;
-  vec4 ambientColor = lightColor * dirLight.ambientIntensity;
-  return diffuseColor * brightness + ambientColor;
+  vec3 diffuseColor = dirLight.color * dirLight.diffuseIntensity;
+  return diffuseColor * brightness;
 }
 
-vec4 getSpecular(vec3 normal) {
-  vec3 surfaceToLight = normalize(dirLight.direction) - WorldPos0;
+vec3 getSpecular(vec3 normal) {
+  float diffuseFactor = dot(normal, dirLight.direction);
+  vec3 diffuseColor = dirLight.color *
+    dirLight.diffuseIntensity *
+    diffuseFactor;
 
-  vec3 lightReflect = normalize(reflect(-surfaceToLight, normal));
-  vec3 surfaceToEye = normalize(eyePos - WorldPos0);
-
-  float specularFactor = clamp(dot(surfaceToEye, lightReflect), 0.0, 1.0);
+  vec3 VertexToEye = normalize(eyePos - WorldPos0);
+  vec3 LightReflect = normalize(reflect(dirLight.direction, normal));
+  float SpecularFactor = dot(VertexToEye, LightReflect);
   float specularIntensity = texture2D(specular_sampler, TexCoord0.st).x * specular_intensity;
-  specularFactor = pow(specularFactor, specular_exponent);
-  return vec4(dirLight.color, 1.0f) * specularIntensity * specularFactor;
+  SpecularFactor = clamp(pow(SpecularFactor, specular_exponent), 0, 1);
+  return dirLight.color *  SpecularFactor * specularIntensity;
 }
 
 void main() {
@@ -63,7 +62,8 @@ void main() {
   }
   vec3 normal = getNormal();
   vec4 color = texture2D(diffuse_sampler, TexCoord0.st);
-  color += getSpecular(normal);
-  color *= getDiffuse(normal);
-  FragColor = color;
+  vec3 specularColor = getSpecular(normal);
+  vec3 diffuseColor = getDiffuse(normal);
+  vec3 ambientColor = dirLight.color * dirLight.ambientIntensity;
+  FragColor = color * vec4(ambientColor + diffuseColor + specularColor, 1.0);
 }
