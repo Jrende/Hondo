@@ -62,6 +62,7 @@ set(ALL_LIBS
   ${GLFW_LIBRARIES}
   Xcursor
   Xinerama
+  Xi
   ${Boost_LIBRARIES}
   nanovg
 )
