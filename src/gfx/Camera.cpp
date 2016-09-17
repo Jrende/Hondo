@@ -44,3 +44,7 @@ void Camera::move_right(float dist) {
   this->translate(dist*left);
   calc_view_mat();
 }
+
+const Frustum& Camera::get_frustum() {
+  return Frustum{};
+}

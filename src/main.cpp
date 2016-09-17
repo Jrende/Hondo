@@ -175,9 +175,8 @@ int main(int argc, char ** argv) {
   Mesh sphere_mesh = loader.get_meshes("assets/sphere.obj")[0];
   std::vector<Mesh> sponza_meshes = loader.get_meshes("assets/sponza-minus.obj");
 
-  auto pl2 = std::make_shared<DirLight>(glm::vec3{-1, -1, -1}, glm::vec3{1, 1, 1});
+  auto pl2 = std::make_shared<DirLight>(glm::vec3{-0, -1, -1}, glm::vec3{1, 1, 1});
   pl2->ambient_intensity = 0.25f;
-  //pl2->set_casts_shadow(true);
   pl2->diffuse_intensity = 0.5f;
   renderer.add_light(pl2);
 

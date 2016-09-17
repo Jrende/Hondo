@@ -1,4 +1,6 @@
 #include "Octree.hpp"
+#define GLM_FORCE_RADIANS
+#include <glm/gtx/rotate_vector.hpp>
 void Octree::add_aabb(Entity entity, const AABB& aabb) {
   for(const auto& p: aabb.cube) {
     add_point(entity.get_id(), p);
@@ -13,17 +15,10 @@ bool Octree::contains_point(const glm::vec3& point) {
   return root.contains_point(point);
 }
 
-std::vector<int> Octree::get_items_in_frustum(
-    const glm::vec3& ntl,
-    const glm::vec3& ntr,
-    const glm::vec3& nbl,
-    const glm::vec3& nbr,
-    const glm::vec3& ftl,
-    const glm::vec3& ftr,
-    const glm::vec3& fbl,
-    const glm::vec3& fbr
-    ) {
-  return std::vector<int>();
+std::vector<int> Octree::get_items_in_frustum(const Frustum& frustum) {
+  std::vector<int> entities;
+  root.get_points_in_frustum(frustum, entities);
+  return entities;
 }
 
 bool Octree::Node::contains_point(const glm::vec3& p) {
@@ -89,4 +84,27 @@ void Octree::Node::add_point(int entity_id, const glm::vec3& point) {
   } else {
     (*children)[get_octant(point)].add_point(entity_id, point);
   }
+}
+
+  void Octree::Node::get_points_in_frustum(const Frustum& frustum, std::vector<int>& result) {
+  if(is_contained_by_frustum(frustum)) {
+    if(children != nullptr) {
+      for(auto& child: *children) {
+        child.get_points_in_frustum(frustum, result);
+      }
+    } else {
+      if(point != nullptr) {
+        result.push_back(entity_id);
+      }
+    }
+  }
+}
+
+bool Octree::Node::is_contained_by_frustum(const Frustum& f) {
+  if(point == nullptr) {
+    return false;
+  }
+  const auto& p = *point;
+  float d1 = glm::dot(glm::cross(f.ntl, f.ntr), p - f.ntl);
+  return d1 > 0;
 }

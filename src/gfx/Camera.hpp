@@ -3,6 +3,7 @@
 class Camera;
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
+#include "Frustum.hpp"
 class Camera {
   private:
     void calc_view_mat();
@@ -15,6 +16,7 @@ class Camera {
     void rotate(float angle, glm::vec3 axis);
     void move_forward(float dist);
     void move_right(float dist);
+    const Frustum& get_frustum();
     Camera(
 	glm::vec3 pos = glm::vec3(0, 0, 0),
 	glm::vec3 dir = glm::vec3(0, 0, 1.0f));

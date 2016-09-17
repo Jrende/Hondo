@@ -52,6 +52,7 @@ include_directories (SYSTEM
   lib/nanovg/src
 )
 
+MESSAGE("GLFW_LIBS: ${GLFW_LIBRARIES}")
 #The order is important!
 set(ALL_LIBS
   glfw
@@ -67,8 +68,8 @@ set(ALL_LIBS
   nanovg
 )
 
-file(GLOB_RECURSE HONDO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE HONDO_HEADERS "src/*.h")
+file(GLOB_RECURSE HONDO_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "src/*.cpp")
+file(GLOB_RECURSE HONDO_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "src/*.h")
 
 set (HONDO_INCLUDE_DIRS "")
 foreach (_headerFile ${HONDO_HEADERS})
@@ -77,7 +78,17 @@ foreach (_headerFile ${HONDO_HEADERS})
 endforeach()
 list(REMOVE_DUPLICATES HONDO_INCLUDE_DIRS)
 
+list(REMOVE_ITEM HONDO_SOURCES "src/OctreeTest.cpp")
+list(REMOVE_ITEM HONDO_SOURCES "src/main.cpp")
+
+MESSAGE("sources: ${HONDO_SOURCES}")
+
 include_directories(${HONDO_INCLUDE_DIRS})
-add_executable (Hondo ${HONDO_SOURCES})
+
+add_executable (Hondo ${HONDO_SOURCES} "src/main.cpp")
 target_link_libraries(Hondo ${ALL_LIBS})
 set_property(TARGET Hondo APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")
+
+add_executable (OctreeTest ${HONDO_SOURCES} "src/OctreeTest.cpp")
+target_link_libraries(OctreeTest ${ALL_LIBS})
+set_property(TARGET OctreeTest APPEND PROPERTY COMPILE_FLAGS "-g -Wall -Wextra -Wno-unused-parameter")

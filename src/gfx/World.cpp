@@ -70,3 +70,12 @@ void World::rotate(Entity entity, float angle, const glm::vec3& axis) {
   scene_graph.rotate(entity, angle, axis);
   rebuild_octree();
 }
+
+std::vector<RenderObject> World::get_visible_objects(const Frustum& frustum) {
+  const std::vector<int>& list = octree.get_items_in_frustum(frustum);
+  std::vector<RenderObject> render_objects;
+  for(const auto& item: list) {
+    render_objects.push_back(render_list[id_to_list_index[item]]);
+  }
+  return render_objects;
+}

@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdlib.h>
 #include "ui/DebugText.hpp"
+#include "Frustum.hpp"
 Renderer::Renderer(int width, int height):
   width(width),
   height(height),
@@ -114,7 +115,8 @@ void Renderer::render(World& world) {
   render_depth_test(world.render_list);
   glDisable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
-  render(world.render_list);
+  std::vector<RenderObject> visible_objects = world.get_visible_objects(camera->get_frustum());
+  render(visible_objects);
   draw_sky();
 }
 
